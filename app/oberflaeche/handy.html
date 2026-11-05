@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>fabBoard Handy</title>
+<style>
+/* Handy-Ansicht: liest und schreibt die Projektdateien direkt im privaten GitHub-Daten-Repo (kein PC nötig) */
+:root{--bg:#FCFCFA;--ink:#1A1A1A;--text2:#4A4A45;--muted:#6B6B66;--line:#E6E6E3;--field:#F4F4F1;--accent:#3E5C76;--mark:#E8EEF3;--err:#B3261E;--sans:Inter,system-ui,sans-serif;--serif:'Source Serif 4',Georgia,serif}
+@media (prefers-color-scheme:dark){:root{--bg:#141516;--ink:#ECECE8;--text2:#C4C4BE;--muted:#9A9A94;--line:#2E3032;--field:#1F2123;--accent:#8FB0CC;--mark:#22313D;--err:#F2B8B5;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 var(--sans)}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{padding:0 16px 120px}
+.kopf{position:sticky;top:0;z-index:2;background:var(--bg);display:flex;align-items:baseline;gap:10px;padding:12px 0 8px;border-bottom:1px solid var(--ink)}
+.marke{font:900 24px/1 var(--sans);letter-spacing:-.03em}
+.marke i{font-style:normal;color:#F07C1F;font-size:1.5em;line-height:0}
+.kopf select{margin-left:auto;max-width:55%;border:0;background:none;font:600 16px var(--serif)}
+h2{margin:22px 0 4px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.it{padding:12px 0;border-bottom:1px solid var(--line)}
+.it h3{margin:0 0 4px;font:600 17px/1.25 var(--serif)}
+.it .typ{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.it p{margin:4px 0 8px;color:var(--text2);font-size:15px;white-space:pre-wrap}
+.opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;padding:10px 0;background:none;border:0;cursor:pointer}
+.opt i{flex:0 0 20px;height:20px;margin-top:2px;border:1.5px solid var(--muted);border-radius:50%}
+.opt.multi i{border-radius:4px}
+.opt.an i{background:var(--accent);border-color:var(--accent);box-shadow:inset 0 0 0 3px var(--bg)}
+.opt em{font-style:normal;font-size:12px;color:var(--accent);margin-left:6px}
+textarea,input{width:100%;padding:10px;border:1px solid var(--line);border-radius:6px;background:var(--field)}
+textarea{min-height:44px;resize:vertical}
+.leiste{position:fixed;left:0;right:0;bottom:0;display:flex;gap:10px;align-items:center;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1px solid var(--line)}
+.leiste span{flex:1;font-size:13px;color:var(--muted)}
+.btn{padding:11px 18px;border:1px solid var(--ink);border-radius:6px;background:var(--ink);color:var(--bg);font-weight:600;cursor:pointer}
+.btn.leer{background:none;color:var(--ink)}
+.btn:disabled{opacity:.4}
+.fehler{color:var(--err)}
+label{display:block;margin:14px 0 4px;font-size:13px;color:var(--muted)}
+.hinweis{font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="kopf"><span class="marke">fabBoard<i>.</i></span><select id="projekt"></select></header>
+  <main id="inhalt"></main>
+</div>
+<div class="leiste" id="leiste" hidden><span id="status"></span><button class="btn leer" id="neu"></button><button class="btn" id="speichern" disabled></button></div>
+<script src="texte.js"></script>
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const ortszeit = () => { const d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16).replace('T', ' '); };
+const nid = (p) => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+// Name der am PC gewählten KI (daten/einstellungen.json, Feld anbieter; siehe anbieter.js); unbekannt = „KI“
+const KI_KURZ = { 'claude': 'Claude', 'anthropic-key': 'Claude', 'codex': 'Codex', 'openai-key': 'Codex', 'gemini': 'Gemini', 'google-key': 'Gemini', 'mistral-key': 'Mistral', 'ollama': 'Ollama', 'lmstudio': 'LM Studio' };
+let KI = T('ki');
+// Feste Texte (Leiste, Projekt-Auswahl) in der gewählten Sprache
+const statisch = () => { document.documentElement.lang = sprache(); $('#projekt').setAttribute('aria-label', T('hProjekt')); $('#neu').textContent = T('hNeuLaden'); $('#speichern').textContent = T('speichern'); };
+statisch();
+const TYPEN = () => ({ 'frage': T('typFrage'), 'frage-an-claude': T('typFrageAn', { ki: KI }), 'anweisung': T('typAnweisung'), 'idee': T('typIdee'), 'aufgabe': T('typAufgabe'), 'info': T('typInfo') });
+// Zugang (Repo + Schlüssel) bleibt nur auf diesem Handy gespeichert
+let Z = {}; try { Z = JSON.parse(localStorage.getItem('fabboard-handy') || '{}'); } catch (e) {}
+const merken = () => { try { localStorage.setItem('fabboard-handy', JSON.stringify(Z)); } catch (e) {} };
+const S = { dateien: [], info: {}, aktiv: Z.aktiv || '', p: null, sha: '', dirty: false };
+// offene Punkte wie am PC: alle Einträge in allen Themen
+const offenZahl = (p) => (p.themen || []).reduce((n, t) => n + t.items.length, 0);
+const merkeInfo = (id, p) => { S.info[id] = { name: p.name || id, offen: offenZahl(p) }; };
+
+// ---------- GitHub (Inhalte als Base64, UTF-8)
+const b64aus = (b) => new TextDecoder().decode(Uint8Array.from(atob(b.replace(/\s/g, '')), (c) => c.charCodeAt(0)));
+const b64ein = (s) => { const u = new TextEncoder().encode(s); let t = ''; for (let i = 0; i < u.length; i += 8192) t += String.fromCharCode(...u.subarray(i, i + 8192)); return btoa(t); };
+async function gh(pfad, opt = {}) {
+  const r = await fetch(`https://api.github.com/repos/${Z.repo}/contents/${pfad}`, { cache: 'no-store', ...opt, headers: { Authorization: 'Bearer ' + Z.token, Accept: 'application/vnd.github+json', ...(opt.headers || {}) } });
+  if (r.status === 401) throw new Error(T('hSchluesselUngueltig'));
+  if (r.status === 404) throw new Error(T('hNichtGefunden'));
+  if (r.status === 409 || r.status === 422) throw new Error('KONFLIKT');
+  if (!r.ok) throw new Error(T('hGithubFehler', { code: r.status }));
+  return r.json();
+}
+const status = (t, fehler) => { $('#status').textContent = t; $('#status').className = fehler ? 'fehler' : ''; };
+
+// ---------- Laden / Speichern
+async function start() {
+  if (!Z.repo || !Z.token) return zugang();
+  $('#leiste').hidden = false; status(T('hLaedt'));
+  try {
+    const liste = await gh('projekte');
+    S.dateien = liste.filter((f) => f.name.endsWith('.json') && !f.name.endsWith('.archiv.json')).map((f) => f.name.slice(0, -5));
+    if (!S.dateien.includes(S.aktiv)) S.aktiv = S.dateien[0] || '';
+    // KI-Name und Sprache wie am PC (einstellungen.json); ohne Sprache-Einstellung gilt die Sprache des Handys
+    try { const e = JSON.parse(b64aus((await gh('einstellungen.json')).content)); setzeSprache(e.sprache || ''); statisch(); KI = KI_KURZ[e.anbieter] || T('ki'); } catch (e) {}
+    // Name und Zahl offener Punkte aller Projekte für das Aufklapp-Menü
+    await Promise.all(S.dateien.filter((id) => id !== S.aktiv).map(async (id) => { try { merkeInfo(id, JSON.parse(b64aus((await gh(`projekte/${id}.json`)).content))); } catch (e) {} }));
+    await laden();
+  } catch (e) { status(e.message, true); zugang(e.message); }
+}
+async function laden() {
+  if (!S.aktiv) return;
+  const d = await gh(`projekte/${S.aktiv}.json`);
+  S.p = JSON.parse(b64aus(d.content)); S.sha = d.sha; S.dirty = false; merkeInfo(S.aktiv, S.p);
+  $('#projekt').innerHTML = S.dateien.map((id) => { const x = S.info[id]; return `<option value="${esc(id)}"${id === S.aktiv ? ' selected' : ''}>${esc(x ? `${x.name} · ${T('offenN', { n: x.offen })}` : id)}</option>`; }).join('');
+  render(); status(T('hStand', { zeit: ortszeit().slice(11) }));
+}
+async function speichern() {
+  const p = S.p; p.geaendert = ortszeit();
+  const neu = $('#msg')?.value.trim();
+  if (neu) { p.nachrichten ||= []; p.nachrichten.unshift({ id: nid('m'), text: neu, erstellt: ortszeit(), von: 'fabian', status: 'offen', antwort: '' }); }
+  $('#speichern').disabled = true; status(T('speichert'));
+  try {
+    const d = await gh(`projekte/${S.aktiv}.json`, { method: 'PUT', body: JSON.stringify({ message: 'Handy ' + ortszeit(), content: b64ein(JSON.stringify(p, null, 1)), sha: S.sha }) });
+    S.sha = d.content.sha; S.dirty = false; render();
+    status(T('hGespeichert'));
+  } catch (e) {
+    if (neu) p.nachrichten.shift();
+    $('#speichern').disabled = false;
+    status(e.message === 'KONFLIKT' ? T('hKonflikt') : e.message, true);
+  }
+}
+
+// ---------- Anzeige: offene Einträge je Thema (ohne „Später“), Kommentar, neue Nachricht
+function render() {
+  const p = S.p;
+  const themen = (p.themen || []).filter((t) => t.id !== 'spaeter' && t.items.length);
+  const offen = (p.nachrichten || []).filter((n) => n.status !== 'erledigt');
+  $('#inhalt').innerHTML = themen.map((t) => `<h2>${esc(t.titel)}</h2>` + t.items.map((it) => `
+    <div class="it" data-it="${esc(it.id)}">
+      <div class="typ">${esc(TYPEN()[it.typ] || it.typ)}${it.wer === 'claude' ? esc(T('hFuer', { ki: KI })) : ''}</div>
+      <h3>${esc(it.titel)}</h3>${it.text ? `<p>${esc(it.text)}</p>` : ''}
+      ${(it.optionen || []).map((o, i) => `<button class="opt${it.mehrfach ? ' multi' : ''}${o.gewaehlt ? ' an' : ''}" data-opt="${i}"><i></i><span>${esc(o.t)}${o.empf ? `<em>${T('empfehlung')}</em>` : ''}</span></button>`).join('')}
+      <textarea data-kom placeholder="${T('kommentar')}">${esc(it.kommentar)}</textarea>
+    </div>`).join('')).join('') +
+    `<h2>${esc(T('an', { wer: KI }))}</h2>${offen.map((n) => `<div class="it"><p>${esc(n.text)}</p><div class="typ">${T('hOffen')} · ${esc(n.erstellt)}</div></div>`).join('')}
+    <textarea id="msg" placeholder="${esc(T('hNeueNachricht', { ki: KI }))}"></textarea>
+    <p class="hinweis">${esc(T('hNurPc', { ki: KI }))}</p>
+    <p class="hinweis"><a href="#" id="abmelden">${T('hZugangAendern')}</a></p>`;
+  $('#speichern').disabled = !S.dirty;
+}
+const finde = (el) => { const id = el.closest('[data-it]').dataset.it; for (const t of S.p.themen) { const it = t.items.find((x) => x.id === id); if (it) return it; } };
+const markieren = () => { S.dirty = true; $('#speichern').disabled = false; status(T('hNichtGespeichert')); };
+$('#inhalt').addEventListener('click', (ev) => {
+  const o = ev.target.closest('.opt');
+  if (o) { const it = finde(o); const i = +o.dataset.opt; if (it.mehrfach) it.optionen[i].gewaehlt = !it.optionen[i].gewaehlt; else it.optionen.forEach((x, j) => { x.gewaehlt = j === i ? !x.gewaehlt : false; }); const m = $('#msg').value; render(); $('#msg').value = m; markieren(); }
+  if (ev.target.id === 'abmelden') { ev.preventDefault(); zugang(); }
+});
+$('#inhalt').addEventListener('input', (ev) => {
+  if (ev.target.matches('[data-kom]')) { finde(ev.target).kommentar = ev.target.value; markieren(); }
+  if (ev.target.id === 'msg') markieren();
+});
+$('#projekt').addEventListener('change', async (ev) => {
+  if (S.dirty && !confirm(T('hVerwerfen'))) { ev.target.value = S.aktiv; return; }
+  S.aktiv = ev.target.value; Z.aktiv = S.aktiv; merken();
+  try { status(T('hLaedt')); await laden(); } catch (e) { status(e.message, true); }
+});
+$('#speichern').addEventListener('click', speichern);
+$('#neu').addEventListener('click', async () => { if (S.dirty && !confirm(T('hVerwerfen'))) return; try { status(T('hLaedt')); await laden(); } catch (e) { status(e.message, true); } });
+
+// ---------- Zugang einrichten
+function zugang(fehler) {
+  $('#leiste').hidden = true;
+  $('#inhalt').innerHTML = `<h2>${T('hZugang')}</h2>
+    ${fehler ? `<p class="fehler">${esc(fehler)}</p>` : ''}
+    <form id="zf"><label>${T('hRepo')}</label><input name="repo" value="${esc(Z.repo)}" placeholder="${T('hRepoBeispiel')}" autocapitalize="off" autocomplete="off" required>
+    <label>${T('hToken')}</label><input name="token" type="password" value="${esc(Z.token)}" autocomplete="off" required>
+    <p><button class="btn">${T('hVerbinden')}</button></p></form>
+    <p class="hinweis">${T('hTokenHinweis')}</p>`;
+  $('#zf').addEventListener('submit', (ev) => {
+    ev.preventDefault(); const fd = new FormData(ev.target);
+    Z.repo = fd.get('repo').trim().replace(/^https:\/\/github\.com\//, '').replace(/\.git$|\/$/g, ''); Z.token = fd.get('token').trim();
+    merken(); start();
+  });
+}
+start();
+</script>
+</body>
+</html>

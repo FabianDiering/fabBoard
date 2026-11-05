@@ -1,0 +1,21 @@
+# Daten der Nutzer bleiben lokal
+daten/
+einstellungen.json
+ort.json
+
+# Pakete und Build-Ergebnisse
+node_modules/
+dist/
+out/
+__pycache__/
+
+# Logs, Schlüssel, lokale Einstellungen
+*.log
+.env
+.env.*
+*.key
+*.pem
+.claude/settings.local.json
+
+# Vorschaubild, das app/icon-erstellen.ps1 mit anlegt
+app/icon-vorschau*.png

@@ -1,0 +1,155 @@
+{
+ "id": "example-cafe",
+ "name": "Example: Website for a café",
+ "art": "Website",
+ "beschreibung": "Fictional example: a small website for the café “Morning Glow” with opening hours and menu.",
+ "ordner": "",
+ "reihenfolge": 90,
+ "erstellt": "2026-11-05",
+ "geaendert": "2026-11-05 09:00",
+ "themen": [
+  {
+   "id": "allgemein",
+   "titel": "General",
+   "items": [
+    {
+     "id": "ib1",
+     "typ": "frage",
+     "titel": "How should the menu appear?",
+     "text": "The menu changes every week. As a web page it is quick to update; a PDF looks better in print.",
+     "optionen": [
+      {
+       "t": "As a page on the website",
+       "empf": true,
+       "gewaehlt": false
+      },
+      {
+       "t": "As a downloadable PDF",
+       "empf": false,
+       "gewaehlt": false
+      },
+      {
+       "t": "Both",
+       "empf": false,
+       "gewaehlt": false
+      }
+     ],
+     "mehrfach": false,
+     "kommentar": "",
+     "von": "claude",
+     "wer": "fabian",
+     "quelle": "Message 2026-11-05",
+     "erstellt": "2026-11-05"
+    },
+    {
+     "id": "ib2",
+     "typ": "aufgabe",
+     "titel": "Take photos of the café",
+     "text": "Three to five photos in daylight: counter, seating area, one cake.",
+     "optionen": [],
+     "mehrfach": false,
+     "kommentar": "",
+     "von": "fabian",
+     "wer": "fabian",
+     "quelle": "",
+     "erstellt": "2026-11-05"
+    },
+    {
+     "id": "ib3",
+     "typ": "info",
+     "titel": "What does a domain cost?",
+     "text": "A .com domain usually costs 10 to 20 a year. Click “OK” to move this answer to the archive.",
+     "optionen": [],
+     "mehrfach": false,
+     "kommentar": "",
+     "von": "claude",
+     "wer": "fabian",
+     "quelle": "",
+     "erstellt": "2026-11-05"
+    }
+   ]
+  },
+  {
+   "id": "gestaltung",
+   "titel": "Design",
+   "items": [
+    {
+     "id": "ib4",
+     "typ": "idee",
+     "titel": "Take the colours from the logo",
+     "text": "In the next run the AI turns this into a question with suggestions.",
+     "optionen": [],
+     "mehrfach": false,
+     "kommentar": "",
+     "von": "fabian",
+     "wer": "claude",
+     "quelle": "",
+     "erstellt": "2026-11-05"
+    },
+    {
+     "id": "ib5",
+     "typ": "frage-an-claude",
+     "titel": "Which font suits a café?",
+     "text": "",
+     "optionen": [],
+     "mehrfach": false,
+     "kommentar": "",
+     "von": "fabian",
+     "wer": "claude",
+     "quelle": "",
+     "erstellt": "2026-11-05"
+    }
+   ]
+  }
+ ],
+ "archiv": [
+  {
+   "id": "ib0",
+   "typ": "frage",
+   "titel": "Language of the website",
+   "text": "",
+   "optionen": [
+    {
+     "t": "English only",
+     "empf": true,
+     "gewaehlt": true
+    },
+    {
+     "t": "English and German",
+     "empf": false,
+     "gewaehlt": false
+    }
+   ],
+   "mehrfach": false,
+   "kommentar": "",
+   "von": "claude",
+   "wer": "fabian",
+   "quelle": "",
+   "erstellt": "2026-11-05",
+   "themaId": "allgemein",
+   "themaTitel": "General",
+   "antwort": "English only",
+   "erledigtAm": "2026-11-05",
+   "umgesetzt": true,
+   "ergebnis": "Page texts created in English (index.html)."
+  }
+ ],
+ "nachrichten": [
+  {
+   "id": "mb2",
+   "text": "Please also add a link to Google Maps.",
+   "erstellt": "2026-11-05 10:15",
+   "von": "fabian",
+   "status": "offen",
+   "antwort": ""
+  },
+  {
+   "id": "mb1",
+   "text": "Opening hours: Tue–Sun 8 am–6 pm",
+   "erstellt": "2026-11-05 08:40",
+   "von": "fabian",
+   "status": "erledigt",
+   "antwort": "1 item created in topic General."
+  }
+ ]
+}

@@ -1,0 +1,174 @@
+// fabBoard – alle Texte auf Deutsch und Englisch. Eine Datei für Board (index.html), Handy-Seite (handy.html)
+// und Server (server.js, anbieter.js). Neue Texte immer hier eintragen, in beiden Sprachen; im Code nur T('schluessel').
+// Platzhalter in geschweiften Klammern: T('offenN', { n: 3 }) → „3 offen“ / „3 open“.
+// Sprache: Einstellung „sprache“ (de, en) oder leer = Systemsprache (Deutsch, wenn das System deutsch ist, sonst Englisch).
+(function (g) {
+  const TEXTE = {
+    de: {
+      // Allgemein
+      ki: 'KI', projekt: 'Projekt', offenN: '{n} offen', erledigtN: '{n} erledigt', fuer: 'Für {wer}', an: 'An {wer}',
+      speichern: 'Speichern', abbrechen: 'Abbrechen', anlegen: 'Anlegen', loeschen: 'Löschen', bearbeiten: 'Bearbeiten',
+      umbenennen: 'Umbenennen', kopieren: 'Kopieren', kopiert: 'Kopiert', zurueck: 'Zurück', weiter: 'Weiter', fertig: 'Fertig',
+      spaeter: 'Später', erledigt: 'Erledigt', aufklappen: 'Aufklappen', zuklappen: 'Zuklappen', rueckgaengig: 'Rückgängig',
+      nichtMoeglich: 'Nicht möglich', allgemein: 'Allgemein', nachOben: 'Nach oben', projekte: 'Projekte', lokal: 'Lokal',
+      // Kopf und Speichern
+      einrichtung: 'Einrichtung', einrichtungTitel: 'KI und Sprache wählen', speichert: 'Speichert …',
+      konflikt: '„{name}“ wurde inzwischen in der Datei geändert und neu geladen – letzte Eingabe bitte prüfen.',
+      nichtGespeichert: 'Nicht gespeichert – läuft fabBoard noch?', neuerStand: 'Neuer Stand geladen.',
+      nichtGestartetT: 'fabBoard ist nicht gestartet', nichtGestartet: 'Bitte fabBoard über die Desktop-Verknüpfung starten – dann öffnet sich diese Seite über http://localhost:4747.',
+      // Tabs und Projekt
+      projektLoeschenT: 'Projekt löschen', projektLoeschenA: 'Projekt {name} löschen', plusProjekt: '+ Projekt', plusThema: '+ Thema',
+      keinProjektT: 'Noch kein Projekt', keinProjekt: 'Mit „+ Projekt“ anlegen.', projektBearbeiten: 'Projekt bearbeiten', neuesProjekt: 'Neues Projekt',
+      // Themen und Einträge
+      nichtsImFilter: 'Nichts in diesem Filter.', keinePunkte: 'Noch keine Punkte.', keineThemen: 'Noch keine Themen – „+ Thema“ oben.',
+      art: 'Art', neuerPunkt: 'Neuer Punkt …', neuerPunktA: 'Neuer Punkt', hinzufuegen: 'Hinzufügen →',
+      typFrage: 'Frage', typFrageAn: 'Frage an {ki}', typAnweisung: 'Anweisung', typIdee: 'Idee', typAufgabe: 'Aufgabe', typAufgabeMich: 'Aufgabe für mich', typInfo: 'Info',
+      empfehlung: 'Empfehlung', okArchivA: '{titel}: OK, ins Archiv', erledigtA: '{titel} erledigt', kommentar: 'Kommentar', kommentarZu: 'Kommentar zu {titel}',
+      werIstDran: 'Wer ist dran', titel: 'Titel', text: 'Text', optionenHilfe: 'Optionen – eine pro Zeile, * = Empfehlung', mehrfach: 'Mehrfachauswahl',
+      themaNeu: 'Name des neuen Themas', neuerName: 'Neuer Name', zurueckgeholt: 'Zurückgeholt',
+      // Nachrichten an die KI
+      offenFuer: 'Offen für {ki}', nachrichtPlatzhalter: 'Kommentar oder Anweisung an {ki} zu {name} …', nachrichtA: 'Nachricht an {ki}',
+      nachrichtHilfe: 'Strg + Enter oder „{ki} starten“ speichert · wird in die Zwischenablage kopiert', aeltere: '{n} ältere Nachrichten in der Datei.',
+      gespeichertStarten: 'Gespeichert – mit „{ki} starten“ abarbeiten lassen.', nachrichtGeloescht: 'Nachricht gelöscht.', kopieNichtMoeglich: 'Kopieren nicht möglich.',
+      // Archiv
+      archiv: 'Archiv', wartetAuf: 'Wartet auf {ki}', umgesetzt: 'Umgesetzt', zurueckInListe: 'Nicht erledigt → zurück in die Liste', nochNichts: 'Noch nichts bestätigt.',
+      entschieden: '„{titel}“ entschieden – im Archiv für {ki}.', insArchiv: '„{titel}“ ins Archiv.', aufSpaeter: '„{titel}“ auf später verschoben.',
+      zurueckIn: '„{titel}“ zurück in „{ziel}“.', geloeschtT: '„{titel}“ gelöscht.', geloescht: 'Gelöscht.',
+      // KI-Lauf
+      kiArbeitet: '{ki} arbeitet', kiStarten: '{ki} starten', kiEinrichten: 'KI einrichten', gestartet: '{ki} arbeitet – gerade gestartet',
+      seitMin: '{ki} arbeitet seit {m} Min', seitStd: '{ki} arbeitet seit {h}:{mm} Std', start: 'Start {zeit}', fehlerLauf: 'Letzter Lauf mit Fehler',
+      fehlerLaufT: 'Letzter Lauf {zeit} · Fehler ({code})', ordnerFehlt: 'Erst unter „Projekt bearbeiten“ den Projektordner eintragen.',
+      arbeitetAb: '{ki} arbeitet „{name}“ ab. Ergebnisse erscheinen hier automatisch.', startNicht: 'Start nicht möglich: {fehler}',
+      // Projekt-Dialog
+      loeschenFrage: 'Projekt „{name}“ wirklich löschen?\nDie Dateien wandern in den Backup-Ordner.', loeschenNicht: 'Löschen nicht möglich: {fehler}',
+      geloeschtBackup: '„{name}“ gelöscht – Dateien liegen im Backup-Ordner.', vollerPfad: 'Voller Pfad', projektordner: 'Projektordner auf dem Rechner (für den KI-Start)',
+      projektordnerIn: 'Projektordner in „{basis}“ (für den KI-Start)', keinOrdner: '– kein Ordner –', andererPfad: 'Anderer Pfad …', name: 'Name',
+      artBeispiel: 'Website, Produkt, Plattform …', kurzbeschreibung: 'Kurzbeschreibung', themenKomma: 'Themen – durch Komma getrennt', reihenfolge: 'Reihenfolge',
+      // Einrichtungs-Assistent
+      gruppeAbo: 'Mit deinem Abo oder Konto', gruppeSchluessel: 'Mit eigenem API-Schlüssel', gruppeLokal: 'Lokal auf deinem Rechner, ohne Cloud',
+      ewNicht: 'Einrichtung nicht erreichbar.', ewSchritt: 'Einrichtung · Schritt {n} von 3', ewFrage: 'Womit soll fabBoard arbeiten?',
+      ewText: 'fabBoard funktioniert mit jeder dieser KIs. Du entscheidest, welche du nutzt, und kannst das später jederzeit unter „Einrichtung“ ändern.',
+      sprache: 'Sprache', spracheAuto: 'Wie das System', ewEinrichten: '{name} einrichten', ewPrueft: 'fabBoard prüft, ob alles bereit ist …',
+      ewPruefFehler: 'Prüfung fehlgeschlagen', ewBereit: 'Alles bereit.', ewFehlt: 'Fehlt noch etwas, steht darunter, was zu tun ist. Danach auf „Erneut prüfen“ klicken.',
+      ewSchluesselEin: 'API-Schlüssel einfügen', ewSchluessel: 'API-Schlüssel', ewModell: 'Modell', ewModellWaehlen: '– Modell wählen –',
+      ewSchluesselWeg: 'Schlüssel entfernen', ewErneut: 'Erneut prüfen', ewSchluesselFrage: 'Gespeicherten Schlüssel von diesem Rechner entfernen?',
+      ewBedingungen: 'Nutzungsbedingungen', ewBedingungenText: 'Bitte prüfe die Nutzungsbedingungen deines Anbieters, bevor du mit fabBoard arbeitest. fabBoard startet nur das offizielle Programm von {name}, mit deiner eigenen Anmeldung bzw. deinem eigenen Schlüssel.',
+      ewLizenz: ' Bei lokalen Modellen gilt die Lizenz des jeweiligen Modells.', ewBedingungenOeffnen: 'Nutzungsbedingungen öffnen', ewEingerichtet: 'Eingerichtet: fabBoard arbeitet jetzt mit {name}.',
+      // Anbieter (anbieter.js)
+      kontoClaude: 'Claude-Abo (Pro oder Max)', kontoCodex: 'ChatGPT-Konto (auch das kostenlose)', kontoGemini: 'Google-Konto',
+      kontoNutzung: 'API-Schlüssel, Abrechnung nach Nutzung', kontoGoogleKey: 'API-Schlüssel, kostenloses Kontingent möglich', kontoLokal: 'Kein Konto, braucht einen starken Rechner',
+      geminiAnmelden: 'Gemini einmal starten, „Sign in with Google“ wählen und im Browser anmelden. Danach mit /quit beenden.',
+      shell: 'PowerShell', terminal: 'das Terminal', nodeT: 'Node.js installieren', nodeText: '{name} braucht Node.js. Lade die LTS-Version von nodejs.org und installiere sie. Danach fabBoard neu starten.',
+      nodeLink: 'nodejs.org öffnen', installiertT: '{prog} ist installiert', installierenT: '{prog} installieren',
+      installierenEiner: 'fabBoard arbeitet über das offizielle Programm {prog}. Gib diesen Befehl in {shell} ein und starte danach fabBoard neu:',
+      installierenMehrere: 'fabBoard arbeitet über das offizielle Programm {prog}. Gib diese Befehle nacheinander in {shell} ein (für den zweiten ein neues Fenster öffnen) und starte danach fabBoard neu:',
+      schluesselOkT: 'API-Schlüssel gespeichert', schluesselOk: 'Endet auf …{ende}. Verschlüsselt auf diesem Rechner gespeichert.', schluesselT: 'API-Schlüssel eintragen',
+      schluesselText: 'Erstelle einen Schlüssel beim Anbieter und trage ihn unten ein. fabBoard speichert ihn verschlüsselt nur auf diesem Rechner.', schluesselLink: 'Schlüssel beim Anbieter erstellen',
+      lokalStartenT: '{name} starten', lokalStarten: '{name} läuft nicht oder ist nicht installiert. Installiere es und starte es.', lmServer: ' In LM Studio unter „Developer“ den lokalen Server starten.',
+      lokalLaden: '{name} herunterladen', modellLadenT: 'Modell laden', modellLaden: '{name} läuft, hat aber noch kein Modell. Lade ein Modell, das gut programmieren kann, zum Beispiel so:',
+      modellLadenLm: '{name} läuft, hat aber noch kein Modell. Lade ein Modell, das gut programmieren kann (in LM Studio unter „Discover“).',
+      modellWaehlenT: 'Modell wählen', modellWaehlen: '{name} läuft. Wähle das Modell, mit dem fabBoard arbeiten soll.', angemeldetT: 'Angemeldet', angemeldet: '{prog} ist mit deinem Konto angemeldet.',
+      anmeldenT: 'Anmelden', anmelden: 'Gib diesen Befehl in {shell} ein und melde dich im Browser mit deinem Konto an:',
+      keinSchluesselNoetig: 'Dieser Anbieter braucht keinen Schlüssel', schluesselNurApp: 'Schlüssel lassen sich nur in der fabBoard-App sicher speichern',
+      erstEinrichten: 'Bitte zuerst unter „Einrichtung“ eine KI wählen', programmFehlt: '{name}: Programm nicht gefunden. Bitte die Einrichtung erneut prüfen',
+      keinSchluessel: '{name}: Kein API-Schlüssel gespeichert. Bitte unter „Einrichtung“ eintragen', keinModell: '{name}: Kein Modell gewählt. Bitte unter „Einrichtung“ wählen',
+      gitGesperrt: 'Hinweis: Git-Befehle sind in diesem Lauf gesperrt. fabBoard legt die Commits vor und nach dem Lauf selbst an; führe keine git-Befehle aus.',
+      // Server (server.js)
+      kiArbeitetSchon: 'Die KI arbeitet schon an diesem Projekt', projektFehlt: 'Projekt nicht gefunden', projektordnerFehlt: 'Projektordner fehlt oder existiert nicht',
+      nurAmRechner: 'Einrichtung nur direkt am Rechner möglich', anbieterUnbekannt: 'Unbekannter Anbieter', schluesselLeer: 'Bitte einen Schlüssel eintragen',
+      nichtGefunden: 'Nicht gefunden', unbekannt: 'Unbekannt', nurMitPasswort: 'Die KI starten ist im Netzwerk nur mit Passwort erlaubt', spracheName: 'Deutsch',
+      // Handy-Seite (handy.html)
+      hProjekt: 'Projekt', hOffen: 'offen', hNeuLaden: 'Neu laden', hSchluesselUngueltig: 'Schlüssel ungültig oder abgelaufen.', hNichtGefunden: 'Repo oder Datei nicht gefunden (Name und Schlüssel-Rechte prüfen).',
+      hGithubFehler: 'GitHub antwortet mit Fehler {code}.', hLaedt: 'Lädt …', hStand: 'Stand {zeit}', hGespeichert: 'Gespeichert. Der PC holt es vor dem nächsten Lauf.',
+      hKonflikt: 'Datei wurde inzwischen geändert. Bitte „Neu laden“ und nochmal eintragen.', hFuer: ' · für {ki}', hNeueNachricht: 'Neue Nachricht an {ki}',
+      hNurPc: '„{ki} starten“ geht nur am PC. Entschiedene Fragen setzt {ki} beim nächsten Lauf um.', hZugangAendern: 'Zugang ändern', hNichtGespeichert: 'Nicht gespeichert',
+      hVerwerfen: 'Ungespeicherte Änderungen verwerfen?', hZugang: 'Zugang', hRepo: 'GitHub-Repo (benutzer/repo)', hRepoBeispiel: 'deinname/fabboard-daten',
+      hToken: 'Zugangsschlüssel (Fine-grained Token, nur dieses Repo, „Contents: Read and write“)', hVerbinden: 'Verbinden', hTokenHinweis: 'Der Schlüssel bleibt nur in diesem Browser auf diesem Handy gespeichert.',
+    },
+    en: {
+      ki: 'AI', projekt: 'Project', offenN: '{n} open', erledigtN: '{n} done', fuer: 'For {wer}', an: 'To {wer}',
+      speichern: 'Save', abbrechen: 'Cancel', anlegen: 'Create', loeschen: 'Delete', bearbeiten: 'Edit',
+      umbenennen: 'Rename', kopieren: 'Copy', kopiert: 'Copied', zurueck: 'Back', weiter: 'Next', fertig: 'Done',
+      spaeter: 'Later', erledigt: 'Done', aufklappen: 'Expand', zuklappen: 'Collapse', rueckgaengig: 'Undo',
+      nichtMoeglich: 'Not possible', allgemein: 'General', nachOben: 'Back to top', projekte: 'Projects', lokal: 'Local',
+      einrichtung: 'Setup', einrichtungTitel: 'Choose AI and language', speichert: 'Saving …',
+      konflikt: '“{name}” was changed in the file meanwhile and has been reloaded – please check your last entry.',
+      nichtGespeichert: 'Not saved – is fabBoard still running?', neuerStand: 'New version loaded.',
+      nichtGestartetT: 'fabBoard is not running', nichtGestartet: 'Please start fabBoard from the desktop shortcut – this page then opens at http://localhost:4747.',
+      projektLoeschenT: 'Delete project', projektLoeschenA: 'Delete project {name}', plusProjekt: '+ Project', plusThema: '+ Topic',
+      keinProjektT: 'No project yet', keinProjekt: 'Create one with “+ Project”.', projektBearbeiten: 'Edit project', neuesProjekt: 'New project',
+      nichtsImFilter: 'Nothing in this filter.', keinePunkte: 'No items yet.', keineThemen: 'No topics yet – “+ Topic” above.',
+      art: 'Type', neuerPunkt: 'New item …', neuerPunktA: 'New item', hinzufuegen: 'Add →',
+      typFrage: 'Question', typFrageAn: 'Question for {ki}', typAnweisung: 'Instruction', typIdee: 'Idea', typAufgabe: 'Task', typAufgabeMich: 'Task for me', typInfo: 'Info',
+      empfehlung: 'Recommended', okArchivA: '{titel}: OK, to archive', erledigtA: '{titel} done', kommentar: 'Comment', kommentarZu: 'Comment on {titel}',
+      werIstDran: 'Whose turn', titel: 'Title', text: 'Text', optionenHilfe: 'Options – one per line, * = recommended', mehrfach: 'Multiple choice',
+      themaNeu: 'Name of the new topic', neuerName: 'New name', zurueckgeholt: 'Restored',
+      offenFuer: 'Open for {ki}', nachrichtPlatzhalter: 'Comment or instruction for {ki} on {name} …', nachrichtA: 'Message to {ki}',
+      nachrichtHilfe: 'Ctrl + Enter or “Start {ki}” saves · copied to the clipboard', aeltere: '{n} older messages in the file.',
+      gespeichertStarten: 'Saved – let “Start {ki}” work through it.', nachrichtGeloescht: 'Message deleted.', kopieNichtMoeglich: 'Copying not possible.',
+      archiv: 'Archive', wartetAuf: 'Waiting for {ki}', umgesetzt: 'Implemented', zurueckInListe: 'Not done → back to the list', nochNichts: 'Nothing confirmed yet.',
+      entschieden: '“{titel}” decided – in the archive for {ki}.', insArchiv: '“{titel}” moved to the archive.', aufSpaeter: '“{titel}” moved to later.',
+      zurueckIn: '“{titel}” back in “{ziel}”.', geloeschtT: '“{titel}” deleted.', geloescht: 'Deleted.',
+      kiArbeitet: '{ki} is working', kiStarten: 'Start {ki}', kiEinrichten: 'Set up AI', gestartet: '{ki} is working – just started',
+      seitMin: '{ki} working for {m} min', seitStd: '{ki} working for {h}:{mm} h', start: 'Started {zeit}', fehlerLauf: 'Last run had an error',
+      fehlerLaufT: 'Last run {zeit} · error ({code})', ordnerFehlt: 'First enter the project folder under “Edit project”.',
+      arbeitetAb: '{ki} is working through “{name}”. Results appear here automatically.', startNicht: 'Could not start: {fehler}',
+      loeschenFrage: 'Really delete project “{name}”?\nThe files are moved to the backup folder.', loeschenNicht: 'Could not delete: {fehler}',
+      geloeschtBackup: '“{name}” deleted – the files are in the backup folder.', vollerPfad: 'Full path', projektordner: 'Project folder on this computer (for starting the AI)',
+      projektordnerIn: 'Project folder in “{basis}” (for starting the AI)', keinOrdner: '– no folder –', andererPfad: 'Other path …', name: 'Name',
+      artBeispiel: 'Website, product, platform …', kurzbeschreibung: 'Short description', themenKomma: 'Topics – separated by commas', reihenfolge: 'Order',
+      gruppeAbo: 'With your subscription or account', gruppeSchluessel: 'With your own API key', gruppeLokal: 'Locally on your computer, no cloud',
+      ewNicht: 'Setup not available.', ewSchritt: 'Setup · step {n} of 3', ewFrage: 'Which AI should fabBoard work with?',
+      ewText: 'fabBoard works with each of these AIs. You decide which one to use and can change it any time under “Setup”.',
+      sprache: 'Language', spracheAuto: 'Same as system', ewEinrichten: 'Set up {name}', ewPrueft: 'fabBoard is checking whether everything is ready …',
+      ewPruefFehler: 'Check failed', ewBereit: 'All set.', ewFehlt: 'Something is still missing – see below what to do. Then click “Check again”.',
+      ewSchluesselEin: 'Paste API key', ewSchluessel: 'API key', ewModell: 'Model', ewModellWaehlen: '– choose model –',
+      ewSchluesselWeg: 'Remove key', ewErneut: 'Check again', ewSchluesselFrage: 'Remove the saved key from this computer?',
+      ewBedingungen: 'Terms of use', ewBedingungenText: 'Please check your provider’s terms of use before working with fabBoard. fabBoard only starts the official {name} program, with your own sign-in or your own key.',
+      ewLizenz: ' For local models, the licence of the model applies.', ewBedingungenOeffnen: 'Open terms of use', ewEingerichtet: 'All set: fabBoard now works with {name}.',
+      kontoClaude: 'Claude subscription (Pro or Max)', kontoCodex: 'ChatGPT account (the free one works too)', kontoGemini: 'Google account',
+      kontoNutzung: 'API key, pay per use', kontoGoogleKey: 'API key, free tier available', kontoLokal: 'No account, needs a powerful computer',
+      geminiAnmelden: 'Start Gemini once, choose “Sign in with Google” and sign in in the browser. Then quit with /quit.',
+      shell: 'PowerShell', terminal: 'the Terminal', nodeT: 'Install Node.js', nodeText: '{name} needs Node.js. Download the LTS version from nodejs.org and install it. Then restart fabBoard.',
+      nodeLink: 'Open nodejs.org', installiertT: '{prog} is installed', installierenT: 'Install {prog}',
+      installierenEiner: 'fabBoard works through the official {prog} program. Enter this command in {shell} and then restart fabBoard:',
+      installierenMehrere: 'fabBoard works through the official {prog} program. Enter these commands one after the other in {shell} (open a new window for the second one) and then restart fabBoard:',
+      schluesselOkT: 'API key saved', schluesselOk: 'Ends in …{ende}. Stored encrypted on this computer.', schluesselT: 'Enter API key',
+      schluesselText: 'Create a key with the provider and enter it below. fabBoard stores it encrypted on this computer only.', schluesselLink: 'Create a key with the provider',
+      lokalStartenT: 'Start {name}', lokalStarten: '{name} is not running or not installed. Install it and start it.', lmServer: ' In LM Studio, start the local server under “Developer”.',
+      lokalLaden: 'Download {name}', modellLadenT: 'Load a model', modellLaden: '{name} is running but has no model yet. Load a model that is good at programming, for example like this:',
+      modellLadenLm: '{name} is running but has no model yet. Load a model that is good at programming (in LM Studio under “Discover”).',
+      modellWaehlenT: 'Choose model', modellWaehlen: '{name} is running. Choose the model fabBoard should work with.', angemeldetT: 'Signed in', angemeldet: '{prog} is signed in with your account.',
+      anmeldenT: 'Sign in', anmelden: 'Enter this command in {shell} and sign in with your account in the browser:',
+      keinSchluesselNoetig: 'This provider does not need a key', schluesselNurApp: 'Keys can only be stored securely in the fabBoard app',
+      erstEinrichten: 'Please choose an AI under “Setup” first', programmFehlt: '{name}: program not found. Please check the setup again',
+      keinSchluessel: '{name}: no API key saved. Please enter it under “Setup”', keinModell: '{name}: no model chosen. Please choose one under “Setup”',
+      gitGesperrt: 'Note: git commands are blocked in this run. fabBoard makes the commits before and after the run itself; do not run any git commands.',
+      kiArbeitetSchon: 'The AI is already working on this project', projektFehlt: 'Project not found', projektordnerFehlt: 'Project folder missing or does not exist',
+      nurAmRechner: 'Setup is only possible directly on the computer', anbieterUnbekannt: 'Unknown provider', schluesselLeer: 'Please enter a key',
+      nichtGefunden: 'Not found', unbekannt: 'Unknown', nurMitPasswort: 'Starting the AI over the network requires a password', spracheName: 'English',
+      hProjekt: 'Project', hOffen: 'open', hNeuLaden: 'Reload', hSchluesselUngueltig: 'Key invalid or expired.', hNichtGefunden: 'Repo or file not found (check name and key permissions).',
+      hGithubFehler: 'GitHub responded with error {code}.', hLaedt: 'Loading …', hStand: 'As of {zeit}', hGespeichert: 'Saved. The PC picks it up before the next run.',
+      hKonflikt: 'The file was changed meanwhile. Please “Reload” and enter it again.', hFuer: ' · for {ki}', hNeueNachricht: 'New message to {ki}',
+      hNurPc: '“Start {ki}” only works on the PC. {ki} implements decided questions in the next run.', hZugangAendern: 'Change access', hNichtGespeichert: 'Not saved',
+      hVerwerfen: 'Discard unsaved changes?', hZugang: 'Access', hRepo: 'GitHub repo (user/repo)', hRepoBeispiel: 'yourname/fabboard-data',
+      hToken: 'Access key (fine-grained token, this repo only, “Contents: Read and write”)', hVerbinden: 'Connect', hTokenHinweis: 'The key is stored only in this browser on this phone.',
+    },
+  };
+  let sprache = 'de';
+  // Systemsprache: im Browser navigator.language, auf dem Server die Sprache des Betriebssystems (Intl)
+  function systemSprache() {
+    const l = (typeof navigator !== 'undefined' && navigator.language) || Intl.DateTimeFormat().resolvedOptions().locale || 'en';
+    return String(l).toLowerCase().startsWith('de') ? 'de' : 'en';
+  }
+  // s: 'de', 'en' oder leer/'auto' = Systemsprache
+  function setzeSprache(s) { sprache = TEXTE[s] ? s : systemSprache(); return sprache; }
+  function T(k, v) {
+    let s = TEXTE[sprache][k] ?? TEXTE.de[k] ?? k;
+    if (v) s = s.replace(/\{(\w+)\}/g, (m, n) => (v[n] ?? m));
+    return s;
+  }
+  setzeSprache('');
+  const api = { TEXTE, T, setzeSprache, systemSprache, sprache: () => sprache };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api; else Object.assign(g, api);
+})(typeof window !== 'undefined' ? window : globalThis);

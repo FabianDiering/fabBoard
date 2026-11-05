@@ -1,0 +1,17 @@
+{
+  "name": "fabboard",
+  "productName": "fabBoard",
+  "version": "0.1.0",
+  "description": "fabBoard als Desktop-App",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "Fabian Diering",
+  "license": "MIT",
+  "type": "commonjs",
+  "devDependencies": {
+    "electron": "^45.2.3"
+  }
+}

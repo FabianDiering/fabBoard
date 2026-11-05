@@ -1,0 +1,155 @@
+{
+ "id": "beispiel-cafe",
+ "name": "Beispiel: Website für ein Café",
+ "art": "Website",
+ "beschreibung": "Fiktives Beispiel: kleine Website für das Café „Morgenrot“ mit Öffnungszeiten und Karte.",
+ "ordner": "",
+ "reihenfolge": 90,
+ "erstellt": "2026-11-05",
+ "geaendert": "2026-11-05 09:00",
+ "themen": [
+  {
+   "id": "allgemein",
+   "titel": "Allgemein",
+   "items": [
+    {
+     "id": "ib1",
+     "typ": "frage",
+     "titel": "Wie soll die Speisekarte erscheinen?",
+     "text": "Die Karte ändert sich jede Woche. Als Webseite ist sie schnell aktuell, ein PDF sieht gedruckt besser aus.",
+     "optionen": [
+      {
+       "t": "Als eigene Seite auf der Website",
+       "empf": true,
+       "gewaehlt": false
+      },
+      {
+       "t": "Als PDF zum Herunterladen",
+       "empf": false,
+       "gewaehlt": false
+      },
+      {
+       "t": "Beides",
+       "empf": false,
+       "gewaehlt": false
+      }
+     ],
+     "mehrfach": false,
+     "kommentar": "",
+     "von": "claude",
+     "wer": "fabian",
+     "quelle": "Nachricht 2026-11-05",
+     "erstellt": "2026-11-05"
+    },
+    {
+     "id": "ib2",
+     "typ": "aufgabe",
+     "titel": "Fotos vom Café machen",
+     "text": "Drei bis fünf Fotos bei Tageslicht: Theke, Gastraum, ein Kuchen.",
+     "optionen": [],
+     "mehrfach": false,
+     "kommentar": "",
+     "von": "fabian",
+     "wer": "fabian",
+     "quelle": "",
+     "erstellt": "2026-11-05"
+    },
+    {
+     "id": "ib3",
+     "typ": "info",
+     "titel": "Was kostet eine eigene Domain?",
+     "text": "Eine .de-Domain kostet meist 5 bis 15 € im Jahr. Mit „OK“ wandert diese Antwort ins Archiv.",
+     "optionen": [],
+     "mehrfach": false,
+     "kommentar": "",
+     "von": "claude",
+     "wer": "fabian",
+     "quelle": "",
+     "erstellt": "2026-11-05"
+    }
+   ]
+  },
+  {
+   "id": "gestaltung",
+   "titel": "Gestaltung",
+   "items": [
+    {
+     "id": "ib4",
+     "typ": "idee",
+     "titel": "Farben aus dem Logo übernehmen",
+     "text": "Die KI macht daraus beim nächsten Lauf eine Frage mit Vorschlägen.",
+     "optionen": [],
+     "mehrfach": false,
+     "kommentar": "",
+     "von": "fabian",
+     "wer": "claude",
+     "quelle": "",
+     "erstellt": "2026-11-05"
+    },
+    {
+     "id": "ib5",
+     "typ": "frage-an-claude",
+     "titel": "Welche Schrift passt zu einem Café?",
+     "text": "",
+     "optionen": [],
+     "mehrfach": false,
+     "kommentar": "",
+     "von": "fabian",
+     "wer": "claude",
+     "quelle": "",
+     "erstellt": "2026-11-05"
+    }
+   ]
+  }
+ ],
+ "archiv": [
+  {
+   "id": "ib0",
+   "typ": "frage",
+   "titel": "Sprache der Website",
+   "text": "",
+   "optionen": [
+    {
+     "t": "Nur Deutsch",
+     "empf": true,
+     "gewaehlt": true
+    },
+    {
+     "t": "Deutsch und Englisch",
+     "empf": false,
+     "gewaehlt": false
+    }
+   ],
+   "mehrfach": false,
+   "kommentar": "",
+   "von": "claude",
+   "wer": "fabian",
+   "quelle": "",
+   "erstellt": "2026-11-05",
+   "themaId": "allgemein",
+   "themaTitel": "Allgemein",
+   "antwort": "Nur Deutsch",
+   "erledigtAm": "2026-11-05",
+   "umgesetzt": true,
+   "ergebnis": "Seitentexte auf Deutsch angelegt (index.html)."
+  }
+ ],
+ "nachrichten": [
+  {
+   "id": "mb2",
+   "text": "Bitte noch einen Link zu Google Maps ergänzen.",
+   "erstellt": "2026-11-05 10:15",
+   "von": "fabian",
+   "status": "offen",
+   "antwort": ""
+  },
+  {
+   "id": "mb1",
+   "text": "Öffnungszeiten: Di–So 8–18 Uhr",
+   "erstellt": "2026-11-05 08:40",
+   "von": "fabian",
+   "status": "erledigt",
+   "antwort": "1 Punkt im Thema Allgemein angelegt."
+  }
+ ]
+}

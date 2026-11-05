@@ -1,0 +1,85 @@
+{
+ "id": "beispiel-kurzfilm",
+ "name": "Beispiel: Kurzfilm planen",
+ "art": "Film",
+ "beschreibung": "Fiktives Beispiel: Planung eines 10-minütigen Kurzfilms mit Drehorten und Zeitplan.",
+ "ordner": "",
+ "reihenfolge": 91,
+ "erstellt": "2026-11-05",
+ "geaendert": "2026-11-05 09:00",
+ "themen": [
+  {
+   "id": "drehorte",
+   "titel": "Drehorte",
+   "items": [
+    {
+     "id": "ik1",
+     "typ": "frage",
+     "titel": "Welche Drehorte kommen in Frage?",
+     "text": "Mehrfachauswahl: Alle passenden Orte anklicken, die KI fragt dann die Genehmigungen ab.",
+     "optionen": [
+      {
+       "t": "Bahnhofshalle",
+       "empf": true,
+       "gewaehlt": false
+      },
+      {
+       "t": "Park am Fluss",
+       "empf": true,
+       "gewaehlt": false
+      },
+      {
+       "t": "Leeres Ladenlokal",
+       "empf": false,
+       "gewaehlt": false
+      }
+     ],
+     "mehrfach": true,
+     "kommentar": "",
+     "von": "claude",
+     "wer": "fabian",
+     "quelle": "",
+     "erstellt": "2026-11-05"
+    },
+    {
+     "id": "ik2",
+     "typ": "anweisung",
+     "titel": "Drehgenehmigungen für Bahnhöfe recherchieren",
+     "text": "",
+     "optionen": [],
+     "mehrfach": false,
+     "kommentar": "",
+     "von": "fabian",
+     "wer": "claude",
+     "quelle": "",
+     "erstellt": "2026-11-05"
+    }
+   ]
+  },
+  {
+   "id": "spaeter",
+   "titel": "Später",
+   "items": [
+    {
+     "id": "ik3",
+     "typ": "idee",
+     "titel": "Making-of-Video",
+     "text": "Liegt in „Später“: Die KI überspringt dieses Thema, bis der Punkt zurückgeholt wird.",
+     "optionen": [],
+     "mehrfach": false,
+     "kommentar": "",
+     "von": "fabian",
+     "wer": "claude",
+     "quelle": "",
+     "erstellt": "2026-11-05",
+     "herkunft": {
+      "id": "drehorte",
+      "titel": "Drehorte"
+     }
+    }
+   ]
+  }
+ ],
+ "archiv": [],
+ "nachrichten": []
+}

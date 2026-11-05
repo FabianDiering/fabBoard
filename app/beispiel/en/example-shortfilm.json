@@ -1,0 +1,85 @@
+{
+ "id": "example-shortfilm",
+ "name": "Example: Planning a short film",
+ "art": "Film",
+ "beschreibung": "Fictional example: planning a 10-minute short film with locations and schedule.",
+ "ordner": "",
+ "reihenfolge": 91,
+ "erstellt": "2026-11-05",
+ "geaendert": "2026-11-05 09:00",
+ "themen": [
+  {
+   "id": "drehorte",
+   "titel": "Locations",
+   "items": [
+    {
+     "id": "ik1",
+     "typ": "frage",
+     "titel": "Which locations are possible?",
+     "text": "Multiple choice: tick every suitable place, the AI then looks into the permits.",
+     "optionen": [
+      {
+       "t": "Station hall",
+       "empf": true,
+       "gewaehlt": false
+      },
+      {
+       "t": "Riverside park",
+       "empf": true,
+       "gewaehlt": false
+      },
+      {
+       "t": "Empty shop",
+       "empf": false,
+       "gewaehlt": false
+      }
+     ],
+     "mehrfach": true,
+     "kommentar": "",
+     "von": "claude",
+     "wer": "fabian",
+     "quelle": "",
+     "erstellt": "2026-11-05"
+    },
+    {
+     "id": "ik2",
+     "typ": "anweisung",
+     "titel": "Research filming permits for stations",
+     "text": "",
+     "optionen": [],
+     "mehrfach": false,
+     "kommentar": "",
+     "von": "fabian",
+     "wer": "claude",
+     "quelle": "",
+     "erstellt": "2026-11-05"
+    }
+   ]
+  },
+  {
+   "id": "spaeter",
+   "titel": "Later",
+   "items": [
+    {
+     "id": "ik3",
+     "typ": "idee",
+     "titel": "Making-of video",
+     "text": "Parked in “Later”: the AI skips this topic until the item is moved back.",
+     "optionen": [],
+     "mehrfach": false,
+     "kommentar": "",
+     "von": "fabian",
+     "wer": "claude",
+     "quelle": "",
+     "erstellt": "2026-11-05",
+     "herkunft": {
+      "id": "drehorte",
+      "titel": "Locations"
+     }
+    }
+   ]
+  }
+ ],
+ "archiv": [],
+ "nachrichten": []
+}
