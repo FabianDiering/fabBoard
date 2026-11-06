@@ -38,7 +38,9 @@ fs.writeFileSync(AUFTRAG, fs.readFileSync(path.join(APP, 'ki-auftrag.md')));
 const EDATEI = path.join(DATEN, 'einstellungen.json');
 let E = {}; try { E = JSON.parse(fs.readFileSync(EDATEI, 'utf8')); } catch (e) {}
 // anbieter/modell: gewählte KI aus dem Einrichtungs-Assistenten (anbieter.js); leer = Assistent erscheint beim Start
-const EINSTELLUNGEN = { name: E.name || require('os').userInfo().username, projekteOrdner: E.projekteOrdner && fs.existsSync(E.projekteOrdner) ? E.projekteOrdner : (fs.existsSync(path.join(os.homedir(), 'Documents')) ? path.join(os.homedir(), 'Documents') : os.homedir()), datenOrdner: DATEN, anbieter: E.anbieter || '', modell: E.modell || '', sprache: E.sprache || '' };
+const EINSTELLUNGEN = { name: E.name || require('os').userInfo().username, projekteOrdner: E.projekteOrdner && fs.existsSync(E.projekteOrdner) ? E.projekteOrdner : (fs.existsSync(path.join(os.homedir(), 'Documents')) ? path.join(os.homedir(), 'Documents') : os.homedir()), datenOrdner: DATEN, anbieter: E.anbieter || '', modell: E.modell || '', sprache: E.sprache || '',
+  // eingerichtet: Ersteinrichtung abgeschlossen (wer schon eine KI gewählt hat, gilt als eingerichtet)
+  eingerichtet: !!(E.eingerichtet || E.anbieter) };
 // Neue Werte in einstellungen.json übernehmen; alle übrigen Felder bleiben
 function einstellungenSpeichern(neu) {
   let alt = {}; try { alt = JSON.parse(fs.readFileSync(EDATEI, 'utf8')); } catch (e) {}
@@ -200,6 +202,31 @@ const server = http.createServer(async (req, res) => {
       if (!['', 'de', 'en'].includes(w)) return senden(res, 400, { fehler: T('unbekannt') });
       einstellungenSpeichern({ sprache: w }); TX.setzeSprache(w);
       return senden(res, 200, { ok: true, sprache: TX.sprache() });
+    }
+    // Ersteinrichtung (nur direkt am Rechner): abschließen, Datenordner wechseln, Beispielprojekte anlegen
+    if (/^\/api\/(eingerichtet|datenordner|beispiele)$/.test(p) && process.env.PORT) return senden(res, 403, { fehler: T('nurAmRechner') });
+    if (p === '/api/eingerichtet' && req.method === 'POST') { einstellungenSpeichern({ eingerichtet: true }); return senden(res, 200, { ok: true }); }
+    // Neuer Datenordner gilt nach einem Neustart (die App startet dafür neu); einstellungen.json kommt mit, falls dort noch keine liegt
+    if (p === '/api/datenordner' && req.method === 'POST') {
+      const ziel = String(JSON.parse((await body(req)).toString('utf8') || '{}').ordner || '').trim();
+      if (!ziel || !path.isAbsolute(ziel)) return senden(res, 400, { fehler: T('ordnerUngueltig') });
+      try {
+        fs.mkdirSync(ziel, { recursive: true });
+        const ne = path.join(ziel, 'einstellungen.json');
+        if (!fs.existsSync(ne) && fs.existsSync(EDATEI)) fs.copyFileSync(EDATEI, ne);
+        fs.mkdirSync(APPDATEN, { recursive: true }); fs.writeFileSync(ORT, JSON.stringify({ daten: path.resolve(ziel) }, null, 1));
+      } catch (e) { return senden(res, 400, { fehler: T('ordnerUngueltig') + ' ' + e.message }); }
+      return senden(res, 200, { ok: true, neustart: path.resolve(ziel) !== path.resolve(DATEN) });
+    }
+    // Beispielprojekte (app\beispiel\<sprache>) in den Datenordner kopieren; vorhandene Projekte bleiben unangetastet
+    if (p === '/api/beispiele' && req.method === 'POST') {
+      const quelle = path.join(APP, 'beispiel', TX.sprache() === 'en' ? 'en' : 'de');
+      const neu = [];
+      for (const n of fs.readdirSync(quelle).filter((x) => x.endsWith('.json'))) {
+        const ziel = path.join(PROJEKTE, n);
+        if (!fs.existsSync(ziel)) { fs.copyFileSync(path.join(quelle, n), ziel); neu.push(n.slice(0, -5)); }
+      }
+      return senden(res, 200, { ok: true, neu });
     }
     if (p === '/api/einstellungen' && req.method === 'GET') {
       const a = KI.finde(EINSTELLUNGEN.anbieter);

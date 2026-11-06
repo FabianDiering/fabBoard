@@ -46,7 +46,7 @@ async function fensterOeffnen() {
     icon: ICON, // Symbol in der Taskleiste und oben links im Fenster
     autoHideMenuBar: true, // Menü erscheint mit Alt, damit das Board ruhig bleibt
     // Sicherheit: Die Oberfläche bekommt keinen Zugriff auf Node.js oder das Dateisystem (Electron-Standard, hier ausdrücklich)
-    webPreferences: SICHER,
+    webPreferences: { ...SICHER, preload: path.join(__dirname, 'vorab-board.js') }, // Brücke: Ordnerwahl und Neustart
   });
   // Links nach außen (z. B. Websites) im normalen Browser öffnen, nicht im App-Fenster; nur Web- und Mail-Adressen,
   // keine Dateien oder Programme (file:, ms-…: usw.). Das Fenster selbst bleibt immer beim Board.
@@ -232,6 +232,16 @@ ipcMain.on('shot:wahl', (e, r) => {
   const d = a.d;
   auswahlZu();
   editorOeffnen(bild, d);
+});
+// Board: Ordner wählen (Datenordner) und App neu starten; nur vom Hauptfenster aus
+ipcMain.handle('app:ordner', async (e, start) => {
+  if (!fenster || e.sender !== fenster.webContents) return '';
+  const r = await dialog.showOpenDialog(fenster, { title: t('datenordner'), defaultPath: start || app.getPath('documents'), properties: ['openDirectory', 'createDirectory'] });
+  return r.canceled || !r.filePaths[0] ? '' : r.filePaths[0];
+});
+ipcMain.on('app:neustart', (e) => {
+  if (!fenster || e.sender !== fenster.webContents) return;
+  beenden = true; app.relaunch(); app.quit();
 });
 ipcMain.on('shot:abbruch', (e) => {
   if (SHOT.auswahl.has(e.sender.id)) return shotEnde();
