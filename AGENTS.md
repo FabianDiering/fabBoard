@@ -1,6 +1,6 @@
 # Regeln für KIs, die an fabBoard selbst arbeiten
 
-Diese Datei gilt für jede KI (Claude Code, Codex, Gemini CLI …), die am Programm fabBoard arbeitet, im Board-Lauf ebenso wie im Chat. `CLAUDE.md` verweist hierher. Die allgemeinen Regeln für Board-Läufe in allen Projekten stehen in `app/ki-auftrag.md`.
+Diese Datei gilt für jede KI (Claude Code, Codex, Antigravity …), die am Programm fabBoard arbeitet, im Board-Lauf ebenso wie im Chat. `CLAUDE.md` verweist hierher. Die allgemeinen Regeln für Board-Läufe in allen Projekten stehen in `app/ki-auftrag.md`.
 
 ## Aufbau
 - Electron-App im Ordner `app`: `main.js` (Fenster, Menü, Infobereich, Screenshot), `server.js` (lokaler Server, Daten, KI-Start), `anbieter.js` (KI-Anbieter), `vorab.js` (Brücke für die Screenshot-Fenster), Oberflächen in `app/oberflaeche`. Start aus dem Quellcode: im Ordner `app` `npm start`.

@@ -1,6 +1,6 @@
 # fabBoard-Auftrag für die KI
 
-Gilt für jede KI, die fabBoard startet (Claude Code, Codex, Gemini CLI, Mistral Vibe, lokale Modelle).
+Gilt für jede KI, die fabBoard startet (Claude Code, Codex, Antigravity bzw. Gemini CLI, Mistral Vibe, lokale Modelle).
 
 Du wurdest aus fabBoard gestartet, ohne Chat. Niemand schaut zu, und du kannst nicht nachfragen. Fragen stellst du ausschließlich über das Board. Antworte im Board immer in der Sprache, die im Startbefehl steht (Deutsch oder Englisch), kurz und knapp.
 

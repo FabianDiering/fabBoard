@@ -12,17 +12,21 @@ const HOME = os.homedir();
 const C = WIN ? '.cmd' : ''; // npm-Programme heißen unter Windows z. B. codex.cmd (PowerShell blockiert codex.ps1)
 
 const CLAUDE_INSTALL = WIN ? 'irm https://claude.ai/install.ps1 | iex' : 'curl -fsSL https://claude.ai/install.sh | bash';
+const AGY_INSTALL = WIN ? 'irm https://antigravity.google/cli/install.ps1 | iex' : 'curl -fsSL https://antigravity.google/cli/install.sh | bash';
 const UV_INSTALL = WIN ? 'powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"' : 'curl -LsSf https://astral.sh/uv/install.sh | sh';
 
 // gruppe: abo (Konto/Abo), schluessel (eigener API-Schlüssel), lokal (Modell auf dem eigenen Rechner)
 // konto, anmeldenText: Schlüssel in oberflaeche/texte.js (Deutsch/Englisch)
 // motor: welches offizielle Programm die Arbeit macht
-// Gemini CLI mit Google-Konto gibt es nicht mehr (2026-11-06: Google lehnt den kostenlosen Zugang für dieses Programm ab); Gemini nur per API-Schlüssel
+// Gemini mit Google-Konto läuft über Antigravity CLI (agy): Google hat Gemini CLI für private Konten am 18.06.2026 abgeschaltet.
+// Gemini CLI bleibt nur für den eigenen API-Schlüssel (google-key).
 const ANBIETER = [
   { id: 'claude', gruppe: 'abo', name: 'Claude Code', kurz: 'Claude', konto: 'kontoClaude', programm: 'claude', motor: 'claude',
     installieren: [CLAUDE_INSTALL], anmelden: 'claude auth login', bedingungen: 'https://www.anthropic.com/legal/consumer-terms' },
   { id: 'codex', gruppe: 'abo', name: 'OpenAI Codex', kurz: 'Codex', konto: 'kontoCodex', programm: 'codex', motor: 'codex', node: true,
     installieren: [`npm${C} install -g @openai/codex`], anmelden: `codex${C} login`, bedingungen: 'https://openai.com/policies/row-terms-of-use/' },
+  { id: 'gemini', gruppe: 'abo', name: 'Gemini (Antigravity)', kurz: 'Gemini', konto: 'kontoGemini', programm: 'agy', motor: 'agy',
+    installieren: [AGY_INSTALL], anmelden: 'agy', anmeldenText: 'agyAnmelden', bedingungen: 'https://antigravity.google/terms' },
   { id: 'anthropic-key', gruppe: 'schluessel', name: 'Anthropic (Claude)', kurz: 'Claude', konto: 'kontoNutzung', programm: 'claude', motor: 'claude',
     env: ['ANTHROPIC_API_KEY'], schluesselUrl: 'https://console.anthropic.com/settings/keys', installieren: [CLAUDE_INSTALL], bedingungen: 'https://www.anthropic.com/legal/commercial-terms' },
   { id: 'openai-key', gruppe: 'schluessel', name: 'OpenAI (GPT)', kurz: 'Codex', konto: 'kontoNutzung', programm: 'codex', motor: 'codex', node: true,
@@ -46,6 +50,7 @@ const oeffentlich = (a) => ({ id: a.id, gruppe: a.gruppe, name: a.name, kurz: a.
 function programmFinden(name) {
   const dirs = [...(process.env.PATH || '').split(path.delimiter), path.join(HOME, '.local', 'bin')];
   if (WIN && process.env.APPDATA) dirs.push(path.join(process.env.APPDATA, 'npm'));
+  if (WIN && process.env.LOCALAPPDATA) dirs.push(path.join(process.env.LOCALAPPDATA, 'agy', 'bin')); // Antigravity-Installer
   if (!WIN) dirs.push('/opt/homebrew/bin', '/usr/local/bin');
   for (const d of dirs.filter(Boolean)) for (const x of WIN ? ['.exe', '.cmd'] : ['']) {
     const f = path.join(d, name + x);
@@ -121,7 +126,7 @@ async function pruefen(id, modell, claudePfad) {
   }
   let version = '';
   if (exe) { const v = await ausfuehren(exe, ['--version']); if (v.code === 0) version = v.out.split('\n')[0].trim(); }
-  const prog = a.motor === 'claude' ? 'Claude Code' : a.motor === 'codex' ? 'OpenAI Codex' : a.motor === 'gemini' ? 'Gemini CLI' : 'Mistral Vibe';
+  const prog = a.motor === 'claude' ? 'Claude Code' : a.motor === 'codex' ? 'OpenAI Codex' : a.motor === 'gemini' ? 'Gemini CLI' : a.motor === 'agy' ? 'Antigravity CLI' : 'Mistral Vibe';
   s.push(version
     ? { titel: T('installiertT', { prog }), ok: true, text: version }
     : { titel: T('installierenT', { prog }), ok: false, text: T(a.installieren.length > 1 ? 'installierenMehrere' : 'installierenEiner', { prog, shell }), befehle: a.installieren });
@@ -139,6 +144,11 @@ async function pruefen(id, modell, claudePfad) {
     let an = false;
     if (a.motor === 'claude') { const r = await ausfuehren(exe, ['auth', 'status']); try { an = JSON.parse(r.out).loggedIn === true; } catch (e) {} }
     if (a.motor === 'codex') { const r = await ausfuehren(exe, ['login', 'status']); an = r.code === 0 && /logged in/i.test(r.out); }
+    // Antigravity hat keinen Statusbefehl: unter Windows liegt die Anmeldung in der Anmeldeinformationsverwaltung, sonst ein kurzer Probelauf
+    if (a.motor === 'agy') {
+      if (WIN) { const r = await ausfuehren('cmdkey', ['/list']); an = /gemini:antigravity/i.test(r.out); }
+      else { const r = await ausfuehren(exe, ['-p', 'OK', '--output-format', 'json'], 60); try { an = JSON.parse(r.out.slice(r.out.indexOf('{'))).status === 'SUCCESS'; } catch (e) {} }
+    }
     s.push(an ? { titel: T('angemeldetT'), ok: true, text: T('angemeldet', { prog }) }
       : { titel: T('anmeldenT'), ok: false, text: a.anmeldenText ? T(a.anmeldenText) : T('anmelden', { shell }), befehle: [a.anmelden] });
   }
@@ -169,6 +179,8 @@ async function startBefehl(id, { prompt, ordner, root, modell, claudeModell, cla
       ...(WIN ? ['-c', 'windows.sandbox=unelevated'] : []), '--add-dir', root, '-C', ordner,
       ...(a.lokal ? ['--oss', '--local-provider', a.lokal.provider, '-m', modell] : []), p] };
   }
+  // Antigravity liest AGENTS.md/GEMINI.md im Projektordner selbst; Datenordner als zusätzlicher Arbeitsbereich
+  if (a.motor === 'agy') return { exe, env, text: a.name, args: ['-p', prompt, '--dangerously-skip-permissions', '--add-dir', root, '--output-format', 'text'] };
   if (a.motor === 'gemini') {
     env.GEMINI_CLI_TRUST_WORKSPACE = 'true';
     return { exe, env, text: a.name, args: ['-p', prompt, '--yolo', '--include-directories', root] };
