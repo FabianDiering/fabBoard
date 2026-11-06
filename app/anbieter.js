@@ -12,6 +12,9 @@ const HOME = os.homedir();
 const C = WIN ? '.cmd' : ''; // npm-Programme heißen unter Windows z. B. codex.cmd (PowerShell blockiert codex.ps1)
 
 const CLAUDE_INSTALL = WIN ? 'irm https://claude.ai/install.ps1 | iex' : 'curl -fsSL https://claude.ai/install.sh | bash';
+// Codex: offizieller Installer von OpenAI (signiert, ohne Node.js, ohne Admin; Windows nach %LOCALAPPDATA%/Programs/OpenAI/Codex/bin, sonst ~/.local/bin)
+const CODEX_INSTALL = WIN ? 'irm https://chatgpt.com/codex/install.ps1 | iex' : 'curl -fsSL https://chatgpt.com/codex/install.sh | sh';
+const CODEX_BIN = WIN && process.env.LOCALAPPDATA ? path.join(process.env.LOCALAPPDATA, 'Programs', 'OpenAI', 'Codex', 'bin') : '';
 const AGY_INSTALL = WIN ? 'irm https://antigravity.google/cli/install.ps1 | iex' : 'curl -fsSL https://antigravity.google/cli/install.sh | bash';
 // Mistral Vibe ab 3.x startet ein unsigniertes Programm (vibe-rs.exe), das die Intelligente App-Steuerung von Windows 11 blockiert.
 // Deshalb Vibe 2.x mit Python-Oberfläche, unter Windows gestartet über das Python der Vibe-Umgebung (VIBE_CLI=python).
@@ -27,26 +30,26 @@ const UV_INSTALL = WIN ? 'powershell -ExecutionPolicy ByPass -c "irm https://ast
 const ANBIETER = [
   { id: 'claude', gruppe: 'abo', name: 'Claude Code', kurz: 'Claude', konto: 'kontoClaude', programm: 'claude', motor: 'claude',
     installieren: [CLAUDE_INSTALL], anmelden: 'claude auth login', bedingungen: 'https://www.anthropic.com/legal/consumer-terms' },
-  { id: 'codex', gruppe: 'abo', name: 'OpenAI Codex', kurz: 'Codex', konto: 'kontoCodex', programm: 'codex', motor: 'codex', node: true,
-    installieren: [`npm${C} install -g @openai/codex`], anmelden: `codex${C} login`, bedingungen: 'https://openai.com/policies/row-terms-of-use/' },
+  { id: 'codex', gruppe: 'abo', name: 'OpenAI Codex', kurz: 'Codex', konto: 'kontoCodex', programm: 'codex', motor: 'codex',
+    installieren: [CODEX_INSTALL], anmelden: 'codex login', bedingungen: 'https://openai.com/policies/row-terms-of-use/' },
   { id: 'gemini', gruppe: 'abo', name: 'Gemini (Antigravity)', kurz: 'Gemini', konto: 'kontoGemini', programm: 'agy', motor: 'agy',
     installieren: [AGY_INSTALL], anmelden: 'agy', anmeldenText: 'agyAnmelden', bedingungen: 'https://antigravity.google/terms' },
   { id: 'mistral', gruppe: 'abo', name: 'Mistral (Vibe)', kurz: 'Mistral', konto: 'kontoMistral', programm: 'vibe', motor: 'vibe',
     installieren: [UV_INSTALL, VIBE_INSTALL], anmelden: VIBE_START, anmeldenText: 'vibeAnmelden', bedingungen: 'https://mistral.ai/terms' },
   { id: 'anthropic-key', gruppe: 'schluessel', name: 'Anthropic (Claude)', kurz: 'Claude', konto: 'kontoNutzung', programm: 'claude', motor: 'claude',
     env: ['ANTHROPIC_API_KEY'], schluesselUrl: 'https://console.anthropic.com/settings/keys', installieren: [CLAUDE_INSTALL], bedingungen: 'https://www.anthropic.com/legal/commercial-terms' },
-  { id: 'openai-key', gruppe: 'schluessel', name: 'OpenAI (GPT)', kurz: 'Codex', konto: 'kontoNutzung', programm: 'codex', motor: 'codex', node: true,
-    env: ['CODEX_API_KEY', 'OPENAI_API_KEY'], schluesselUrl: 'https://platform.openai.com/api-keys', installieren: [`npm${C} install -g @openai/codex`], bedingungen: 'https://openai.com/policies/services-agreement/' },
+  { id: 'openai-key', gruppe: 'schluessel', name: 'OpenAI (GPT)', kurz: 'Codex', konto: 'kontoNutzung', programm: 'codex', motor: 'codex',
+    env: ['CODEX_API_KEY', 'OPENAI_API_KEY'], schluesselUrl: 'https://platform.openai.com/api-keys', installieren: [CODEX_INSTALL], bedingungen: 'https://openai.com/policies/services-agreement/' },
   { id: 'google-key', gruppe: 'schluessel', name: 'Google (Gemini)', kurz: 'Gemini', konto: 'kontoGoogleKey', programm: 'gemini', motor: 'gemini', node: true,
     env: ['GEMINI_API_KEY'], schluesselUrl: 'https://aistudio.google.com/apikey', installieren: [`npm${C} install -g @google/gemini-cli`], bedingungen: 'https://ai.google.dev/gemini-api/terms' },
   { id: 'mistral-key', gruppe: 'schluessel', name: 'Mistral', kurz: 'Mistral', konto: 'kontoNutzung', programm: 'vibe', motor: 'vibe',
     env: ['MISTRAL_API_KEY'], schluesselUrl: 'https://console.mistral.ai/api-keys', installieren: [UV_INSTALL, VIBE_INSTALL], bedingungen: 'https://mistral.ai/terms' },
-  { id: 'ollama', gruppe: 'lokal', name: 'Ollama', kurz: 'Ollama', konto: 'kontoLokal', programm: 'codex', motor: 'codex', node: true,
+  { id: 'ollama', gruppe: 'lokal', name: 'Ollama', kurz: 'Ollama', konto: 'kontoLokal', programm: 'codex', motor: 'codex',
     lokal: { provider: 'ollama', url: 'http://127.0.0.1:11434/api/tags', liste: (j) => (j.models || []).map((m) => m.name), laden: 'https://ollama.com/download', modellBefehl: 'ollama pull qwen3-coder' },
-    installieren: [`npm${C} install -g @openai/codex`], bedingungen: 'https://ollama.com' },
-  { id: 'lmstudio', gruppe: 'lokal', name: 'LM Studio', kurz: 'LM Studio', konto: 'kontoLokal', programm: 'codex', motor: 'codex', node: true,
+    installieren: [CODEX_INSTALL], bedingungen: 'https://ollama.com' },
+  { id: 'lmstudio', gruppe: 'lokal', name: 'LM Studio', kurz: 'LM Studio', konto: 'kontoLokal', programm: 'codex', motor: 'codex',
     lokal: { provider: 'lmstudio', url: 'http://127.0.0.1:1234/v1/models', liste: (j) => (j.data || []).map((m) => m.id), laden: 'https://lmstudio.ai/download' },
-    installieren: [`npm${C} install -g @openai/codex`], bedingungen: 'https://lmstudio.ai/app-terms' },
+    installieren: [CODEX_INSTALL], bedingungen: 'https://lmstudio.ai/app-terms' },
 ];
 const finde = (id) => ANBIETER.find((a) => a.id === id) || null;
 // Für das Board: alles außer Funktionen
@@ -57,6 +60,7 @@ function programmFinden(name) {
   const dirs = [...(process.env.PATH || '').split(path.delimiter), path.join(HOME, '.local', 'bin')];
   if (WIN && process.env.APPDATA) dirs.push(path.join(process.env.APPDATA, 'npm'));
   if (WIN && process.env.LOCALAPPDATA) dirs.push(path.join(process.env.LOCALAPPDATA, 'agy', 'bin')); // Antigravity-Installer
+  if (CODEX_BIN) dirs.push(CODEX_BIN); // Codex-Installer
   if (!WIN) dirs.push('/opt/homebrew/bin', '/usr/local/bin');
   for (const d of dirs.filter(Boolean)) for (const x of WIN ? ['.exe', '.cmd'] : ['']) {
     const f = path.join(d, name + x);
@@ -181,6 +185,7 @@ async function pruefen(id, modell, claudePfad) {
 // Zusätzliche Programmordner, die ein frischer Installer zwar einträgt, die der laufenden App aber noch fehlen
 function pfadMitProgrammen(env) {
   const extra = [path.join(HOME, '.local', 'bin')];
+  if (CODEX_BIN) extra.push(CODEX_BIN);
   if (WIN && process.env.APPDATA) extra.push(path.join(process.env.APPDATA, 'npm'));
   if (WIN && process.env.LOCALAPPDATA) extra.push(path.join(process.env.LOCALAPPDATA, 'agy', 'bin'));
   if (!WIN) extra.push('/opt/homebrew/bin', '/usr/local/bin');
@@ -205,7 +210,7 @@ function installieren(id) {
       const code = await new Promise((ok) => {
         const [cmd, args] = shellBefehl(b);
         let p;
-        try { p = spawn(cmd, args, { cwd: HOME, env: pfadMitProgrammen(process.env), windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] }); } catch (e) { job.zeile = e.message; return ok(-1); }
+        try { p = spawn(cmd, args, { cwd: HOME, env: { ...pfadMitProgrammen(process.env), CODEX_NON_INTERACTIVE: '1' }, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] }); } catch (e) { job.zeile = e.message; return ok(-1); }
         const t = setTimeout(() => { try { p.kill(); } catch (e) {} }, 30 * 60 * 1000);
         const lesen = (c) => { const z = ohneSteuerzeichen(c).split(/\r?\n|\r/).map((x) => x.trim()).filter(Boolean); if (z.length) job.zeile = z[z.length - 1].slice(0, 300); };
         p.stdout.on('data', lesen); p.stderr.on('data', lesen);
