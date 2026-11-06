@@ -89,7 +89,7 @@
       rsKeineVorschlaege: 'Keine Vorschläge', rsWoerterbuch: 'Zum Wörterbuch hinzufügen', rsAusschneiden: 'Ausschneiden', rsEinfuegen: 'Einfügen', rsAllesMarkieren: 'Alles markieren',
       // Ersteinrichtung und kurze Tour (index.html)
       erstWillkommenT: 'Willkommen bei fabBoard', erstWillkommen: 'fabBoard ist dein Projektboard: Du sammelst Aufgaben, Fragen und Ideen, und eine KI deiner Wahl arbeitet sie für dich ab.',
-      erstPunkt1: 'Du wählst die KI: Claude, ChatGPT, Gemini, Mistral oder ein Modell auf deinem Rechner.', erstPunkt2: 'Deine Projekte bleiben auf deinem Rechner.',
+      erstPunkt1: 'Du wählst die KI: Claude, ChatGPT, Gemini, Mistral oder ein Modell auf deinem Rechner.', erstPunkt2: 'Deine Projekte bleiben auf deinem Rechner.', erstPunkt4: 'Die KI arbeitet an mehreren Projekten gleichzeitig.',
       erstPunkt3: 'Kostenlos und offen (MIT-Lizenz).', erstLos: 'Los geht’s',
       erstOrdnerT: 'Wo sollen deine Projekte liegen?', erstOrdner: 'fabBoard speichert deine Projekte, Screenshots und Protokolle in diesem Ordner:',
       erstOrdnerAendern: 'Anderen Ordner wählen …', erstOrdnerHinweis: 'Der vorgeschlagene Ordner passt für die meisten. Wählst du einen anderen, startet fabBoard kurz neu.',
@@ -215,7 +215,7 @@
       rsKeineVorschlaege: 'No suggestions', rsWoerterbuch: 'Add to dictionary', rsAusschneiden: 'Cut', rsEinfuegen: 'Paste', rsAllesMarkieren: 'Select all',
       // First-run setup and short tour (index.html)
       erstWillkommenT: 'Welcome to fabBoard', erstWillkommen: 'fabBoard is your project board: you collect tasks, questions and ideas, and an AI of your choice works through them for you.',
-      erstPunkt1: 'You choose the AI: Claude, ChatGPT, Gemini, Mistral or a model on your computer.', erstPunkt2: 'Your projects stay on your computer.',
+      erstPunkt1: 'You choose the AI: Claude, ChatGPT, Gemini, Mistral or a model on your computer.', erstPunkt2: 'Your projects stay on your computer.', erstPunkt4: 'The AI works on several projects at once.',
       erstPunkt3: 'Free and open (MIT license).', erstLos: 'Let’s go',
       erstOrdnerT: 'Where should your projects live?', erstOrdner: 'fabBoard stores your projects, screenshots and logs in this folder:',
       erstOrdnerAendern: 'Choose another folder …', erstOrdnerHinweis: 'The suggested folder suits most people. If you choose another one, fabBoard restarts briefly.',
