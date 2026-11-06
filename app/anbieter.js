@@ -11,6 +11,36 @@ const WIN = process.platform === 'win32';
 const HOME = os.homedir();
 const C = WIN ? '.cmd' : ''; // npm-Programme heißen unter Windows z. B. codex.cmd (PowerShell blockiert codex.ps1)
 
+// Node.js für Programme, die es nur über npm gibt (Gemini CLI für den Google-API-Schlüssel): fabBoard holt die offizielle
+// LTS-Fassung von nodejs.org als Archiv (ohne Admin, ohne Installer, Prüfsumme aus SHASUMS256.txt) in einen eigenen Ordner.
+// Ist Node.js schon da, passiert nichts. Grundsatz: Niemand muss Zusatzprogramme von Hand installieren.
+const NODE_DIR = WIN ? path.join(process.env.LOCALAPPDATA || HOME, 'fabBoard', 'node') : path.join(HOME, '.local', 'share', 'fabboard-node');
+const NODE_BIN = WIN ? NODE_DIR : path.join(NODE_DIR, 'bin');
+const NODE_INSTALL = WIN ? [
+  "if (Get-Command node -ErrorAction SilentlyContinue) { 'Node.js ok'; exit 0 }",
+  "$ProgressPreference = 'SilentlyContinue'; [Net.ServicePointManager]::SecurityProtocol = 'Tls12'",
+  "$a = if ($env:PROCESSOR_ARCHITECTURE -eq 'ARM64') { 'arm64' } else { 'x64' }",
+  // index.tab statt index.json: Windows PowerShell 5.1 gibt JSON-Listen als ein Objekt weiter; Spalte 10 = LTS-Name oder '-'
+  "$v = ((Invoke-WebRequest 'https://nodejs.org/dist/index.tab' -UseBasicParsing).Content -split \"`n\" | Select-Object -Skip 1 | Where-Object { ($_ -split \"`t\")[9] -and ($_ -split \"`t\")[9] -ne '-' } | Select-Object -First 1).Split(\"`t\")[0]",
+  "$n = \"node-$v-win-$a\"; $z = Join-Path $env:TEMP \"$n.zip\"; 'Node.js ' + $v",
+  "Invoke-WebRequest \"https://nodejs.org/dist/$v/$n.zip\" -OutFile $z -UseBasicParsing",
+  "$sf = \"$z.sha\"; Invoke-WebRequest \"https://nodejs.org/dist/$v/SHASUMS256.txt\" -OutFile $sf -UseBasicParsing",
+  "$zeile = Get-Content $sf | Where-Object { $_.Trim().EndsWith(\"$n.zip\") } | Select-Object -First 1; Remove-Item $sf",
+  "if ((Get-FileHash $z -Algorithm SHA256).Hash -ne ($zeile -split '\\s+')[0].ToUpper()) { Remove-Item $z; throw 'Node.js: checksum mismatch' }",
+  `$ziel = '${NODE_DIR.replace(/'/g, "''")}'; $tmp = $ziel + '-tmp'`,
+  "Remove-Item $ziel, $tmp -Recurse -Force -ErrorAction SilentlyContinue; Expand-Archive $z $tmp -Force",
+  "Move-Item (Join-Path $tmp $n) $ziel; Remove-Item $tmp, $z -Recurse -Force; 'Node.js ' + $v + ' ok'",
+].join('; ') : [
+  'command -v node >/dev/null 2>&1 && { echo "Node.js ok"; exit 0; }',
+  'a=$(uname -m); [ "$a" = arm64 ] || a=x64',
+  "v=$(curl -fsSL https://nodejs.org/dist/index.tab | awk -F'\t' 'NR>1 && $10!=\"-\" {print $1; exit}')",
+  'n="node-$v-darwin-$a"; t="${TMPDIR:-/tmp}/$n.tar.gz"; echo "Node.js $v"',
+  'curl -fsSL "https://nodejs.org/dist/$v/$n.tar.gz" -o "$t"',
+  'h=$(curl -fsSL "https://nodejs.org/dist/$v/SHASUMS256.txt" | awk -v f="$n.tar.gz" \'$2==f {print $1}\')',
+  '[ "$(shasum -a 256 "$t" | cut -d" " -f1)" = "$h" ] || { rm -f "$t"; echo "Node.js: checksum mismatch"; exit 1; }',
+  `rm -rf '${NODE_DIR}' && mkdir -p '${NODE_DIR}' && tar -xzf "$t" -C '${NODE_DIR}' --strip-components 1 && rm -f "$t" && echo "Node.js $v ok"`,
+].join('; ');
+
 const CLAUDE_INSTALL = WIN ? 'irm https://claude.ai/install.ps1 | iex' : 'curl -fsSL https://claude.ai/install.sh | bash';
 // Codex: offizieller Installer von OpenAI (signiert, ohne Node.js, ohne Admin; Windows nach %LOCALAPPDATA%/Programs/OpenAI/Codex/bin, sonst ~/.local/bin)
 const CODEX_INSTALL = WIN ? 'irm https://chatgpt.com/codex/install.ps1 | iex' : 'curl -fsSL https://chatgpt.com/codex/install.sh | sh';
@@ -40,8 +70,8 @@ const ANBIETER = [
     env: ['ANTHROPIC_API_KEY'], schluesselUrl: 'https://console.anthropic.com/settings/keys', installieren: [CLAUDE_INSTALL], bedingungen: 'https://www.anthropic.com/legal/commercial-terms' },
   { id: 'openai-key', gruppe: 'schluessel', name: 'OpenAI (GPT)', kurz: 'Codex', konto: 'kontoNutzung', programm: 'codex', motor: 'codex',
     env: ['CODEX_API_KEY', 'OPENAI_API_KEY'], schluesselUrl: 'https://platform.openai.com/api-keys', installieren: [CODEX_INSTALL], bedingungen: 'https://openai.com/policies/services-agreement/' },
-  { id: 'google-key', gruppe: 'schluessel', name: 'Google (Gemini)', kurz: 'Gemini', konto: 'kontoGoogleKey', programm: 'gemini', motor: 'gemini', node: true,
-    env: ['GEMINI_API_KEY'], schluesselUrl: 'https://aistudio.google.com/apikey', installieren: [`npm${C} install -g @google/gemini-cli`], bedingungen: 'https://ai.google.dev/gemini-api/terms' },
+  { id: 'google-key', gruppe: 'schluessel', name: 'Google (Gemini)', kurz: 'Gemini', konto: 'kontoGoogleKey', programm: 'gemini', motor: 'gemini',
+    env: ['GEMINI_API_KEY'], schluesselUrl: 'https://aistudio.google.com/apikey', installieren: [NODE_INSTALL, `npm${C} install -g @google/gemini-cli`], bedingungen: 'https://ai.google.dev/gemini-api/terms' },
   { id: 'mistral-key', gruppe: 'schluessel', name: 'Mistral', kurz: 'Mistral', konto: 'kontoNutzung', programm: 'vibe', motor: 'vibe',
     env: ['MISTRAL_API_KEY'], schluesselUrl: 'https://console.mistral.ai/api-keys', installieren: [UV_INSTALL, VIBE_INSTALL], bedingungen: 'https://mistral.ai/terms' },
   { id: 'ollama', gruppe: 'lokal', name: 'Ollama', kurz: 'Ollama', konto: 'kontoLokal', programm: 'codex', motor: 'codex',
@@ -61,6 +91,7 @@ function programmFinden(name) {
   if (WIN && process.env.APPDATA) dirs.push(path.join(process.env.APPDATA, 'npm'));
   if (WIN && process.env.LOCALAPPDATA) dirs.push(path.join(process.env.LOCALAPPDATA, 'agy', 'bin')); // Antigravity-Installer
   if (CODEX_BIN) dirs.push(CODEX_BIN); // Codex-Installer
+  dirs.push(NODE_BIN); // Node.js, von fabBoard geholt (siehe NODE_INSTALL)
   if (!WIN) dirs.push('/opt/homebrew/bin', '/usr/local/bin');
   for (const d of dirs.filter(Boolean)) for (const x of WIN ? ['.exe', '.cmd'] : ['']) {
     const f = path.join(d, name + x);
@@ -140,9 +171,6 @@ async function pruefen(id, modell, claudePfad) {
   const vor = va ? va.vor : [];
   // 1. Programm installiert?
   const shell = WIN ? T('shell') : T('terminal');
-  if (a.node && !exe && !programmFinden('node')) {
-    s.push({ titel: T('nodeT'), ok: false, text: T('nodeText', { name: a.name }), link: 'https://nodejs.org', linkText: T('nodeLink') });
-  }
   let version = '';
   if (exe) { const v = await ausfuehren(exe, [...vor, '--version'], 30, { VIBE_CLI: 'python' }); if (v.code === 0) version = v.out.split('\n')[0].trim().replace(/^-c\s+/, ''); }
   const prog = a.motor === 'claude' ? 'Claude Code' : a.motor === 'codex' ? 'OpenAI Codex' : a.motor === 'gemini' ? 'Gemini CLI' : a.motor === 'agy' ? 'Antigravity CLI' : 'Mistral Vibe';
@@ -186,6 +214,7 @@ async function pruefen(id, modell, claudePfad) {
 function pfadMitProgrammen(env) {
   const extra = [path.join(HOME, '.local', 'bin')];
   if (CODEX_BIN) extra.push(CODEX_BIN);
+  extra.push(NODE_BIN);
   if (WIN && process.env.APPDATA) extra.push(path.join(process.env.APPDATA, 'npm'));
   if (WIN && process.env.LOCALAPPDATA) extra.push(path.join(process.env.LOCALAPPDATA, 'agy', 'bin'));
   if (!WIN) extra.push('/opt/homebrew/bin', '/usr/local/bin');
@@ -287,6 +316,7 @@ async function startBefehl(id, { prompt, ordner, root, modell, claudeModell, cla
   // Antigravity liest AGENTS.md/GEMINI.md im Projektordner selbst; Datenordner als zusätzlicher Arbeitsbereich
   if (a.motor === 'agy') return { exe, env, text: a.name, args: ['-p', prompt, '--dangerously-skip-permissions', '--add-dir', root, '--output-format', 'text'] };
   if (a.motor === 'gemini') {
+    Object.assign(env, pfadMitProgrammen(env)); // gemini.cmd braucht node, ggf. aus dem von fabBoard geholten Ordner
     env.GEMINI_CLI_TRUST_WORKSPACE = 'true';
     return { exe, env, text: a.name, args: ['-p', prompt, '--yolo', '--include-directories', root] };
   }
