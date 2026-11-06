@@ -34,9 +34,10 @@ html{scroll-padding-top:110px}
 .tab{display:flex;align-items:baseline;gap:8px;min-height:40px;padding:9px 0 7px;background:none;border:0;border-bottom:2px solid transparent;cursor:pointer;font:600 16px var(--serif);color:var(--muted)}
 .tab.an{color:var(--ink);border-bottom-color:#F07C1F}
 .tab small{font:500 12px var(--sans);color:var(--muted)}
+.tab.plus{font:500 13px var(--sans);margin-left:auto}
 /* Handy: nur das aktive Projekt mit Zahl offener Punkte, die übrigen Projekte klappen darunter auf */
 .tabwahl{display:none}
-@media (max-width:760px){.tabs{flex-direction:column;flex-wrap:nowrap;align-items:stretch}.tabs .tab{display:none}.tabs.auf .tab{display:flex}.tabs.auf .tab small{margin-left:auto}
+@media (max-width:760px){.tabs{flex-direction:column;flex-wrap:nowrap;align-items:stretch}.tabs .tab{display:none}.tabs.auf .tab{display:flex}.tabs.auf .tab small{margin-left:auto}.tab.plus{margin-left:0}
   .tabwahl{display:flex;align-items:baseline;gap:8px;min-height:44px;padding:9px 0 7px;background:none;border:0;border-bottom:2px solid #F07C1F;cursor:pointer;font:600 16px var(--serif);color:var(--ink);text-align:left}
   .tabwahl small{font:500 12px var(--sans);color:var(--muted)}.tabwahl .pf{margin-left:auto;font:500 13px var(--sans);color:var(--muted)}}
 .held{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 28px;padding:10px 0 8px;border-bottom:1px solid var(--ink)}
@@ -207,7 +208,7 @@ dialog.ew{width:min(620px,calc(100% - 28px))}
 </head>
 <body>
 <div class="wrap">
-  <div class="oben"><header class="kopf"><span class="mk"><span class="marke" id="marke">fabBoard<span class="pkt">.</span></span><span class="ver" id="version">v1.52</span></span><span class="kr"><button class="lk zahnrad" data-a="einstellungen" id="eKnopf" aria-controls="einst" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button><span id="lauf"></span></span></header>
+  <div class="oben"><header class="kopf"><span class="mk"><span class="marke" id="marke">fabBoard<span class="pkt">.</span></span><span class="ver" id="version">v1.53</span></span><span class="kr"><button class="lk zahnrad" data-a="einstellungen" id="eKnopf" aria-controls="einst" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button><span id="lauf"></span></span></header>
   <nav class="tabs" id="tabs"></nav></div>
   <main id="main"></main>
   <footer class="fuss"><span>© 2026 Fabian Diering · <button class="lk imp" data-a="impressum" id="impK"></button></span><span><span id="ort"></span> <span id="status"></span></span></footer>
@@ -305,7 +306,8 @@ function render() {
   const lp = (id) => S.lauf?.[id]?.laeuft ? `<span class="lp" title="${esc(T('kiArbeitet', { ki: kiName() }))}" aria-label="${esc(T('kiArbeitet', { ki: kiName() }))}"></span>` : '';
   $('#tabs').classList.toggle('auf', !!S.tabsAuf);
   $('#tabs').innerHTML = (p ? `<button class="tabwahl" data-a="tabs-auf" aria-expanded="${S.tabsAuf ? 'true' : 'false'}">${lp(p.id)}${esc(p.name)}<small>${T('offenN', { n: zaehle(p).offen })}</small><span class="pf" aria-hidden="true">${S.tabsAuf ? '▴' : '▾'}</span></button>` : '')
-    + liste().map((x) => `<button class="tab${x.id === S.aktiv ? ' an' : ''}" data-tab="${x.id}" ${x.id === S.aktiv ? 'aria-current="page"' : ''}>${lp(x.id)}${esc(x.name)}<small>${T('offenN', { n: zaehle(x).offen })}</small></button>`).join('');
+    + liste().map((x) => `<button class="tab${x.id === S.aktiv ? ' an' : ''}" data-tab="${x.id}" ${x.id === S.aktiv ? 'aria-current="page"' : ''}>${lp(x.id)}${esc(x.name)}<small>${T('offenN', { n: zaehle(x).offen })}</small></button>`).join('')
+    + `<button class="tab plus" data-a="projekt-neu">${T('plusProjekt')}</button>`;
   $('#lauf').innerHTML = p ? laufHtml(p) : '';
   einstRender();
   if (!p) { $('#main').innerHTML = `<section class="hinweis"><h1>${T('keinProjektT')}</h1><p>${T('keinProjekt')}</p></section>`; return; }
