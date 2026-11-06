@@ -240,7 +240,7 @@ dialog.ew{width:min(620px,calc(100% - 28px))}
 </head>
 <body>
 <div class="wrap">
-  <div class="oben"><header class="kopf"><span class="mk"><span class="marke" id="marke">fabBoard<span class="pkt">.</span></span><span class="ver" id="version">v1.71</span></span><span class="kr"><button class="lk zahnrad" data-a="einstellungen" id="eKnopf" aria-controls="einst" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button><span id="lauf"></span></span></header>
+  <div class="oben"><header class="kopf"><span class="mk"><span class="marke" id="marke">fabBoard<span class="pkt">.</span></span><span class="ver" id="version">v1.72</span></span><span class="kr"><button class="lk zahnrad" data-a="einstellungen" id="eKnopf" aria-controls="einst" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button><span id="lauf"></span></span></header>
   <nav class="tabs" id="tabs"></nav></div>
   <main id="main"></main>
 </div>
@@ -253,7 +253,7 @@ dialog.ew{width:min(620px,calc(100% - 28px))}
 <script src="texte.js"></script>
 <script>
 'use strict';
-const S = { projekte: {}, mtime: {}, aktiv: null, filter: 'alle', dirty: new Set(), bearbeiten: null, markiert: null, archivAuf: {}, themaZu: {}, archivStand: {}, auszulagern: {}, archivAlt: false, name: 'mich' };
+const S = { frisch: new Set(), projekte: {}, mtime: {}, aktiv: null, filter: 'alle', dirty: new Set(), bearbeiten: null, markiert: null, archivAuf: {}, themaZu: {}, archivStand: {}, auszulagern: {}, archivAlt: false, name: 'mich' };
 try { const v = JSON.parse(localStorage.getItem('fabboard') || '{}'); S.aktiv = v.aktiv || null; S.filter = ['fabian', 'claude'].includes(v.filter) ? v.filter : 'alle'; S.archivAuf = v.archivAuf || {}; S.themaZu = v.themaZu || {}; } catch (e) {}
 try { const h = localStorage.getItem('fabboard-hell'); if (h === 'light' || h === 'dark') document.documentElement.dataset.theme = h; } catch (e) {}
 const merken = () => { try { localStorage.setItem('fabboard', JSON.stringify({ aktiv: S.aktiv, filter: S.filter, archivAuf: S.archivAuf, themaZu: S.themaZu })); } catch (e) {} };
@@ -286,6 +286,9 @@ async function laden() {
     if (rest.archiv.some((x) => x.umgesetzt !== false)) S.auszulagern[rest.id] = true;
     const datei = _archivDatei?.archiv || []; const ids = new Set(rest.archiv.map((x) => x.id));
     rest.archiv = [...rest.archiv, ...datei.filter((x) => !ids.has(x.id))];
+    // Regel: Ein leeres Thema wird gelöscht (auch „Allgemein“); neue Aufträge legen neue Themen an. Gerade angelegte Themen bleiben,
+    // bis der erste Punkt darin steht (S.frisch); beim nächsten Speichern verschwinden leere Themen aus der Datei.
+    rest.themen = rest.themen.filter((t) => t.items.length || S.frisch.has(rest.id + '/' + t.id));
     S.projekte[rest.id] = rest; S.mtime[rest.id] = _mtime; S.archivStand[rest.id] = JSON.stringify(datei);
   }
   if (!S.projekte[S.aktiv]) S.aktiv = liste()[0]?.id || null;
@@ -365,8 +368,9 @@ function render() {
          <input name="titel" spellcheck="true" lang="${sprache()}" placeholder="${T('neuerPunkt')}" autocomplete="off" aria-label="${T('neuerPunktA')}"><button class="btn hell klein">${T('hinzufuegen')}</button></form>`
         : `<button class="plusp" data-a="punkt-neu">${T('plusPunkt')}</button>`) + '</div></section>');
   });
-  if (!p.themen.length) h += `<p class="leer">${T('keineThemen')}</p>`;
-  h += archivHtml(p, String(p.themen.length + 1).padStart(2, '0'));
+  // Ohne Themen: „+ Punkt“ legt beim Klick das Thema „Allgemein“ an
+  if (!p.themen.length) h += `<section class="ab" data-thema="allgemein"><div class="l"><span class="nr">01 —</span> ${esc(T('allgemein'))}</div><div><p class="leer">${T('keinePunkte')}</p><button class="plusp" data-a="punkt-neu">${T('plusPunkt')}</button></div></section>`;
+  h += archivHtml(p, String(Math.max(p.themen.length, 1) + 1).padStart(2, '0'));
   $('#main').innerHTML = h;
   const pf = $('#postText'); if (pf) { pf.value = entwurf(p.id); gr(pf); }
   document.querySelectorAll('textarea.kom').forEach(gr);
@@ -463,10 +467,10 @@ function bestaetigen(p, t, it) {
   t.items.splice(i, 1); const wieder = leerWeg(p, t); p.archiv.unshift(a); geaendert(p.id); render();
   toast(wartet ? T('entschieden', { titel: it.titel, ki: kiName() }) : T('insArchiv', { titel: it.titel }), () => { p.archiv = p.archiv.filter((x) => x.id !== it.id); wieder(); t.items.splice(i, 0, it); geaendert(p.id); render(); });
 }
-// Themen sind vorübergehend: leer gewordene Themen verschwinden (außer „Allgemein“); Rückgabe stellt sie wieder her
-const istAllgemein = (t) => t.id === 'allgemein' || t.titel.trim().toLowerCase() === 'allgemein';
+// Themen sind vorübergehend: leer gewordene Themen verschwinden, auch „Allgemein“; Rückgabe stellt sie wieder her
 function leerWeg(p, t) {
-  const i = p.themen.indexOf(t); if (i < 0 || t.items.length || istAllgemein(t)) return () => {};
+  const i = p.themen.indexOf(t); if (i < 0 || t.items.length) return () => {};
+  S.frisch.delete(p.id + '/' + t.id);
   p.themen.splice(i, 1);
   return () => { if (!p.themen.includes(t)) p.themen.splice(Math.min(i, p.themen.length), 0, t); };
 }
@@ -515,8 +519,10 @@ document.addEventListener('click', (e) => {
   if (a === 'ordner-aendern') return ordnerAendern();
   if (a === 'impressum') return impressum();
   if (a === 'arch-auf') { S.archivAuf[S.aktiv] = !S.archivAuf[S.aktiv]; render(); return; }
-  const { p, t, it } = finde(b);
-  if (a === 'punkt-neu') { S.neuIn = t.id; render(); document.querySelector(`[data-thema="${t.id}"] form.neu input`)?.focus(); return; }
+  let { p, t, it } = finde(b);
+  if (a === 'punkt-neu') {
+    if (!t) { t = { id: 'allgemein', titel: T('allgemein'), items: [] }; p.themen.push(t); S.frisch.add(p.id + '/' + t.id); }
+    S.neuIn = t.id; render(); document.querySelector(`[data-thema="${t.id}"] form.neu input`)?.focus(); return; }
   if (a === 'thema-auf') { const z = (S.themaZu[p.id] ||= {}); z[t.id] ? delete z[t.id] : (z[t.id] = true); render(); return; }
   const mEl = b.closest('[data-msg]');
   if (mEl) {
@@ -524,7 +530,7 @@ document.addEventListener('click', (e) => {
     if (a === 'msg-kopie') { kopieren(p, x.text).then((ok) => toast(ok ? T('kopiert') + '.' : T('kopieNichtMoeglich'))); return; }
     if (a === 'msg-del') { p.nachrichten.splice(i, 1); geaendert(p.id); render(); toast(T('nachrichtGeloescht'), () => { p.nachrichten.splice(i, 0, x); geaendert(p.id); render(); }); return; }
   }
-  if (a === 'thema-neu') { const n = prompt(T('themaNeu')); if (!n?.trim()) return; p.themen.push({ id: slug(n) + '-' + Math.random().toString(36).slice(2, 5), titel: n.trim(), items: [] }); geaendert(p.id); render(); return; }
+  if (a === 'thema-neu') { const n = prompt(T('themaNeu')); if (!n?.trim()) return; const nt = { id: slug(n) + '-' + Math.random().toString(36).slice(2, 5), titel: n.trim(), items: [] }; p.themen.push(nt); S.frisch.add(p.id + '/' + nt.id); geaendert(p.id); render(); return; }
   if (a === 'thema-umb') { const n = prompt(T('neuerName'), t.titel); if (!n?.trim()) return; t.titel = n.trim(); geaendert(p.id); render(); return; }
   if (a === 'thema-del') { p.themen.splice(p.themen.indexOf(t), 1); geaendert(p.id); render(); return; }
   if (a === 'ja') return bestaetigen(p, t, it);
@@ -687,6 +693,7 @@ async function dialog(p) {
       let id = slug(fd.get('name')); while (S.projekte[id]) id += '-2';
       const themen = fd.get('themen').split(',').map((s) => s.trim()).filter(Boolean).map((s) => ({ id: slug(s), titel: s, items: [] }));
       S.projekte[id] = { id, name: fd.get('name').trim(), art: fd.get('art').trim(), beschreibung: fd.get('beschreibung').trim(), ordner: ordnerAus(fd), reihenfolge: Math.max(0, ...liste().map((x) => x.reihenfolge || 0)) + 1, erstellt: heute(), themen, archiv: [] };
+      for (const t of themen) S.frisch.add(id + '/' + t.id);
       S.mtime[id] = null; S.aktiv = id; S.filter = 'alle'; geaendert(id);
     } else { Object.assign(p, { name: fd.get('name').trim(), art: fd.get('art').trim(), beschreibung: fd.get('beschreibung').trim(), reihenfolge: +fd.get('reihenfolge'), ordner: ordnerAus(fd) }); geaendert(p.id); }
     d.close(); render();

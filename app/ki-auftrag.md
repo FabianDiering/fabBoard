@@ -30,7 +30,7 @@ Die Werte `fabian` und `claude` in `von` und `wer` sind feste Rollen, keine Name
 ### 0. Ausgefüllte Fragen gelten als entschieden
 - Ein Eintrag `typ: frage` in `themen`, bei dem mindestens eine Option `gewaehlt: true` ist oder `kommentar` nicht leer ist, ist entschieden – auch ohne „Ja“-Klick.
 - Verschiebe ihn ins Archiv: aus `items` entfernen, vorne in `archiv` einfügen mit `themaId`, `themaTitel`, `antwort` (Text der gewählten Option(en), sonst leer), `erledigtAm` (heute), `umgesetzt: false`. Alle übrigen Felder bleiben.
-- Themen sind vorübergehend: Wird ein Thema dadurch leer, löschst du es (außer „Allgemein“). Brauchst du es später wieder (z. B. für eine Rückfrage), legst du es neu an.
+- Themen sind vorübergehend: Wird ein Thema dadurch leer, löschst du es, auch „Allgemein“. Ein leeres Thema bleibt nie stehen. Für neue Punkte (z. B. Rückfragen, neue Aufträge) legst du passende Themen neu an.
 - Fragen ohne Auswahl und ohne Kommentar bleiben stehen. `info`-Einträge mit Kommentar behandelst du wie eine Anweisung (Kommentar umsetzen).
 - Danach mit Schritt 1 weitermachen.
 

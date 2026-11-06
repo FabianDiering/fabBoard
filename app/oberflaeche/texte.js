@@ -27,7 +27,7 @@
       projektLoeschenT: 'Projekt löschen', projektLoeschenA: 'Projekt {name} löschen', plusProjekt: '+ Projekt', plusThema: '+ Thema',
       keinProjektT: 'Noch kein Projekt', keinProjekt: 'Über das Zahnrad oben rechts mit „+ Neues Projekt“ anlegen.', projektBearbeiten: 'Projekt bearbeiten', neuesProjekt: 'Neues Projekt',
       // Themen und Einträge
-      nichtsImFilter: 'Nichts in diesem Filter.', keinePunkte: 'Noch keine Punkte.', keineThemen: 'Noch keine Themen – „+ Thema“ in den Einstellungen (Zahnrad).',
+      nichtsImFilter: 'Nichts in diesem Filter.', keinePunkte: 'Noch keine Punkte.',
       art: 'Art', neuerPunkt: 'Neuer Punkt …', neuerPunktA: 'Neuer Punkt', hinzufuegen: 'Hinzufügen →',
       typFrage: 'Frage', typFrageAn: 'Frage an {ki}', typAnweisung: 'Anweisung', typIdee: 'Idee', typAufgabe: 'Aufgabe', typAufgabeMich: 'Aufgabe für mich', typInfo: 'Info',
       empfehlung: 'Empfehlung', okArchivA: '{titel}: OK, ins Archiv', erledigtA: '{titel} erledigt', kommentar: 'Kommentar', kommentarZu: 'Kommentar zu {titel}',
@@ -162,7 +162,7 @@
       nichtGestartetT: 'fabBoard is not running', nichtGestartet: 'Please start fabBoard from the desktop shortcut – this page then opens at http://localhost:4747.',
       projektLoeschenT: 'Delete project', projektLoeschenA: 'Delete project {name}', plusProjekt: '+ Project', plusThema: '+ Topic',
       keinProjektT: 'No project yet', keinProjekt: 'Create one with “+ New project” under the gear icon at the top right.', projektBearbeiten: 'Edit project', neuesProjekt: 'New project',
-      nichtsImFilter: 'Nothing in this filter.', keinePunkte: 'No items yet.', keineThemen: 'No topics yet – “+ Topic” in the settings (gear icon).',
+      nichtsImFilter: 'Nothing in this filter.', keinePunkte: 'No items yet.',
       art: 'Type', neuerPunkt: 'New item …', neuerPunktA: 'New item', hinzufuegen: 'Add →',
       typFrage: 'Question', typFrageAn: 'Question for {ki}', typAnweisung: 'Instruction', typIdee: 'Idea', typAufgabe: 'Task', typAufgabeMich: 'Task for me', typInfo: 'Info',
       empfehlung: 'Recommended', okArchivA: '{titel}: OK, to archive', erledigtA: '{titel} done', kommentar: 'Comment', kommentarZu: 'Comment on {titel}',
