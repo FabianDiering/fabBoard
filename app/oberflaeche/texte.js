@@ -87,6 +87,15 @@
       nichtGefunden: 'Nicht gefunden', unbekannt: 'Unbekannt', nurMitPasswort: 'Die KI starten ist im Netzwerk nur mit Passwort erlaubt', spracheName: 'Deutsch',
       // Rechtsklick-Menü der App (main.js)
       rsKeineVorschlaege: 'Keine Vorschläge', rsWoerterbuch: 'Zum Wörterbuch hinzufügen', rsAusschneiden: 'Ausschneiden', rsEinfuegen: 'Einfügen', rsAllesMarkieren: 'Alles markieren',
+      // Installieren und Anmelden per Knopf (Einrichtungs-Assistent, anbieter.js)
+      installierenKnopf: 'fabBoard arbeitet über das offizielle Programm {prog} und kann es für dich installieren. Das kann einige Minuten dauern.',
+      anmeldenKnopf: 'Melde dich mit deinem Konto an. fabBoard öffnet dafür ein Fenster mit {prog}; die Anmeldung selbst passiert im Browser.',
+      ewInstallieren: 'Jetzt installieren', ewAnmelden: 'Jetzt anmelden', ewAnmeldenNochmal: 'Fenster erneut öffnen', ewSelbst: 'Lieber selbst eingeben',
+      ewInstalliert: 'Wird installiert … Schritt {n} von {von} · {zeit}', ewInstallHinweis: 'Lädt herunter, das kann eine Weile dauern.',
+      ewInstallFehler: 'Die Installation hat nicht geklappt: {zeile}. Du kannst es noch einmal versuchen oder die Befehle unten selbst eingeben.',
+      ewAnmeldenOffen: 'Ein Fenster zur Anmeldung ist offen. Folge den Schritten dort und im Browser; fabBoard merkt von selbst, wenn es geklappt hat.',
+      anmFenster: 'fabBoard: Anmeldung bei {name}. Folge den Schritten in diesem Fenster und im Browser.',
+      anmFertig: 'Fertig. Du kannst dieses Fenster schließen und zu fabBoard zurückkehren.',
       // App-Menü, Infobereich (main.js)
       mDatei: 'Datei', mBearbeiten: 'Bearbeiten', mAnsicht: 'Ansicht', mHilfe: 'Hilfe', mScreenshot: 'Screenshot aufnehmen', mDatenordner: 'Datenordner öffnen',
       mFensterZu: 'Fenster schließen', mBeenden: 'Beenden', mNeuLaden: 'Neu laden', mOriginal: 'Originalgröße', mGroesser: 'Vergrößern', mKleiner: 'Verkleinern',
@@ -180,6 +189,15 @@
       nurAmRechner: 'Setup is only possible directly on the computer', anbieterUnbekannt: 'Unknown provider', schluesselLeer: 'Please enter a key',
       nichtGefunden: 'Not found', unbekannt: 'Unknown', nurMitPasswort: 'Starting the AI over the network requires a password', spracheName: 'English',
       rsKeineVorschlaege: 'No suggestions', rsWoerterbuch: 'Add to dictionary', rsAusschneiden: 'Cut', rsEinfuegen: 'Paste', rsAllesMarkieren: 'Select all',
+      // Install and sign in with one click (setup wizard, anbieter.js)
+      installierenKnopf: 'fabBoard works through the official {prog} program and can install it for you. This may take a few minutes.',
+      anmeldenKnopf: 'Sign in with your account. fabBoard opens a window with {prog} for this; the sign-in itself happens in the browser.',
+      ewInstallieren: 'Install now', ewAnmelden: 'Sign in now', ewAnmeldenNochmal: 'Open window again', ewSelbst: 'Rather enter it yourself',
+      ewInstalliert: 'Installing … step {n} of {von} · {zeit}', ewInstallHinweis: 'Downloading, this may take a while.',
+      ewInstallFehler: 'The installation did not work: {zeile}. You can try again or enter the commands below yourself.',
+      ewAnmeldenOffen: 'A sign-in window is open. Follow the steps there and in the browser; fabBoard notices by itself when it worked.',
+      anmFenster: 'fabBoard: signing in to {name}. Follow the steps in this window and in the browser.',
+      anmFertig: 'Done. You can close this window and return to fabBoard.',
       // App menu, tray (main.js)
       mDatei: 'File', mBearbeiten: 'Edit', mAnsicht: 'View', mHilfe: 'Help', mScreenshot: 'Take screenshot', mDatenordner: 'Open data folder',
       mFensterZu: 'Close window', mBeenden: 'Quit', mNeuLaden: 'Reload', mOriginal: 'Actual size', mGroesser: 'Zoom in', mKleiner: 'Zoom out',

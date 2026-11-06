@@ -170,6 +170,13 @@ dialog.ew{width:min(620px,calc(100% - 28px))}
 .ew a{color:var(--accent);font-size:13px}
 .ew .warte{color:var(--muted);font-size:13px}
 .ew .fehl{color:var(--err);font-size:13px}
+.ew .stand{margin-top:6px;font-size:13px;color:var(--text2)}
+.ew .stand:empty{display:none}
+.ew .stand.fehl{color:var(--err)}
+.ew .stand small{display:block;margin-top:2px;color:var(--muted);font:12px ui-monospace,Consolas,monospace;overflow-wrap:anywhere}
+.ew details.selbst{margin-top:8px}
+.ew details.selbst summary{cursor:pointer;font-size:12px;color:var(--muted)}
+.ew details.selbst p{margin-top:6px}
 .kr .lk{font-size:11px}
 .lk.zahnrad{display:inline-flex;align-items:center;padding:3px;border-radius:6px;text-decoration:none}
 .lk.zahnrad svg{width:16px;height:16px;display:block}
@@ -206,7 +213,7 @@ dialog.ew{width:min(620px,calc(100% - 28px))}
 </head>
 <body>
 <div class="wrap">
-  <div class="oben"><header class="kopf"><span class="mk"><span class="marke" id="marke">fabBoard<span class="pkt">.</span></span><span class="ver" id="version">v1.59</span></span><span class="kr"><button class="lk zahnrad" data-a="einstellungen" id="eKnopf" aria-controls="einst" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button><span id="lauf"></span></span></header>
+  <div class="oben"><header class="kopf"><span class="mk"><span class="marke" id="marke">fabBoard<span class="pkt">.</span></span><span class="ver" id="version">v1.60</span></span><span class="kr"><button class="lk zahnrad" data-a="einstellungen" id="eKnopf" aria-controls="einst" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button><span id="lauf"></span></span></header>
   <nav class="tabs" id="tabs"></nav></div>
   <main id="main"></main>
   <footer class="fuss"><span>© 2026 Fabian Diering · <button class="lk imp" data-a="impressum" id="impK"></button></span><span><span id="ort"></span> <span id="status"></span></span></footer>
@@ -722,8 +729,12 @@ async function ewPruefen() {
   let r;
   try { r = await fetch(`api/anbieter/${a.id}/pruefung?modell=${encodeURIComponent(EW.modell)}`, { cache: 'no-store' }).then((x) => x.json()); }
   catch (e) { r = { schritte: [{ titel: T('ewPruefFehler'), ok: false, text: e.message }], bereit: false }; }
+  // Fehlt Programm oder Anmeldung, gibt es einen Knopf; die Befehle zum Selbst-Eingeben stehen aufklappbar darunter
+  const befehle = (s) => (s.befehle || []).map((b) => `<div class="cmd"><code>${esc(b)}</code><button type="button" class="btn hell klein" data-kopie="${esc(b)}">${T('kopieren')}</button></div>`).join('');
   const schritt = (s) => `<li class="${s.ok ? 'ok' : 'nein'}"><span class="ic" aria-hidden="true">${s.ok ? '✓' : '!'}</span><div><b>${esc(s.titel)}</b><p>${esc(s.text)}</p>
-    ${(s.befehle || []).map((b) => `<div class="cmd"><code>${esc(b)}</code><button type="button" class="btn hell klein" data-kopie="${esc(b)}">${T('kopieren')}</button></div>`).join('')}
+    ${s.aktion && !s.ok ? `<div class="cmd"><button type="button" class="btn klein" data-aktion="${s.aktion}">${T(s.aktion === 'installieren' ? 'ewInstallieren' : 'ewAnmelden')}</button></div>
+      <p class="stand" id="eStand-${s.aktion}" aria-live="polite"></p>
+      <details class="selbst"><summary>${T('ewSelbst')}</summary><p>${esc(s.selbst || '')}</p>${befehle(s)}</details>` : befehle(s)}
     ${s.link ? `<p style="margin-top:6px"><a href="${esc(s.link)}" target="_blank" rel="noopener">${esc(s.linkText || s.link)}</a></p>` : ''}
     ${s.eingabe === 'schluessel' ? `<div class="cmd"><input type="password" id="eKey" placeholder="${T('ewSchluesselEin')}" autocomplete="off" aria-label="${T('ewSchluessel')}"><button type="button" class="btn klein" id="eKeySp">${T('speichern')}</button></div>` : ''}
     ${s.eingabe === 'modell' ? `<div class="cmd"><select id="eModell" aria-label="${T('ewModell')}"><option value="">${T('ewModellWaehlen')}</option>${s.modelle.map((m) => `<option${m === EW.modell ? ' selected' : ''}>${esc(m)}</option>`).join('')}</select></div>` : ''}
@@ -745,6 +756,48 @@ async function ewPruefen() {
   const ki = $('#eKey'); if (ki) ki.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); schluessel(ki.value.trim()); } };
   const kd = $('#eKeyDel'); if (kd) kd.onclick = () => { if (confirm(T('ewSchluesselFrage'))) schluessel(''); };
   d.querySelector('form').onsubmit = (e) => { e.preventDefault(); if (r.bereit) ewFertig(); };
+  const ki2 = d.querySelector('[data-aktion="installieren"]'); if (ki2) ki2.onclick = () => ewInstallieren(a);
+  const ka = d.querySelector('[data-aktion="anmelden"]'); if (ka) ka.onclick = () => ewAnmelden(a);
+  // Läuft schon eine Installation (z. B. nach „Zurück“ und erneutem Prüfen), den Fortschritt weiter zeigen
+  if (ki2) fetch(`api/anbieter/${a.id}/installieren`, { cache: 'no-store' }).then((x) => x.json()).then((j) => { if (j.laeuft) ewInstallieren(a, true); }).catch(() => {});
+}
+// Installation im Hintergrund: Knopf aus, Fortschritt (Schritt, Zeit, letzte Ausgabezeile) bis zum Ende, dann neu prüfen
+const ewZeit = (ms) => { const s = Math.floor(ms / 1000); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+async function ewInstallieren(a, nurZeigen) {
+  const d = $('#dlg'); const knopf = d.querySelector('[data-aktion="installieren"]'); const st = $('#eStand-installieren');
+  if (!knopf || !st) return;
+  knopf.disabled = true; d.querySelectorAll('[data-aktion]').forEach((b) => { b.disabled = true; });
+  let j;
+  try { j = await fetch(`api/anbieter/${a.id}/installieren`, { method: nurZeigen ? 'GET' : 'POST' }).then((x) => x.json()); }
+  catch (e) { st.textContent = T('ewInstallFehler', { zeile: e.message }); knopf.disabled = false; return; }
+  if (j.fehler) { st.textContent = j.fehler; knopf.disabled = false; return; }
+  while (d.open && $('#eStand-installieren') === st) {
+    if (!j.laeuft) {
+      if (j.code === 0) { ewPruefen(); return; }
+      st.classList.add('fehl'); st.textContent = T('ewInstallFehler', { zeile: j.zeile || String(j.code) });
+      d.querySelectorAll('[data-aktion]').forEach((b) => { b.disabled = false; }); d.querySelector('details.selbst').open = true; return;
+    }
+    st.innerHTML = `${esc(T('ewInstalliert', { n: j.schritt, von: j.von, zeit: ewZeit(Date.now() - j.start) }))}<br><small>${esc(j.zeile || T('ewInstallHinweis'))}</small>`;
+    await new Promise((ok) => setTimeout(ok, 1500));
+    try { j = await fetch(`api/anbieter/${a.id}/installieren`, { cache: 'no-store' }).then((x) => x.json()); } catch (e) {}
+  }
+}
+// Anmeldung: fabBoard öffnet ein Fenster mit dem Anmeldebefehl und prüft alle paar Sekunden, ob sie geklappt hat (bis 15 Minuten)
+async function ewAnmelden(a) {
+  const d = $('#dlg'); const knopf = d.querySelector('[data-aktion="anmelden"]'); const st = $('#eStand-anmelden');
+  if (!knopf || !st) return;
+  const x = await fetch(`api/anbieter/${a.id}/anmelden`, { method: 'POST' }).then((y) => y.json()).catch((e) => ({ fehler: e.message }));
+  if (x.fehler) { st.classList.add('fehl'); st.textContent = x.fehler; return; }
+  knopf.textContent = T('ewAnmeldenNochmal'); st.textContent = T('ewAnmeldenOffen');
+  const ende = Date.now() + 15 * 60 * 1000;
+  while (d.open && $('#eStand-anmelden') === st && Date.now() < ende) {
+    await new Promise((ok) => setTimeout(ok, 4000));
+    if (!d.open || $('#eStand-anmelden') !== st) return;
+    try {
+      const r = await fetch(`api/anbieter/${a.id}/pruefung?modell=${encodeURIComponent(EW.modell)}`, { cache: 'no-store' }).then((y) => y.json());
+      if (r.schritte.every((s) => s.ok || s.aktion !== 'anmelden')) { ewPruefen(); return; }
+    } catch (e) {}
+  }
 }
 function ewFertig() {
   const d = $('#dlg'); const a = ewA();

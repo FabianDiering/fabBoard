@@ -217,9 +217,13 @@ const server = http.createServer(async (req, res) => {
       einstellungenSpeichern({ anbieter: w.anbieter, modell: String(w.modell || '') });
       return senden(res, 200, { ok: true });
     }
-    const mk = p.match(/^\/api\/anbieter\/([a-z0-9-]{1,40})\/(pruefung|schluessel)$/);
+    const mk = p.match(/^\/api\/anbieter\/([a-z0-9-]{1,40})\/(pruefung|schluessel|installieren|anmelden)$/);
     if (mk) {
       if (!KI.finde(mk[1])) return senden(res, 404, { fehler: T('anbieterUnbekannt') });
+      // Installieren und Anmelden per Knopf: Installation läuft im Hintergrund (Stand per GET), Anmeldung öffnet ein eigenes Fenster
+      if (mk[2] === 'installieren' && req.method === 'POST') return senden(res, 200, KI.installieren(mk[1]));
+      if (mk[2] === 'installieren' && req.method === 'GET') return senden(res, 200, KI.installStand(mk[1]) || {});
+      if (mk[2] === 'anmelden' && req.method === 'POST') return senden(res, 200, KI.anmeldenOeffnen(mk[1]));
       if (mk[2] === 'pruefung' && req.method === 'GET') return senden(res, 200, await KI.pruefen(mk[1], url.searchParams.get('modell') || '', CLAUDE_PFAD));
       if (mk[2] === 'schluessel' && (req.method === 'PUT' || req.method === 'DELETE')) {
         const w = req.method === 'PUT' ? JSON.parse((await body(req)).toString('utf8') || '{}').schluessel : '';

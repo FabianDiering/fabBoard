@@ -144,7 +144,8 @@ async function pruefen(id, modell, claudePfad) {
   const prog = a.motor === 'claude' ? 'Claude Code' : a.motor === 'codex' ? 'OpenAI Codex' : a.motor === 'gemini' ? 'Gemini CLI' : a.motor === 'agy' ? 'Antigravity CLI' : 'Mistral Vibe';
   s.push(version
     ? { titel: T('installiertT', { prog }), ok: true, text: version }
-    : { titel: T('installierenT', { prog }), ok: false, text: T(a.installieren.length > 1 ? 'installierenMehrere' : 'installierenEiner', { prog, shell }), befehle: a.installieren });
+    : { titel: T('installierenT', { prog }), ok: false, aktion: 'installieren', text: T('installierenKnopf', { prog }),
+      selbst: T(a.installieren.length > 1 ? 'installierenMehrere' : 'installierenEiner', { prog, shell }), befehle: a.installieren });
   // 2. Angemeldet, Schlüssel gespeichert bzw. lokales Modell bereit? (schluessel: true kennzeichnet den Schlüssel-Schritt für das Board)
   if (a.env) {
     const k = schluesselLesen(a.id);
@@ -159,20 +160,98 @@ async function pruefen(id, modell, claudePfad) {
     let an = false;
     if (a.motor === 'claude') { const r = await ausfuehren(exe, ['auth', 'status']); try { an = JSON.parse(r.out).loggedIn === true; } catch (e) {} }
     if (a.motor === 'codex') { const r = await ausfuehren(exe, ['login', 'status']); an = r.code === 0 && /logged in/i.test(r.out); }
-    // Antigravity hat keinen Statusbefehl: unter Windows liegt die Anmeldung in der Anmeldeinformationsverwaltung, sonst ein kurzer Probelauf
     // Mistral Vibe legt die Anmeldung unter Windows in der Anmeldeinformationsverwaltung ab (ai.mistral.vibe), sonst in ~/.vibe/.env
     if (a.motor === 'vibe') {
       if (WIN) { const r = await ausfuehren('cmdkey', ['/list']); an = /ai\.mistral\.vibe/i.test(r.out); }
       else an = fs.existsSync(path.join(HOME, '.vibe', '.env'));
     }
+    // Antigravity hat keinen Statusbefehl: unter Windows liegt die Anmeldung in der Anmeldeinformationsverwaltung, sonst ein kurzer Probelauf
     if (a.motor === 'agy') {
       if (WIN) { const r = await ausfuehren('cmdkey', ['/list']); an = /gemini:antigravity/i.test(r.out); }
       else { const r = await ausfuehren(exe, ['-p', 'OK', '--output-format', 'json'], 60); try { an = JSON.parse(r.out.slice(r.out.indexOf('{'))).status === 'SUCCESS'; } catch (e) {} }
     }
     s.push(an ? { titel: T('angemeldetT'), ok: true, text: T('angemeldet', { prog }) }
-      : { titel: T('anmeldenT'), ok: false, text: a.anmeldenText ? T(a.anmeldenText) : T('anmelden', { shell }), befehle: [a.anmelden] });
+      : { titel: T('anmeldenT'), ok: false, aktion: 'anmelden', text: T('anmeldenKnopf', { prog }),
+        selbst: a.anmeldenText ? T(a.anmeldenText) : T('anmelden', { shell }), befehle: [a.anmelden] });
   }
   return { schritte: s, bereit: s.every((x) => x.ok) };
+}
+
+// ---------- Installieren und Anmelden per Knopf (Einrichtungs-Assistent)
+// Zusätzliche Programmordner, die ein frischer Installer zwar einträgt, die der laufenden App aber noch fehlen
+function pfadMitProgrammen(env) {
+  const extra = [path.join(HOME, '.local', 'bin')];
+  if (WIN && process.env.APPDATA) extra.push(path.join(process.env.APPDATA, 'npm'));
+  if (WIN && process.env.LOCALAPPDATA) extra.push(path.join(process.env.LOCALAPPDATA, 'agy', 'bin'));
+  if (!WIN) extra.push('/opt/homebrew/bin', '/usr/local/bin');
+  const k = Object.keys(env).find((x) => x.toLowerCase() === 'path') || 'PATH';
+  return { ...env, [k]: [...extra, env[k] || ''].join(path.delimiter) };
+}
+const shellBefehl = (b) => (WIN ? ['powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', b]] : ['/bin/bash', ['-lc', b]]);
+const ohneSteuerzeichen = (t) => String(t).replace(/\x1b\[[0-9;?]*[A-Za-z]/g, '').replace(/[\x00-\x08\x0b-\x1f]/g, '');
+
+// Installation läuft im Hintergrund, Befehl für Befehl; das Board fragt den Stand ab (Schritt, letzte Ausgabezeile, Ergebnis)
+const INSTALL = {};
+function installStand(id) { return INSTALL[id] || null; }
+function installieren(id) {
+  const a = finde(id);
+  if (!a || !a.installieren) throw new Error(T('anbieterUnbekannt'));
+  if (INSTALL[id]?.laeuft) return INSTALL[id];
+  const job = { laeuft: true, start: Date.now(), ende: 0, schritt: 0, von: a.installieren.length, zeile: '', code: null };
+  INSTALL[id] = job;
+  (async () => {
+    for (const [i, b] of a.installieren.entries()) {
+      job.schritt = i + 1; job.zeile = '';
+      const code = await new Promise((ok) => {
+        const [cmd, args] = shellBefehl(b);
+        let p;
+        try { p = spawn(cmd, args, { cwd: HOME, env: pfadMitProgrammen(process.env), windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] }); } catch (e) { job.zeile = e.message; return ok(-1); }
+        const t = setTimeout(() => { try { p.kill(); } catch (e) {} }, 30 * 60 * 1000);
+        const lesen = (c) => { const z = ohneSteuerzeichen(c).split(/\r?\n|\r/).map((x) => x.trim()).filter(Boolean); if (z.length) job.zeile = z[z.length - 1].slice(0, 300); };
+        p.stdout.on('data', lesen); p.stderr.on('data', lesen);
+        p.on('error', (e) => { clearTimeout(t); job.zeile = e.message; ok(-1); });
+        p.on('close', (c) => { clearTimeout(t); ok(c == null ? -1 : c); });
+      });
+      if (code !== 0) { job.code = code; break; }
+    }
+    if (job.code == null) job.code = 0;
+    job.laeuft = false; job.ende = Date.now();
+  })();
+  return job;
+}
+
+// Anmeldung: öffnet ein sichtbares Fenster mit dem offiziellen Anmeldebefehl (die Programme fragen dort und im Browser nach),
+// in einem leeren Ordner, damit die Programme nicht nach dem Vertrauen für den Benutzerordner fragen
+function anmeldenOeffnen(id) {
+  const a = finde(id);
+  if (!a || !a.anmelden) throw new Error(T('anbieterUnbekannt'));
+  const ordner = path.join(os.tmpdir(), 'fabboard-anmeldung');
+  fs.mkdirSync(ordner, { recursive: true });
+  const extra = pfadMitProgrammen({ PATH: '' }).PATH;
+  if (WIN) {
+    const ps = (t) => "'" + String(t).replace(/'/g, "''") + "'";
+    const skript = [
+      `$env:Path = ${ps(extra)} + $env:Path`,
+      `Write-Host ${ps(T('anmFenster', { name: a.name }))}`, "Write-Host ''",
+      a.anmelden,
+      "Write-Host ''", `Write-Host ${ps(T('anmFertig'))}`,
+    ].join('\r\n');
+    const datei = path.join(ordner, 'anmelden.ps1');
+    fs.writeFileSync(datei, '﻿' + skript); // mit BOM, sonst liest Windows PowerShell 5.1 die Umlaute falsch
+    const psArgs = ['powershell.exe', '-NoExit', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', datei];
+    // Windows Terminal zeichnet die Oberflächen der Programme sauberer als das alte Konsolenfenster
+    const wt = process.env.LOCALAPPDATA ? path.join(process.env.LOCALAPPDATA, 'Microsoft', 'WindowsApps', 'wt.exe') : '';
+    const p = wt && fs.existsSync(wt) ? spawn(wt, ['-d', ordner, ...psArgs], { detached: true, stdio: 'ignore' })
+      : spawn(process.env.ComSpec || 'cmd.exe', ['/c', 'start', '""', '/d', ordner, ...psArgs], { detached: true, stdio: 'ignore', windowsHide: true });
+    p.on('error', () => {}); p.unref();
+  } else {
+    const sh = (t) => "'" + String(t).replace(/'/g, "'\\''") + "'";
+    const datei = path.join(ordner, 'anmelden.sh');
+    fs.writeFileSync(datei, [`cd ${sh(ordner)}`, `export PATH=${sh(extra)}"$PATH"`, `echo ${sh(T('anmFenster', { name: a.name }))}`, a.anmelden, `echo ${sh(T('anmFertig'))}`].join('\n'), { mode: 0o755 });
+    const p = spawn('osascript', ['-e', `tell application "Terminal" to do script "bash '${datei}'"`, '-e', 'tell application "Terminal" to activate'], { detached: true, stdio: 'ignore' });
+    p.on('error', () => {}); p.unref();
+  }
+  return { ok: true };
 }
 
 // Startbefehl für einen Lauf. Ergebnis: {exe, args, env, gitSelbst, text}
@@ -212,4 +291,4 @@ async function startBefehl(id, { prompt, ordner, root, modell, claudeModell, cla
   return { exe, env, text: a.name, args: [...va.vor, '--trust', '--workdir', ordner, '--add-dir', root, '--prompt', prompt, '--auto-approve'] };
 }
 
-module.exports = { ANBIETER, finde, oeffentlich, pruefen, startBefehl, aufruf, schluesselSpeichern, schluesselLesen, lokaleModelle };
+module.exports = { ANBIETER, finde, oeffentlich, pruefen, startBefehl, aufruf, schluesselSpeichern, schluesselLesen, lokaleModelle, installieren, installStand, anmeldenOeffnen };
