@@ -117,6 +117,7 @@
       anmFenster: 'fabBoard: Anmeldung bei {name}. Folge den Schritten in diesem Fenster und im Browser.',
       anmFertig: 'Fertig. Du kannst dieses Fenster schließen und zu fabBoard zurückkehren.',
       // App-Menü, Infobereich (main.js)
+      spenden: 'Spendier einen Kaffee', spendenText: 'fabBoard ist kostenlos. Wenn es dir hilft, freue ich mich über einen Kaffee (Ko-fi).',
       updT: 'fabBoard {version} ist bereit', upd: 'Das Update ist heruntergeladen. Jetzt neu starten und installieren? Sonst wird es beim nächsten Beenden installiert.',
       updJetzt: 'Jetzt neu starten', updSpaeter: 'Später', updSuchen: 'Nach Updates suchen', updAktuell: 'fabBoard ist auf dem neuesten Stand ({version}).',
       updLaedt: 'Version {version} wird heruntergeladen. fabBoard fragt, sobald sie bereit ist.', updFehler: 'Updates konnten nicht geprüft werden: {fehler}',
@@ -242,6 +243,7 @@
       anmFenster: 'fabBoard: signing in to {name}. Follow the steps in this window and in the browser.',
       anmFertig: 'Done. You can close this window and return to fabBoard.',
       // App menu, tray (main.js)
+      spenden: 'Buy me a coffee', spendenText: 'fabBoard is free. If it helps you, I’d appreciate a coffee (Ko-fi).',
       updT: 'fabBoard {version} is ready', upd: 'The update has been downloaded. Restart and install now? Otherwise it is installed the next time you quit.',
       updJetzt: 'Restart now', updSpaeter: 'Later', updSuchen: 'Check for updates', updAktuell: 'fabBoard is up to date ({version}).',
       updLaedt: 'Version {version} is downloading. fabBoard will ask as soon as it is ready.', updFehler: 'Could not check for updates: {fehler}',

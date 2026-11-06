@@ -12,6 +12,7 @@ const VORAB = path.join(__dirname, 'vorab.js'); // Brücke für die Screenshot-F
 const KUERZEL = 'CommandOrControl+Alt+S';
 const KUERZEL_TEXT = process.platform === 'darwin' ? '⌘⌥S' : 'Strg+Alt+S';
 const REPO = 'https://github.com/FabianDiering/fabBoard';
+const SPENDEN = /^https:\/\//.test(require('./package.json').spendenLink || '') ? require('./package.json').spendenLink : ''; // „Spendier einen Kaffee“ (Ko-fi)
 const SICHER = { contextIsolation: true, nodeIntegration: false, sandbox: true };
 // Zum Testen neben der laufenden App: eigener Einstellungsordner, damit die Sperre gegen eine zweite Instanz nicht greift
 if (process.env.FABBOARD_PROFIL) app.setPath('userData', process.env.FABBOARD_PROFIL);
@@ -124,6 +125,7 @@ function menueBauen() {
     { label: t('mHilfe'), submenu: [
       { label: t('mGithub'), click: () => shell.openExternal(REPO) },
       { label: t('mFehlerMelden'), click: () => shell.openExternal(REPO + '/issues') },
+      ...(SPENDEN ? [{ label: t('spenden'), click: () => shell.openExternal(SPENDEN) }] : []),
       { label: t('mProtokolle'), click: () => ordnerOeffnen('laeufe') },
       { type: 'separator' },
       { label: t('impressum'), click: () => imBoard("document.getElementById('impK').click()") },

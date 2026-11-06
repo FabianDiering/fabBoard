@@ -1,7 +1,7 @@
 {
   "name": "fabboard",
   "productName": "fabBoard",
-  "version": "1.62.0",
+  "version": "1.63.0",
   "description": "fabBoard: Projektboard, in dem eine KI deiner Wahl für dich arbeitet",
   "main": "main.js",
   "scripts": {
@@ -21,6 +21,7 @@
     "electron-updater": "^6.8.11"
   },
   "homepage": "https://github.com/FabianDiering/fabBoard",
+  "spendenLink": "",
   "build": {
     "appId": "io.github.fabiandiering.fabboard",
     "productName": "fabBoard",

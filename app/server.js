@@ -42,7 +42,9 @@ const EINSTELLUNGEN = { name: E.name || require('os').userInfo().username, proje
   // eingerichtet: Ersteinrichtung abgeschlossen (wer schon eine KI gewählt hat, gilt als eingerichtet)
   eingerichtet: !!(E.eingerichtet || E.anbieter),
   // Versionsnummer: einzige Quelle ist package.json (Installer und Board zeigen dieselbe)
-  version: require('./package.json').version };
+  version: require('./package.json').version,
+  // Spenden („Spendier einen Kaffee“, Ko-fi): Link aus package.json, leer = nicht anzeigen
+  spenden: /^https:\/\//.test(require('./package.json').spendenLink || '') ? require('./package.json').spendenLink : '' };
 // Neue Werte in einstellungen.json übernehmen; alle übrigen Felder bleiben
 function einstellungenSpeichern(neu) {
   let alt = {}; try { alt = JSON.parse(fs.readFileSync(EDATEI, 'utf8')); } catch (e) {}
