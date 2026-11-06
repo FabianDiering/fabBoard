@@ -53,7 +53,7 @@ const KI = require('./anbieter');
 // Claude Code: fester Pfad aus den Einstellungen (Feld "claude"), sonst sucht anbieter.js im PATH und in %USERPROFILE%\.local\bin
 const CLAUDE_PFAD = E.claude || '';
 
-const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8', '.md': 'text/plain; charset=utf-8', '.log': 'text/plain; charset=utf-8', '.png': 'image/png', '.svg': 'image/svg+xml' };
+const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8', '.md': 'text/plain; charset=utf-8', '.log': 'text/plain; charset=utf-8', '.png': 'image/png', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.txt': 'text/plain; charset=utf-8' };
 const mtime = (f) => Math.round(fs.statSync(f).mtimeMs);
 // Erledigtes Archiv liegt in <id>.archiv.json (Claude liest nur die Hauptdatei); das Board bekommt es mitgeliefert
 const mitMtime = (f) => { const a = f.slice(0, -5) + '.archiv.json'; return { ...JSON.parse(fs.readFileSync(f, 'utf8')), _mtime: mtime(f), ...(fs.existsSync(a) ? { _archivDatei: JSON.parse(fs.readFileSync(a, 'utf8')) } : {}) }; };

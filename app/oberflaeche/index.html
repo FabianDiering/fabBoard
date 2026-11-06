@@ -5,9 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>fabBoard</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23000'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23F07C1F'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@900&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet">
+<link href="schriften/schriften.css" rel="stylesheet">
 <style>
 /* Layout: Label-Spalte links, Inhalt rechts; Projekte als Tabs, Themen als nummerierte Abschnitte */
 :root{--bg:#FCFCFA;--ink:#1A1A1A;--text2:#4A4A45;--muted:#6B6B66;--num:#66665F;--line:#E6E6E3;--field:#F4F4F1;--kfield:#EEEEEA;--card:#FFFFFF;--accent:#3E5C76;--mark:#E8EEF3;--onink:#FFFFFF;--toastlink:#BFD0DE;--hover:#333333;--err:#B3261E;--serif:'Source Serif 4',Georgia,serif;--sans:Inter,system-ui,sans-serif;--lab:130px}
@@ -208,7 +206,7 @@ dialog.ew{width:min(620px,calc(100% - 28px))}
 </head>
 <body>
 <div class="wrap">
-  <div class="oben"><header class="kopf"><span class="mk"><span class="marke" id="marke">fabBoard<span class="pkt">.</span></span><span class="ver" id="version">v1.53</span></span><span class="kr"><button class="lk zahnrad" data-a="einstellungen" id="eKnopf" aria-controls="einst" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button><span id="lauf"></span></span></header>
+  <div class="oben"><header class="kopf"><span class="mk"><span class="marke" id="marke">fabBoard<span class="pkt">.</span></span><span class="ver" id="version">v1.54</span></span><span class="kr"><button class="lk zahnrad" data-a="einstellungen" id="eKnopf" aria-controls="einst" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button><span id="lauf"></span></span></header>
   <nav class="tabs" id="tabs"></nav></div>
   <main id="main"></main>
   <footer class="fuss"><span>© 2026 Fabian Diering · <button class="lk imp" data-a="impressum" id="impK"></button></span><span><span id="ort"></span> <span id="status"></span></span></footer>
