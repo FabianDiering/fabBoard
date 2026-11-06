@@ -86,6 +86,21 @@
       nichtGefunden: 'Nicht gefunden', unbekannt: 'Unbekannt', nurMitPasswort: 'Die KI starten ist im Netzwerk nur mit Passwort erlaubt', spracheName: 'Deutsch',
       // Rechtsklick-Menü der App (main.js)
       rsKeineVorschlaege: 'Keine Vorschläge', rsWoerterbuch: 'Zum Wörterbuch hinzufügen', rsAusschneiden: 'Ausschneiden', rsEinfuegen: 'Einfügen', rsAllesMarkieren: 'Alles markieren',
+      // App-Menü, Infobereich (main.js)
+      mDatei: 'Datei', mBearbeiten: 'Bearbeiten', mAnsicht: 'Ansicht', mHilfe: 'Hilfe', mScreenshot: 'Screenshot aufnehmen', mDatenordner: 'Datenordner öffnen',
+      mFensterZu: 'Fenster schließen', mBeenden: 'Beenden', mNeuLaden: 'Neu laden', mOriginal: 'Originalgröße', mGroesser: 'Vergrößern', mKleiner: 'Verkleinern',
+      mVollbild: 'Vollbild', mEntwickler: 'Entwicklerwerkzeuge', mGithub: 'fabBoard auf GitHub', mFehlerMelden: 'Fehler melden oder Wunsch äußern',
+      mProtokolle: 'Protokolle öffnen', mUeber: 'Über fabBoard', mWiederholen: 'Wiederholen', mBoardOeffnen: 'Board öffnen',
+      mUeberText: 'Projektboard, in dem eine KI deiner Wahl für dich an deinen Projekten arbeitet.\n\n© 2026 Fabian Diering · MIT-Lizenz',
+      hintergrundT: 'fabBoard läuft im Hintergrund weiter', hintergrund: 'Screenshot mit {kuerzel}. Beenden über das Symbol im Infobereich.',
+      kuerzelBelegt: 'Das Tastenkürzel {kuerzel} ist schon von einem anderen Programm belegt; Screenshot über das Menü „Datei“ oder das Symbol im Infobereich.',
+      // Screenshot
+      sAuswahl: 'Bereich ziehen · Enter = ganzer Bildschirm · Esc = abbrechen', sTitel: 'Screenshot an {ki}', sRechteck: 'Rechteck', sPfeil: 'Pfeil',
+      sMarkiert: '{n} markiert', sHilfe: 'Im Bild ziehen = markieren · R Rechteck · P Pfeil · Rechtsklick / Strg+Z = zurück', sKommentar: 'Kommentar an {ki} (optional)',
+      sKiStarten: '{ki} starten', sSenden: 'Senden', sKurz: 'Strg+Enter senden · Strg+Umschalt+Enter senden + {ki} starten · Esc abbrechen',
+      sOhneKommentar: 'Screenshot (ohne Kommentar)', sRotMarkiert: 'Rot markiert: {n} Stelle(n) im Bild.', sGesendet: 'Screenshot an {projekt} gesendet.',
+      sKiArbeitet: '{ki} arbeitet.', sKiFehler: 'Screenshot gesendet, aber {ki} konnte nicht starten: {fehler}', sKeineProjekte: 'Noch kein Projekt – bitte zuerst im Board eines anlegen.',
+      sFehler: 'Screenshot nicht gespeichert: {fehler}', sMacRecht: 'fabBoard braucht die Erlaubnis zur Bildschirmaufnahme: Systemeinstellungen → Datenschutz & Sicherheit → Bildschirmaufnahme, fabBoard einschalten und neu starten.',
       // Handy-Seite (handy.html)
       hProjekt: 'Projekt', hOffen: 'offen', hNeuLaden: 'Neu laden', hSchluesselUngueltig: 'Schlüssel ungültig oder abgelaufen.', hNichtGefunden: 'Repo oder Datei nicht gefunden (Name und Schlüssel-Rechte prüfen).',
       hGithubFehler: 'GitHub antwortet mit Fehler {code}.', hLaedt: 'Lädt …', hStand: 'Stand {zeit}', hGespeichert: 'Gespeichert. Der PC holt es vor dem nächsten Lauf.',
@@ -163,6 +178,21 @@
       nurAmRechner: 'Setup is only possible directly on the computer', anbieterUnbekannt: 'Unknown provider', schluesselLeer: 'Please enter a key',
       nichtGefunden: 'Not found', unbekannt: 'Unknown', nurMitPasswort: 'Starting the AI over the network requires a password', spracheName: 'English',
       rsKeineVorschlaege: 'No suggestions', rsWoerterbuch: 'Add to dictionary', rsAusschneiden: 'Cut', rsEinfuegen: 'Paste', rsAllesMarkieren: 'Select all',
+      // App menu, tray (main.js)
+      mDatei: 'File', mBearbeiten: 'Edit', mAnsicht: 'View', mHilfe: 'Help', mScreenshot: 'Take screenshot', mDatenordner: 'Open data folder',
+      mFensterZu: 'Close window', mBeenden: 'Quit', mNeuLaden: 'Reload', mOriginal: 'Actual size', mGroesser: 'Zoom in', mKleiner: 'Zoom out',
+      mVollbild: 'Full screen', mEntwickler: 'Developer tools', mGithub: 'fabBoard on GitHub', mFehlerMelden: 'Report a bug or request a feature',
+      mProtokolle: 'Open logs', mUeber: 'About fabBoard', mWiederholen: 'Redo', mBoardOeffnen: 'Open board',
+      mUeberText: 'A project board where an AI of your choice works on your projects for you.\n\n© 2026 Fabian Diering · MIT License',
+      hintergrundT: 'fabBoard keeps running in the background', hintergrund: 'Screenshot with {kuerzel}. Quit via the icon in the notification area.',
+      kuerzelBelegt: 'The shortcut {kuerzel} is already used by another program; take screenshots via the “File” menu or the notification area icon.',
+      // Screenshot
+      sAuswahl: 'Drag an area · Enter = whole screen · Esc = cancel', sTitel: 'Screenshot to {ki}', sRechteck: 'Rectangle', sPfeil: 'Arrow',
+      sMarkiert: '{n} marked', sHilfe: 'Drag in the image = mark · R rectangle · P arrow · right-click / Ctrl+Z = undo', sKommentar: 'Comment to {ki} (optional)',
+      sKiStarten: 'Start {ki}', sSenden: 'Send', sKurz: 'Ctrl+Enter send · Ctrl+Shift+Enter send + start {ki} · Esc cancel',
+      sOhneKommentar: 'Screenshot (no comment)', sRotMarkiert: 'Marked in red: {n} spot(s) in the image.', sGesendet: 'Screenshot sent to {projekt}.',
+      sKiArbeitet: '{ki} is working.', sKiFehler: 'Screenshot sent, but {ki} could not start: {fehler}', sKeineProjekte: 'No project yet – please create one in the board first.',
+      sFehler: 'Screenshot not saved: {fehler}', sMacRecht: 'fabBoard needs permission to record the screen: System Settings → Privacy & Security → Screen Recording, turn on fabBoard and restart it.',
       hProjekt: 'Project', hOffen: 'open', hNeuLaden: 'Reload', hSchluesselUngueltig: 'Key invalid or expired.', hNichtGefunden: 'Repo or file not found (check name and key permissions).',
       hGithubFehler: 'GitHub responded with error {code}.', hLaedt: 'Loading …', hStand: 'As of {zeit}', hGespeichert: 'Saved. The PC picks it up before the next run.',
       hKonflikt: 'The file was changed meanwhile. Please “Reload” and enter it again.', hFuer: ' · for {ki}', hNeueNachricht: 'New message to {ki}',

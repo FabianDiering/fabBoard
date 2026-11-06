@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>fabBoard – Screenshot</title>
+<link href="schriften/schriften.css" rel="stylesheet">
+<style>
+/* Ein Fenster je Bildschirm, randlos darüber: eingefrorenes Bild, abgedunkelt; gezogener Bereich hell mit orangem Rahmen */
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#000;cursor:crosshair;user-select:none}
+#bild{position:fixed;inset:0;width:100%;height:100%;display:block}
+#dunkel{position:fixed;inset:0;background:rgba(0,0,0,.43)}
+#rahmen{position:fixed;display:none;border:2px solid #F07C1F;box-shadow:0 0 0 100vmax rgba(0,0,0,.43)}
+body.zieht #dunkel{display:none}
+#hilfe{position:fixed;top:16px;left:50%;transform:translateX(-50%);padding:8px 14px;border-radius:6px;background:rgba(26,26,26,.9);color:#fff;font:14px Inter,system-ui,sans-serif;white-space:nowrap;pointer-events:none}
+</style>
+</head>
+<body>
+<img id="bild" alt="">
+<div id="dunkel"></div>
+<div id="rahmen"></div>
+<div id="hilfe"></div>
+<script src="texte.js"></script>
+<script>
+// Ziehen = Bereich wählen · Enter = ganzer Bildschirm · Esc = abbrechen. Koordinaten in Fensterpunkten; main.js rechnet sie in Bildpunkte um.
+const $ = (s) => document.querySelector(s);
+let a = null, b = null;
+const rechteck = () => ({ x: Math.min(a.x, b.x), y: Math.min(a.y, b.y), width: Math.abs(a.x - b.x), height: Math.abs(a.y - b.y) });
+function zeichnen() {
+  const r = $('#rahmen');
+  if (!a) { r.style.display = 'none'; document.body.classList.remove('zieht'); return; }
+  const q = rechteck();
+  Object.assign(r.style, { display: 'block', left: q.x + 'px', top: q.y + 'px', width: q.width + 'px', height: q.height + 'px' });
+  document.body.classList.add('zieht');
+}
+addEventListener('mousedown', (e) => { if (e.button === 0) { a = { x: e.clientX, y: e.clientY }; b = a; zeichnen(); } else if (e.button === 2) fabShot.abbrechen(); });
+addEventListener('mousemove', (e) => { if (a) { b = { x: e.clientX, y: e.clientY }; zeichnen(); } });
+addEventListener('mouseup', (e) => {
+  if (!a || e.button !== 0) return;
+  b = { x: e.clientX, y: e.clientY };
+  const q = rechteck(); a = null;
+  if (q.width > 5 && q.height > 5) fabShot.waehlen(q); else zeichnen();
+});
+addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') fabShot.abbrechen();
+  else if (e.key === 'Enter') fabShot.waehlen(null);
+});
+addEventListener('contextmenu', (e) => e.preventDefault());
+(async () => {
+  try { const s = await fetch('api/einstellungen', { cache: 'no-store' }).then((r) => r.json()); setzeSprache(s.sprache || ''); } catch (e) {}
+  document.documentElement.lang = sprache();
+  $('#hilfe').textContent = T('sAuswahl');
+  if (window.fabShot) $('#bild').src = await fabShot.bild();
+})();
+</script>
+</body>
+</html>

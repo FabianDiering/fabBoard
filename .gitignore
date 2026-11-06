@@ -20,8 +20,5 @@ __pycache__/
 # Vorschaubild, das app/icon-erstellen.ps1 mit anlegt
 app/icon-vorschau*.png
 
-# Nur lokal, bis zum Neubau in der App (Schritt 3 im Plan)
-screenshot.ps1
-Screenshot.bat
-Screenshot einrichten.bat
+# Alte Vorlage für Einstellungen, nur lokal
 einstellungen.beispiel.json

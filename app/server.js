@@ -256,6 +256,32 @@ const server = http.createServer(async (req, res) => {
       const ordner = fs.readdirSync(basis, { withFileTypes: true }).filter((d) => d.isDirectory() && !d.name.startsWith('.')).map((d) => d.name).sort();
       return senden(res, 200, { basis, ordner });
     }
+    // Screenshot aus der App (screenshot.html): Bild nach bilder\<id>\<datum>.png, Nachricht vorn ins Projekt (mit Sicherung), auf Wunsch KI starten
+    const ms = p.match(/^\/api\/screenshot\/([a-z0-9][a-z0-9-]{0,60})$/);
+    if (ms && req.method === 'POST') {
+      const id = ms[1]; const f = path.join(PROJEKTE, id + '.json');
+      if (!fs.existsSync(f)) return senden(res, 404, { fehler: T('projektFehlt') });
+      const w = JSON.parse((await body(req)).toString('utf8') || '{}');
+      const b64 = /^data:image\/png;base64,([A-Za-z0-9+/=]+)$/.exec(String(w.bild || ''));
+      if (!b64) return senden(res, 400, { fehler: T('unbekannt') });
+      const ordner = path.join(DATEN, 'bilder', id); fs.mkdirSync(ordner, { recursive: true });
+      const stamm = jetztText().replace(' ', '_').replace(/:/g, '-'); // 2026-11-06_14-03-22
+      let name = stamm + '.png'; for (let i = 2; fs.existsSync(path.join(ordner, name)); i++) name = `${stamm}-${i}.png`;
+      fs.writeFileSync(path.join(ordner, name), Buffer.from(b64[1], 'base64'));
+      const j = JSON.parse(fs.readFileSync(f, 'utf8'));
+      const n = Math.max(0, Math.floor(Number(w.markiert) || 0));
+      const text = (String(w.kommentar || '').trim() || T('sOhneKommentar')) + (n ? '\n\n' + T('sRotMarkiert', { n }) : '');
+      const nachricht = { id: 'm' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), text, erstellt: jetztText().slice(0, 16), von: 'fabian', status: 'offen', antwort: '', bild: `daten/bilder/${id}/${name}` };
+      j.nachrichten = [nachricht, ...(j.nachrichten || []).filter(Boolean)];
+      const [c, o] = schreiben(f, id, Buffer.from(JSON.stringify(j, null, 1)), null);
+      if (c !== 200) return senden(res, c, o);
+      let kiFehler = '';
+      if (w.kiStarten) {
+        if (process.env.PORT && !PASSWORT) kiFehler = T('nurMitPasswort');
+        else { const [c2, o2] = await claudeStarten(id); if (c2 !== 200) kiFehler = o2.fehler || String(c2); }
+      }
+      return senden(res, 200, { ok: true, bild: nachricht.bild, kiFehler });
+    }
     if (p === '/api/claude' && req.method === 'GET') return senden(res, 200, laufStand());
     const mc = p.match(/^\/api\/claude\/([a-z0-9][a-z0-9-]{0,60})$/);
     if (mc && req.method === 'POST') {
