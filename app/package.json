@@ -1,7 +1,7 @@
 {
   "name": "fabboard",
   "productName": "fabBoard",
-  "version": "1.68.0",
+  "version": "1.69.0",
   "description": "fabBoard: Projektboard, in dem eine KI deiner Wahl für dich arbeitet",
   "main": "main.js",
   "scripts": {
