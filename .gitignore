@@ -1,4 +1,4 @@
-# Daten der Nutzer bleiben lokal
+# Daten der Nutzer bleiben lokal (bei Fabian: eigenes privates Repo fabBoard-daten)
 daten/
 einstellungen.json
 ort.json
@@ -19,3 +19,9 @@ __pycache__/
 
 # Vorschaubild, das app/icon-erstellen.ps1 mit anlegt
 app/icon-vorschau*.png
+
+# Nur lokal, bis zum Neubau in der App (Schritt 3 im Plan)
+screenshot.ps1
+Screenshot.bat
+Screenshot einrichten.bat
+einstellungen.beispiel.json
