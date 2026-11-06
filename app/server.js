@@ -33,7 +33,7 @@ for (const d of [DATEN, PROJEKTE, BACKUP, LAEUFE]) fs.mkdirSync(d, { recursive: 
 // Die Regeln für die KI liegen im Programm; die KI bekommt eine Kopie im Datenordner (laeufe\ wird nicht synchronisiert),
 // weil sie nur dort Zugriff hat und das Programm später in einem Archiv des Installers steckt
 const AUFTRAG = path.join(LAEUFE, 'ki-auftrag.md');
-fs.writeFileSync(AUFTRAG, fs.readFileSync(path.join(APP, 'claude-auftrag.md')));
+fs.writeFileSync(AUFTRAG, fs.readFileSync(path.join(APP, 'ki-auftrag.md')));
 // Einstellungen: daten/einstellungen.json (Vorlage: einstellungen.beispiel.json); fehlende Werte haben Standardwerte
 const EDATEI = path.join(DATEN, 'einstellungen.json');
 let E = {}; try { E = JSON.parse(fs.readFileSync(EDATEI, 'utf8')); } catch (e) {}
@@ -100,7 +100,7 @@ function sync(hochladen) {
   } catch (e) { try { fs.appendFileSync(SYNC_LOG, `Fehler: ${e.message}\r\n`); } catch (x) {} }
 }
 
-// "<KI> starten": ruft das Programm der gewählten KI (anbieter.js) im Projektordner auf, mit den Regeln aus claude-auftrag.md.
+// "<KI> starten": ruft das Programm der gewählten KI (anbieter.js) im Projektordner auf, mit den Regeln aus ki-auftrag.md (gelten für jede KI).
 // Laufend: Läufe, die gerade arbeiten; Letzte: Ergebnis des letzten Laufs je Projekt (für die Anzeige im Board).
 const LAUFEND = {};
 const LETZTE = {};

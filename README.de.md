@@ -32,7 +32,7 @@ Beim ersten Start hilft dir ein kurzer Einrichtungs-Assistent, deine KI zu wähl
 3. Auf **Starten** klicken (der Knopf trägt den Namen deiner KI). Die KI arbeitet im Projektordner, macht aus Nachrichten Fragen mit Optionen, beantwortet deine Fragen und setzt Entschiedenes um.
 4. Fragen per Klick entscheiden; Entschiedenes wandert ins Archiv und wird beim nächsten Lauf umgesetzt.
 
-Die Regeln für die KI stehen in [`app/claude-auftrag.md`](app/claude-auftrag.md). Den Aufbau der Projektdateien beschreibt [`app/beispiel/DATENFORMAT.md`](app/beispiel/DATENFORMAT.md), dazu gibt es zwei Beispielprojekte auf Deutsch und Englisch.
+Die Regeln für die KI stehen in [`app/ki-auftrag.md`](app/ki-auftrag.md). Den Aufbau der Projektdateien beschreibt [`app/beispiel/DATENFORMAT.md`](app/beispiel/DATENFORMAT.md), dazu gibt es zwei Beispielprojekte auf Deutsch und Englisch.
 
 ## Lizenz
 MIT – siehe [LICENSE](LICENSE). © 2026 Fabian Diering

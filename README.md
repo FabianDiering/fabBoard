@@ -32,7 +32,7 @@ On first start, a short setup assistant helps you choose your AI and get it read
 3. Click **Start** (the button carries the name of your AI). The AI runs in the project folder, turns messages into questions with options, answers your questions and implements decided items.
 4. Decide on the questions with a click; decided items go to the archive and are implemented in the next run.
 
-The rules the AI follows are in [`app/claude-auftrag.md`](app/claude-auftrag.md). The format of the project files is described in [`app/beispiel/DATENFORMAT.md`](app/beispiel/DATENFORMAT.md), with two example projects in German and English.
+The rules the AI follows are in [`app/ki-auftrag.md`](app/ki-auftrag.md). The format of the project files is described in [`app/beispiel/DATENFORMAT.md`](app/beispiel/DATENFORMAT.md), with two example projects in German and English.
 
 ## Licence
 MIT – see [LICENSE](LICENSE). © 2026 Fabian Diering
