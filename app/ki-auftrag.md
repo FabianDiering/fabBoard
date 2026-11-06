@@ -55,7 +55,8 @@ Die Werte `fabian` und `claude` in `von` und `wer` sind feste Rollen, keine Name
 
 ## Regeln
 - Das Thema „Später“ (`id: spaeter`) überspringst du in allen Schritten. Das Feld `herkunft` an Einträgen bleibt unverändert.
-- Lies die Projektdatei unmittelbar vor dem Schreiben frisch ein und schreibe sie als gültiges JSON (UTF-8, ohne BOM) zurück. Alle Felder, die du nicht bearbeitest, bleiben unverändert. Setze `geaendert` auf `YYYY-MM-DD HH:MM`.
+- Lies die Projektdatei unmittelbar vor dem Schreiben frisch ein und schreibe sie als gültiges JSON (UTF-8, ohne BOM) zurück, im bisherigen Format (Einrückung mit 1 Leerzeichen, Zeilenende LF). Alle Felder, die du nicht bearbeitest, bleiben unverändert. Setze `geaendert` auf `YYYY-MM-DD HH:MM`.
+- Lege im Datenordner keine eigenen Dateien an (keine Hilfsskripte, Kopien oder umformatierten Fassungen der Projektdatei); jede `.json` in `projekte\` hält fabBoard für ein Projekt. Brauchst du eine Hilfsdatei, dann im temporären Ordner des Systems, und lösche sie danach.
 - Ändere Code ausschließlich in Schritt 1 und ausschließlich im Projektordner.
 - Nichts löschen außer den oben genannten Board-Einträgen. Keine Pakete installieren, nichts veröffentlichen, kein `git push`.
 - In den Unterordner `entwuerfe` im Projektordner kommen nur grafische Entwürfe (Layouts, Oberflächen, Muster). Fehlt der Ordner, legst du ihn an. Jeden neuen Entwurf öffnest du nach dem Anlegen im Standardbrowser, sofern du Befehle ausführen darfst (Windows: `Start-Process "<Pfad>"`, Mac: `open "<Pfad>"`).

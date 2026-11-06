@@ -190,7 +190,8 @@ const server = http.createServer(async (req, res) => {
     const p = decodeURIComponent(url.pathname);
     const erwartet = url.searchParams.has('mtime') ? Number(url.searchParams.get('mtime')) : null;
     if (p === '/api/alles' && req.method === 'GET') {
-      const projekte = projektdateien().map((n) => mitMtime(path.join(PROJEKTE, n)));
+      // Kaputte oder fremde .json-Dateien (z. B. Hilfsdateien einer KI) überspringen, statt das ganze Board scheitern zu lassen
+      const projekte = projektdateien().map((n) => { try { const p = mitMtime(path.join(PROJEKTE, n)); return p && p.id ? p : null; } catch (e) { return null; } }).filter(Boolean);
       return senden(res, 200, { projekte });
     }
     // Sprache wählen: 'de', 'en' oder '' (= Systemsprache); gespeichert in einstellungen.json

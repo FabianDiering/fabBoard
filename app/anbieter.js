@@ -13,6 +13,10 @@ const C = WIN ? '.cmd' : ''; // npm-Programme heißen unter Windows z. B. codex.
 
 const CLAUDE_INSTALL = WIN ? 'irm https://claude.ai/install.ps1 | iex' : 'curl -fsSL https://claude.ai/install.sh | bash';
 const AGY_INSTALL = WIN ? 'irm https://antigravity.google/cli/install.ps1 | iex' : 'curl -fsSL https://antigravity.google/cli/install.sh | bash';
+// Mistral Vibe ab 3.x startet ein unsigniertes Programm (vibe-rs.exe), das die Intelligente App-Steuerung von Windows 11 blockiert.
+// Deshalb Vibe 2.x mit Python-Oberfläche, unter Windows gestartet über das Python der Vibe-Umgebung (VIBE_CLI=python).
+const VIBE_INSTALL = 'uv tool install --python 3.13 "mistral-vibe<3"';
+const VIBE_START = WIN ? `$env:VIBE_CLI = 'python'; & "$env:APPDATA\\uv\\tools\\mistral-vibe\\Scripts\\python.exe" -c "from vibe.cli.launcher import main; main()"` : 'vibe';
 const UV_INSTALL = WIN ? 'powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"' : 'curl -LsSf https://astral.sh/uv/install.sh | sh';
 
 // gruppe: abo (Konto/Abo), schluessel (eigener API-Schlüssel), lokal (Modell auf dem eigenen Rechner)
@@ -27,6 +31,8 @@ const ANBIETER = [
     installieren: [`npm${C} install -g @openai/codex`], anmelden: `codex${C} login`, bedingungen: 'https://openai.com/policies/row-terms-of-use/' },
   { id: 'gemini', gruppe: 'abo', name: 'Gemini (Antigravity)', kurz: 'Gemini', konto: 'kontoGemini', programm: 'agy', motor: 'agy',
     installieren: [AGY_INSTALL], anmelden: 'agy', anmeldenText: 'agyAnmelden', bedingungen: 'https://antigravity.google/terms' },
+  { id: 'mistral', gruppe: 'abo', name: 'Mistral (Vibe)', kurz: 'Mistral', konto: 'kontoMistral', programm: 'vibe', motor: 'vibe',
+    installieren: [UV_INSTALL, VIBE_INSTALL], anmelden: VIBE_START, anmeldenText: 'vibeAnmelden', bedingungen: 'https://mistral.ai/terms' },
   { id: 'anthropic-key', gruppe: 'schluessel', name: 'Anthropic (Claude)', kurz: 'Claude', konto: 'kontoNutzung', programm: 'claude', motor: 'claude',
     env: ['ANTHROPIC_API_KEY'], schluesselUrl: 'https://console.anthropic.com/settings/keys', installieren: [CLAUDE_INSTALL], bedingungen: 'https://www.anthropic.com/legal/commercial-terms' },
   { id: 'openai-key', gruppe: 'schluessel', name: 'OpenAI (GPT)', kurz: 'Codex', konto: 'kontoNutzung', programm: 'codex', motor: 'codex', node: true,
@@ -34,7 +40,7 @@ const ANBIETER = [
   { id: 'google-key', gruppe: 'schluessel', name: 'Google (Gemini)', kurz: 'Gemini', konto: 'kontoGoogleKey', programm: 'gemini', motor: 'gemini', node: true,
     env: ['GEMINI_API_KEY'], schluesselUrl: 'https://aistudio.google.com/apikey', installieren: [`npm${C} install -g @google/gemini-cli`], bedingungen: 'https://ai.google.dev/gemini-api/terms' },
   { id: 'mistral-key', gruppe: 'schluessel', name: 'Mistral', kurz: 'Mistral', konto: 'kontoNutzung', programm: 'vibe', motor: 'vibe',
-    env: ['MISTRAL_API_KEY'], schluesselUrl: 'https://console.mistral.ai/api-keys', installieren: [UV_INSTALL, 'uv tool install mistral-vibe'], bedingungen: 'https://mistral.ai/terms' },
+    env: ['MISTRAL_API_KEY'], schluesselUrl: 'https://console.mistral.ai/api-keys', installieren: [UV_INSTALL, VIBE_INSTALL], bedingungen: 'https://mistral.ai/terms' },
   { id: 'ollama', gruppe: 'lokal', name: 'Ollama', kurz: 'Ollama', konto: 'kontoLokal', programm: 'codex', motor: 'codex', node: true,
     lokal: { provider: 'ollama', url: 'http://127.0.0.1:11434/api/tags', liste: (j) => (j.models || []).map((m) => m.name), laden: 'https://ollama.com/download', modellBefehl: 'ollama pull qwen3-coder' },
     installieren: [`npm${C} install -g @openai/codex`], bedingungen: 'https://ollama.com' },
@@ -58,6 +64,13 @@ function programmFinden(name) {
   }
   return null;
 }
+// Mistral Vibe: unter Windows über das Python der Vibe-Umgebung starten (siehe VIBE_INSTALL); vor = Argumente vor den eigenen
+function vibeAufruf() {
+  const py = WIN && process.env.APPDATA ? path.join(process.env.APPDATA, 'uv', 'tools', 'mistral-vibe', 'Scripts', 'python.exe') : '';
+  if (py && fs.existsSync(py)) return { exe: py, vor: ['-c', 'from vibe.cli.launcher import main; main()'] };
+  const exe = programmFinden('vibe');
+  return exe ? { exe, vor: [] } : null;
+}
 // .cmd-Dateien startet Node unter Windows nur über cmd.exe; Anführungszeichen in Argumenten werden dabei zu '
 function aufruf(exe, args) {
   if (WIN && /\.(cmd|bat)$/i.test(exe)) {
@@ -66,12 +79,12 @@ function aufruf(exe, args) {
   }
   return [exe, args, {}];
 }
-function ausfuehren(exe, args, sek = 20) {
+function ausfuehren(exe, args, sek = 20, envPlus = null) {
   return new Promise((ok) => {
     const [cmd, a, o] = aufruf(exe, args);
     let out = '';
     let p;
-    try { p = spawn(cmd, a, { ...o, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] }); } catch (e) { return ok({ code: -1, out: e.message }); }
+    try { p = spawn(cmd, a, { ...o, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'], ...(envPlus ? { env: { ...process.env, ...envPlus } } : {}) }); } catch (e) { return ok({ code: -1, out: e.message }); }
     const t = setTimeout(() => { try { p.kill(); } catch (e) {} }, sek * 1000);
     p.stdout.on('data', (c) => { out += c; });
     p.stderr.on('data', (c) => { out += c; });
@@ -118,14 +131,16 @@ async function pruefen(id, modell, claudePfad) {
   const a = finde(id);
   if (!a) return null;
   const s = [];
-  const exe = (a.motor === 'claude' && claudePfad) || programmFinden(a.programm);
+  const va = a.motor === 'vibe' ? vibeAufruf() : null;
+  const exe = a.motor === 'vibe' ? va?.exe : (a.motor === 'claude' && claudePfad) || programmFinden(a.programm);
+  const vor = va ? va.vor : [];
   // 1. Programm installiert?
   const shell = WIN ? T('shell') : T('terminal');
   if (a.node && !exe && !programmFinden('node')) {
     s.push({ titel: T('nodeT'), ok: false, text: T('nodeText', { name: a.name }), link: 'https://nodejs.org', linkText: T('nodeLink') });
   }
   let version = '';
-  if (exe) { const v = await ausfuehren(exe, ['--version']); if (v.code === 0) version = v.out.split('\n')[0].trim(); }
+  if (exe) { const v = await ausfuehren(exe, [...vor, '--version'], 30, { VIBE_CLI: 'python' }); if (v.code === 0) version = v.out.split('\n')[0].trim().replace(/^-c\s+/, ''); }
   const prog = a.motor === 'claude' ? 'Claude Code' : a.motor === 'codex' ? 'OpenAI Codex' : a.motor === 'gemini' ? 'Gemini CLI' : a.motor === 'agy' ? 'Antigravity CLI' : 'Mistral Vibe';
   s.push(version
     ? { titel: T('installiertT', { prog }), ok: true, text: version }
@@ -145,6 +160,11 @@ async function pruefen(id, modell, claudePfad) {
     if (a.motor === 'claude') { const r = await ausfuehren(exe, ['auth', 'status']); try { an = JSON.parse(r.out).loggedIn === true; } catch (e) {} }
     if (a.motor === 'codex') { const r = await ausfuehren(exe, ['login', 'status']); an = r.code === 0 && /logged in/i.test(r.out); }
     // Antigravity hat keinen Statusbefehl: unter Windows liegt die Anmeldung in der Anmeldeinformationsverwaltung, sonst ein kurzer Probelauf
+    // Mistral Vibe legt die Anmeldung unter Windows in der Anmeldeinformationsverwaltung ab (ai.mistral.vibe), sonst in ~/.vibe/.env
+    if (a.motor === 'vibe') {
+      if (WIN) { const r = await ausfuehren('cmdkey', ['/list']); an = /ai\.mistral\.vibe/i.test(r.out); }
+      else an = fs.existsSync(path.join(HOME, '.vibe', '.env'));
+    }
     if (a.motor === 'agy') {
       if (WIN) { const r = await ausfuehren('cmdkey', ['/list']); an = /gemini:antigravity/i.test(r.out); }
       else { const r = await ausfuehren(exe, ['-p', 'OK', '--output-format', 'json'], 60); try { an = JSON.parse(r.out.slice(r.out.indexOf('{'))).status === 'SUCCESS'; } catch (e) {} }
@@ -160,7 +180,8 @@ async function pruefen(id, modell, claudePfad) {
 async function startBefehl(id, { prompt, ordner, root, modell, claudeModell, claudePfad }) {
   const a = finde(id);
   if (!a) throw new Error(T('erstEinrichten'));
-  const exe = (a.motor === 'claude' && claudePfad) || programmFinden(a.programm);
+  const va = a.motor === 'vibe' ? vibeAufruf() : null;
+  const exe = a.motor === 'vibe' ? va?.exe : (a.motor === 'claude' && claudePfad) || programmFinden(a.programm);
   if (!exe) throw new Error(T('programmFehlt', { name: a.name }));
   const env = { ...process.env };
   if (a.env) {
@@ -185,7 +206,10 @@ async function startBefehl(id, { prompt, ordner, root, modell, claudeModell, cla
     env.GEMINI_CLI_TRUST_WORKSPACE = 'true';
     return { exe, env, text: a.name, args: ['-p', prompt, '--yolo', '--include-directories', root] };
   }
-  return { exe, env, text: a.name, args: ['--prompt', prompt, '--auto-approve'] };
+  // Mistral Vibe: --trust überspringt die Ordner-Rückfrage, --add-dir gibt den Datenordner frei; liest AGENTS.md im Projektordner
+  env.VIBE_CLI = 'python';
+  env.PYTHONUTF8 = '1'; env.PYTHONIOENCODING = 'utf-8'; // sonst schreibt Python unter Windows das Protokoll in der Codepage der Konsole (Umlaute kaputt)
+  return { exe, env, text: a.name, args: [...va.vor, '--trust', '--workdir', ordner, '--add-dir', root, '--prompt', prompt, '--auto-approve'] };
 }
 
 module.exports = { ANBIETER, finde, oeffentlich, pruefen, startBefehl, aufruf, schluesselSpeichern, schluesselLesen, lokaleModelle };
