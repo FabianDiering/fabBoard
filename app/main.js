@@ -26,9 +26,14 @@ async function fensterOeffnen() {
     title: 'fabBoard',
     icon: path.join(__dirname, 'icon.ico'), // Symbol in der Taskleiste und oben links im Fenster
     autoHideMenuBar: true,
+    // Sicherheit: Die Oberfläche bekommt keinen Zugriff auf Node.js oder das Dateisystem (Electron-Standard, hier ausdrücklich)
+    webPreferences: { contextIsolation: true, nodeIntegration: false, sandbox: true },
   });
-  // Links nach außen (z. B. Websites) im normalen Browser öffnen, nicht im App-Fenster.
-  fenster.webContents.setWindowOpenHandler(({ url }) => { shell.openExternal(url); return { action: 'deny' }; });
+  // Links nach außen (z. B. Websites) im normalen Browser öffnen, nicht im App-Fenster; nur Web- und Mail-Adressen,
+  // keine Dateien oder Programme (file:, ms-…: usw.). Das Fenster selbst bleibt immer beim Board.
+  const nachAussen = (url) => { if (/^(https?:|mailto:)/i.test(url)) shell.openExternal(url); };
+  fenster.webContents.setWindowOpenHandler(({ url }) => { nachAussen(url); return { action: 'deny' }; });
+  fenster.webContents.on('will-navigate', (e, url) => { if (!url.startsWith(ADRESSE + '/') && url !== ADRESSE) { e.preventDefault(); nachAussen(url); } });
   rechtschreibung(fenster.webContents);
   fenster.loadURL(ADRESSE);
 }

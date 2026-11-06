@@ -167,8 +167,21 @@ function laufStand() {
   return st;
 }
 
+// Schutz vor fremden Webseiten im Browser des Nutzers: Ohne Netzwerkbetrieb nimmt der Server nur Anfragen an
+// localhost/127.0.0.1 an (gegen DNS-Rebinding). Schickt der Browser einen Origin mit, muss er zur eigenen Adresse
+// passen (gegen CSRF, z. B. ein Formular auf einer fremden Seite, das einen KI-Lauf startet). Programme ohne
+// Browser (Screenshot-Skript) schicken keinen Origin und bleiben erlaubt.
+const LOKALE_HOSTS = new Set([`localhost:${PORT}`, `127.0.0.1:${PORT}`, `[::1]:${PORT}`]);
+function fremdeAnfrage(req) {
+  const host = String(req.headers.host || '').toLowerCase();
+  if (!process.env.PORT && !LOKALE_HOSTS.has(host)) return true;
+  const origin = req.headers.origin;
+  return origin !== undefined && origin.toLowerCase() !== `http://${host}`;
+}
+
 const server = http.createServer(async (req, res) => {
   try {
+    if (fremdeAnfrage(req)) { res.writeHead(403); return res.end(); }
     if (PASSWORT) {
       const pw = Buffer.from((req.headers.authorization || '').replace(/^Basic /, ''), 'base64').toString().split(':').slice(1).join(':');
       if (pw !== PASSWORT) { res.writeHead(401, { 'WWW-Authenticate': 'Basic realm="fabBoard"' }); return res.end(); }
