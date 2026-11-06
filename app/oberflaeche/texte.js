@@ -117,6 +117,9 @@
       anmFenster: 'fabBoard: Anmeldung bei {name}. Folge den Schritten in diesem Fenster und im Browser.',
       anmFertig: 'Fertig. Du kannst dieses Fenster schließen und zu fabBoard zurückkehren.',
       // App-Menü, Infobereich (main.js)
+      updT: 'fabBoard {version} ist bereit', upd: 'Das Update ist heruntergeladen. Jetzt neu starten und installieren? Sonst wird es beim nächsten Beenden installiert.',
+      updJetzt: 'Jetzt neu starten', updSpaeter: 'Später', updSuchen: 'Nach Updates suchen', updAktuell: 'fabBoard ist auf dem neuesten Stand ({version}).',
+      updLaedt: 'Version {version} wird heruntergeladen. fabBoard fragt, sobald sie bereit ist.', updFehler: 'Updates konnten nicht geprüft werden: {fehler}',
       mDatei: 'Datei', mBearbeiten: 'Bearbeiten', mAnsicht: 'Ansicht', mHilfe: 'Hilfe', mScreenshot: 'Screenshot aufnehmen', mDatenordner: 'Datenordner öffnen',
       mFensterZu: 'Fenster schließen', mBeenden: 'Beenden', mNeuLaden: 'Neu laden', mOriginal: 'Originalgröße', mGroesser: 'Vergrößern', mKleiner: 'Verkleinern',
       mVollbild: 'Vollbild', mEntwickler: 'Entwicklerwerkzeuge', mGithub: 'fabBoard auf GitHub', mFehlerMelden: 'Fehler melden oder Wunsch äußern',
@@ -239,6 +242,9 @@
       anmFenster: 'fabBoard: signing in to {name}. Follow the steps in this window and in the browser.',
       anmFertig: 'Done. You can close this window and return to fabBoard.',
       // App menu, tray (main.js)
+      updT: 'fabBoard {version} is ready', upd: 'The update has been downloaded. Restart and install now? Otherwise it is installed the next time you quit.',
+      updJetzt: 'Restart now', updSpaeter: 'Later', updSuchen: 'Check for updates', updAktuell: 'fabBoard is up to date ({version}).',
+      updLaedt: 'Version {version} is downloading. fabBoard will ask as soon as it is ready.', updFehler: 'Could not check for updates: {fehler}',
       mDatei: 'File', mBearbeiten: 'Edit', mAnsicht: 'View', mHilfe: 'Help', mScreenshot: 'Take screenshot', mDatenordner: 'Open data folder',
       mFensterZu: 'Close window', mBeenden: 'Quit', mNeuLaden: 'Reload', mOriginal: 'Actual size', mGroesser: 'Zoom in', mKleiner: 'Zoom out',
       mVollbild: 'Full screen', mEntwickler: 'Developer tools', mGithub: 'fabBoard on GitHub', mFehlerMelden: 'Report a bug or request a feature',

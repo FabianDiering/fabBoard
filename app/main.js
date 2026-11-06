@@ -127,6 +127,7 @@ function menueBauen() {
       { label: t('mProtokolle'), click: () => ordnerOeffnen('laeufe') },
       { type: 'separator' },
       { label: t('impressum'), click: () => imBoard("document.getElementById('impK').click()") },
+      ...(app.isPackaged ? [{ label: t('updSuchen'), click: () => updatesPruefen(true) }] : []),
       { label: t('mUeber'), click: ueber },
     ] },
   ];
@@ -256,6 +257,33 @@ ipcMain.on('shot:fertig', (e, x) => {
   if (fenster) fenster.webContents.executeJavaScript('typeof abgleich === "function" && abgleich()').catch(() => {});
 });
 
+// ---------- Updates (nur in der installierten App): electron-updater lädt neue Versionen von GitHub Releases im Hintergrund,
+// danach fragt fabBoard, ob es jetzt neu starten soll; sonst wird beim nächsten Beenden installiert. Fehler (offline usw.) bleiben still,
+// außer der Nutzer hat selbst über „Hilfe → Nach Updates suchen“ geprüft.
+let AU = null;
+function updater() {
+  if (AU || !app.isPackaged || process.env.FABBOARD_PROFIL) return AU;
+  try { AU = require('electron-updater').autoUpdater; } catch (e) { return null; }
+  AU.autoDownload = true; AU.autoInstallOnAppQuit = true;
+  AU.on('error', () => {});
+  AU.on('update-downloaded', async (info) => {
+    const r = await dialog.showMessageBox(fenster && fenster.isVisible() ? fenster : undefined, { type: 'info', title: 'fabBoard', icon: nativeImage.createFromPath(ICON),
+      message: t('updT', { version: info.version }), detail: t('upd'), buttons: [t('updJetzt'), t('updSpaeter')], defaultId: 0, cancelId: 1 });
+    if (r.response === 0) { beenden = true; AU.quitAndInstall(true, true); }
+  });
+  return AU;
+}
+async function updatesPruefen(vonHand) {
+  const au = updater();
+  if (!au) return;
+  try {
+    const r = await au.checkForUpdates();
+    const neu = r && r.isUpdateAvailable;
+    if (vonHand && !neu) dialog.showMessageBox(fenster, { type: 'info', title: 'fabBoard', message: t('updAktuell', { version: app.getVersion() }) });
+    if (vonHand && neu) melden('fabBoard', t('updLaedt', { version: r.updateInfo.version }));
+  } catch (e) { if (vonHand) dialog.showMessageBox(fenster, { type: 'warning', title: 'fabBoard', message: t('updFehler', { fehler: e.message.split('\n')[0] }) }); }
+}
+
 // Rechtschreibprüfung: Prüfsprache folgt der Board-Sprache (<html lang>), Rechtsklick zeigt Vorschläge und Bearbeiten-Befehle.
 // Texte direkt aus TEXTE, nicht über setzeSprache(), weil server.js dieselbe Sprachdatei nutzt.
 function rechtschreibung(wc) {
@@ -299,6 +327,9 @@ else {
     fenster.on('focus', spracheAbgleichen);
     // Tastenkürzel gilt systemweit, solange fabBoard läuft (auch im Hintergrund)
     if (!globalShortcut.register(KUERZEL, screenshot)) setTimeout(() => melden('fabBoard', t('kuerzelBelegt', { kuerzel: KUERZEL_TEXT })), 3000);
+    // Updates: kurz nach dem Start und dann alle 6 Stunden
+    setTimeout(() => updatesPruefen(false), 15000);
+    setInterval(() => updatesPruefen(false), 6 * 60 * 60 * 1000);
   });
   app.on('before-quit', () => { beenden = true; });
   app.on('will-quit', () => globalShortcut.unregisterAll());

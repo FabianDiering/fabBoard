@@ -1,17 +1,75 @@
 {
   "name": "fabboard",
   "productName": "fabBoard",
-  "version": "0.1.0",
-  "description": "fabBoard als Desktop-App",
+  "version": "1.62.0",
+  "description": "fabBoard: Projektboard, in dem eine KI deiner Wahl für dich arbeitet",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "installer": "electron-builder --win nsis",
+    "installer-ohne-veroeffentlichen": "electron-builder --win nsis --publish never"
   },
   "keywords": [],
   "author": "Fabian Diering",
   "license": "MIT",
   "type": "commonjs",
   "devDependencies": {
-    "electron": "^45.2.3"
+    "electron": "^45.2.3",
+    "electron-builder": "^26.18.0"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.11"
+  },
+  "homepage": "https://github.com/FabianDiering/fabBoard",
+  "build": {
+    "appId": "io.github.fabiandiering.fabboard",
+    "productName": "fabBoard",
+    "copyright": "© 2026 Fabian Diering",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!dist/**",
+      "!icon-erstellen.ps1",
+      "!icon-vorschau*.png",
+      "!beispiel/beispiele_erstellen.py",
+      "!**/*.log"
+    ],
+    "asarUnpack": [
+      "icon.ico"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "icon.ico"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowElevation": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "fabBoard",
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": false,
+      "artifactName": "fabBoard-Setup-${version}.${ext}"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "category": "public.app-category.productivity",
+      "identity": null
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "FabianDiering",
+        "repo": "fabBoard",
+        "releaseType": "draft"
+      }
+    ]
   }
 }

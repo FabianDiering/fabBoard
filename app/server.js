@@ -40,7 +40,9 @@ let E = {}; try { E = JSON.parse(fs.readFileSync(EDATEI, 'utf8')); } catch (e) {
 // anbieter/modell: gewählte KI aus dem Einrichtungs-Assistenten (anbieter.js); leer = Assistent erscheint beim Start
 const EINSTELLUNGEN = { name: E.name || require('os').userInfo().username, projekteOrdner: E.projekteOrdner && fs.existsSync(E.projekteOrdner) ? E.projekteOrdner : (fs.existsSync(path.join(os.homedir(), 'Documents')) ? path.join(os.homedir(), 'Documents') : os.homedir()), datenOrdner: DATEN, anbieter: E.anbieter || '', modell: E.modell || '', sprache: E.sprache || '',
   // eingerichtet: Ersteinrichtung abgeschlossen (wer schon eine KI gewählt hat, gilt als eingerichtet)
-  eingerichtet: !!(E.eingerichtet || E.anbieter) };
+  eingerichtet: !!(E.eingerichtet || E.anbieter),
+  // Versionsnummer: einzige Quelle ist package.json (Installer und Board zeigen dieselbe)
+  version: require('./package.json').version };
 // Neue Werte in einstellungen.json übernehmen; alle übrigen Felder bleiben
 function einstellungenSpeichern(neu) {
   let alt = {}; try { alt = JSON.parse(fs.readFileSync(EDATEI, 'utf8')); } catch (e) {}

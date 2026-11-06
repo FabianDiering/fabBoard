@@ -1,0 +1,37 @@
+# Baut den Windows-Installer, sobald ein Versions-Tag (z. B. v1.62.0) hochgeladen wird, und legt ihn als Entwurf in GitHub Releases ab.
+# Der Entwurf wird erst sichtbar, wenn er auf GitHub veröffentlicht wird; erst dann finden installierte Apps das Update.
+# Signieren: folgt mit SignPath Foundation (Plan, Schritt 7), sobald das Repo öffentlich ist.
+name: Installer
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - run: npm ci
+      # Tag und Version in package.json müssen übereinstimmen, sonst bricht der Build ab
+      - name: Version prüfen
+        shell: bash
+        run: |
+          v=$(node -p "require('./package.json').version")
+          if [ "${GITHUB_REF_TYPE}" = "tag" ] && [ "v$v" != "${GITHUB_REF_NAME}" ]; then echo "Tag ${GITHUB_REF_NAME} passt nicht zu package.json ($v)"; exit 1; fi
+      - name: Installer bauen und als Entwurf hochladen
+        run: npx electron-builder --win nsis --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
