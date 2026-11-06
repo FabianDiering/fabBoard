@@ -4,7 +4,7 @@
 
 fabBoard is a desktop board for working on your projects with an AI coding agent – without chatting. You collect questions, ideas, instructions and tasks per project. The AI works through them on its own, asks back with concrete options and a recommendation, and you decide with a click. Then it implements what you decided.
 
-- **Any AI you like:** Claude Code, OpenAI Codex, Gemini CLI – with your subscription, with an API key (Anthropic, OpenAI, Google, Mistral) or with a local model (Ollama, LM Studio).
+- **Any AI you like:** Claude Code or OpenAI Codex with your subscription, your own API key (Anthropic, OpenAI, Google Gemini, Mistral) or a local model (Ollama, LM Studio).
 - **Your data stays with you:** projects are plain JSON files in a folder on your computer (`Documents\fabBoard`). API keys are stored encrypted on your computer.
 - **German and English:** follows your system language, can be changed in the setup.
 - **Free and open source** (MIT licence).

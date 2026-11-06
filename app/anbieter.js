@@ -17,14 +17,12 @@ const UV_INSTALL = WIN ? 'powershell -ExecutionPolicy ByPass -c "irm https://ast
 // gruppe: abo (Konto/Abo), schluessel (eigener API-Schlüssel), lokal (Modell auf dem eigenen Rechner)
 // konto, anmeldenText: Schlüssel in oberflaeche/texte.js (Deutsch/Englisch)
 // motor: welches offizielle Programm die Arbeit macht
+// Gemini CLI mit Google-Konto gibt es nicht mehr (2026-11-06: Google lehnt den kostenlosen Zugang für dieses Programm ab); Gemini nur per API-Schlüssel
 const ANBIETER = [
   { id: 'claude', gruppe: 'abo', name: 'Claude Code', kurz: 'Claude', konto: 'kontoClaude', programm: 'claude', motor: 'claude',
     installieren: [CLAUDE_INSTALL], anmelden: 'claude auth login', bedingungen: 'https://www.anthropic.com/legal/consumer-terms' },
   { id: 'codex', gruppe: 'abo', name: 'OpenAI Codex', kurz: 'Codex', konto: 'kontoCodex', programm: 'codex', motor: 'codex', node: true,
     installieren: [`npm${C} install -g @openai/codex`], anmelden: `codex${C} login`, bedingungen: 'https://openai.com/policies/row-terms-of-use/' },
-  { id: 'gemini', gruppe: 'abo', name: 'Gemini CLI', kurz: 'Gemini', konto: 'kontoGemini', programm: 'gemini', motor: 'gemini', node: true,
-    installieren: [`npm${C} install -g @google/gemini-cli`], anmelden: `gemini${C}`,
-    anmeldenText: 'geminiAnmelden', bedingungen: 'https://policies.google.com/terms' },
   { id: 'anthropic-key', gruppe: 'schluessel', name: 'Anthropic (Claude)', kurz: 'Claude', konto: 'kontoNutzung', programm: 'claude', motor: 'claude',
     env: ['ANTHROPIC_API_KEY'], schluesselUrl: 'https://console.anthropic.com/settings/keys', installieren: [CLAUDE_INSTALL], bedingungen: 'https://www.anthropic.com/legal/commercial-terms' },
   { id: 'openai-key', gruppe: 'schluessel', name: 'OpenAI (GPT)', kurz: 'Codex', konto: 'kontoNutzung', programm: 'codex', motor: 'codex', node: true,
@@ -141,7 +139,6 @@ async function pruefen(id, modell, claudePfad) {
     let an = false;
     if (a.motor === 'claude') { const r = await ausfuehren(exe, ['auth', 'status']); try { an = JSON.parse(r.out).loggedIn === true; } catch (e) {} }
     if (a.motor === 'codex') { const r = await ausfuehren(exe, ['login', 'status']); an = r.code === 0 && /logged in/i.test(r.out); }
-    if (a.motor === 'gemini') an = fs.existsSync(path.join(HOME, '.gemini', 'oauth_creds.json'));
     s.push(an ? { titel: T('angemeldetT'), ok: true, text: T('angemeldet', { prog }) }
       : { titel: T('anmeldenT'), ok: false, text: a.anmeldenText ? T(a.anmeldenText) : T('anmelden', { shell }), befehle: [a.anmelden] });
   }

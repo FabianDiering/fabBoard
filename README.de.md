@@ -4,7 +4,7 @@
 
 fabBoard ist ein Board für den Desktop, mit dem du deine Projekte zusammen mit einem KI-Programmierassistenten bearbeitest – ohne Chat. Du sammelst je Projekt Fragen, Ideen, Anweisungen und Aufgaben. Die KI arbeitet sie selbstständig ab, fragt mit konkreten Optionen und einer Empfehlung zurück, und du entscheidest per Klick. Danach setzt sie um, was du entschieden hast.
 
-- **Freie Wahl der KI:** Claude Code, OpenAI Codex, Gemini CLI – mit deinem Abo, mit einem API-Schlüssel (Anthropic, OpenAI, Google, Mistral) oder mit einem lokalen Modell (Ollama, LM Studio).
+- **Freie Wahl der KI:** Claude Code oder OpenAI Codex mit deinem Abo, ein eigener API-Schlüssel (Anthropic, OpenAI, Google Gemini, Mistral) oder ein lokales Modell (Ollama, LM Studio).
 - **Deine Daten bleiben bei dir:** Projekte sind einfache JSON-Dateien in einem Ordner auf deinem Rechner (`Dokumente\fabBoard`). API-Schlüssel werden verschlüsselt auf deinem Rechner gespeichert.
 - **Deutsch und Englisch:** richtet sich nach der Systemsprache, umstellbar in der Einrichtung.
 - **Kostenlos und Open Source** (MIT-Lizenz).
