@@ -84,6 +84,9 @@ dialog .imp p.copy{margin:2px 0 10px;font-size:13px;color:var(--text2)}
 /* Technische Daten im Impressum: kleiner, damit der Dialog kurz bleibt */
 dialog .imp h3{margin:16px 0 4px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 dialog .imp dl.tech{font-size:12.5px;line-height:1.4}
+dialog .imp ul.feat{margin:2px 0 0;padding-left:16px;font-size:12.5px;line-height:1.45;color:var(--ink)}
+dialog .imp ul.feat li{margin:1px 0}
+dialog .imp form,dialog form.imp{max-height:86vh;overflow:auto}
 .rechts{min-width:0}
 textarea.kom{width:100%;min-height:34px;border:1px solid var(--line);border-radius:6px;background:var(--kfield);padding:5px 8px;font:12.5px/1.4 var(--sans);resize:vertical;vertical-align:top}
 .plusp{display:block;background:none;border:0;padding:5px 0 4px;font-size:12.5px;color:var(--muted);cursor:pointer}
@@ -267,7 +270,7 @@ dialog .suche .leer{color:var(--muted);font-size:13px;margin:6px 0}
 </head>
 <body>
 <div class="wrap">
-  <div class="oben"><header class="kopf"><span class="mk"><span class="marke" id="marke">fabBoard<span class="pkt">.</span></span><span class="ver" id="version">v1.78</span></span><span class="kr"><button class="lk zahnrad" data-a="suche" id="sKnopf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></button><button class="lk zahnrad" data-a="einstellungen" id="eKnopf" aria-controls="einst" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button><span id="lauf"></span></span></header>
+  <div class="oben"><header class="kopf"><span class="mk"><span class="marke" id="marke">fabBoard<span class="pkt">.</span></span><span class="ver" id="version">v1.79</span></span><span class="kr"><button class="lk zahnrad" data-a="suche" id="sKnopf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></button><button class="lk zahnrad" data-a="einstellungen" id="eKnopf" aria-controls="einst" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button><span id="lauf"></span></span></header>
   <nav class="tabs" id="tabs"></nav></div>
   <main id="main"></main>
 </div>
@@ -873,6 +876,8 @@ function impressum() {
     <dl><dt>${T('impName')}</dt><dd>Fabian Diering</dd><dt>${T('impAnschrift')}</dt><dd>${T('impFolgt')}</dd><dt>${T('impEmail')}</dt><dd><a href="mailto:fab@fabboard.de">fab@fabboard.de</a></dd></dl>
     <p class="copy">© 2026 Fabian Diering</p>
     <p>${T('impHinweis')}</p>
+    <h3>${T('featT')}</h3>
+    <ul class="feat">${T('feat').map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
     <h3>${T('techT')}</h3>
     <dl class="tech">${[['techProgramm', 'techProgrammW'], ['techServer', 'techServerW'], ['techDaten', 'techDatenW'], ['techKi', 'techKiW'], ['techSicher', 'techSicherW']].map(([k, w]) => `<dt>${T(k)}</dt><dd>${T(w)}</dd>`).join('')}<dt>${T('version')}</dt><dd>${esc($('#version').textContent)}</dd></dl>
     <div class="r"><button class="btn hell">${T('schliessen')}</button></div></form>`;
