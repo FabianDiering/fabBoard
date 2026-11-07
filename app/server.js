@@ -113,6 +113,26 @@ function sync(hochladen) {
 // Laufend: Läufe, die gerade arbeiten; Letzte: Ergebnis des letzten Laufs je Projekt (für die Anzeige im Board).
 const LAUFEND = {};
 const LETZTE = {};
+// Laufverlauf je Projekt: laeufe\<id>.verlauf.json (neueste zuerst, höchstens 50); der letzte Eintrag gilt nach einem Neustart als „letzter Lauf“
+const VERLAUF_MAX = 50;
+const verlaufDatei = (id) => path.join(LAEUFE, id + '.verlauf.json');
+const verlaufLesen = (id) => { try { const v = JSON.parse(fs.readFileSync(verlaufDatei(id), 'utf8')); return Array.isArray(v) ? v : []; } catch (e) { return []; } };
+for (const n of fs.readdirSync(LAEUFE).filter((x) => x.endsWith('.verlauf.json'))) { const id = n.slice(0, -13); const v = verlaufLesen(id); if (v[0]) LETZTE[id] = v[0]; }
+// Ursache eines fehlgeschlagenen Laufs aus dem Protokoll erraten, damit das Board eine verständliche Meldung zeigt
+function fehlerGrund(text) {
+  const t = String(text || '').toLowerCase();
+  if (/enoent|konnte nicht starten|not recognized as an internal|command not found|cannot find the path/.test(t)) return 'programm';
+  if (/rate.?limit|\b429\b|quota|usage limit|limit reached|insufficient_quota|credit balance|resource_exhausted|billing|overloaded/.test(t)) return 'kontingent';
+  if (/not logged in|log ?in required|please (run |use )?\/?log ?in|unauthori[sz]ed|\b401\b|invalid.?api.?key|api key not valid|authentication|token (has )?expired|oauth/.test(t)) return 'anmeldung';
+  if (/enotfound|econnrefused|econnreset|etimedout|getaddrinfo|network error|fetch failed|unable to connect|socket hang up|eai_again/.test(t)) return 'netz';
+  return 'unbekannt';
+}
+// Laufenden Prozess samt Unterprozessen beenden (Windows: taskkill /T, sonst SIGTERM)
+function laufBeenden(p) {
+  if (!p || p.exitCode != null) return;
+  if (process.platform === 'win32') spawnSync('taskkill', ['/PID', String(p.pid), '/T', '/F'], { windowsHide: true, timeout: 15000 });
+  else try { p.kill('SIGTERM'); } catch (e) {}
+}
 // Opus, wenn etwas umzusetzen ist (Archiv umgesetzt:false, ausgefüllte Frage, Info mit Kommentar), sonst Sonnet
 function modellWaehlen(j) {
   if ((j.archiv || []).some((a) => a && a.umgesetzt === false)) return 'opus';
@@ -161,13 +181,18 @@ async function claudeStarten(id) {
   try { p = spawn(cmd, args, { ...opt, cwd: j.ordner, env: b.env, stdio: ['ignore', aus, fe], windowsHide: true }); }
   finally { fs.closeSync(aus); fs.closeSync(fe); }
   const start = Date.now();
-  LAUFEND[id] = { start };
+  LAUFEND[id] = { start, p, ki: b.text };
   const fertig = (code) => {
     if (!LAUFEND[id]) return;
+    const abgebrochen = !!LAUFEND[id].abgebrochen;
     // KI und Modell als erste Zeile ins Protokoll
     try { fs.writeFileSync(log, `KI: ${b.text}\r\n\r\n` + fs.readFileSync(log, 'utf8')); } catch (e) {}
     if (b.gitSelbst) projektCommit(j.ordner, `fabBoard: Lauf mit ${b.text} ${jetztText().slice(0, 16)}`);
-    LETZTE[id] = { start, ende: Date.now(), exit: code == null ? -1 : code }; delete LAUFEND[id];
+    const exit = code == null ? -1 : code;
+    let grund = '';
+    if (exit !== 0 && !abgebrochen) { let t = ''; try { t = fs.readFileSync(fehlerLog, 'utf8').slice(-20000) + '\n' + fs.readFileSync(log, 'utf8').slice(-20000); } catch (e) {} grund = fehlerGrund(t); }
+    LETZTE[id] = { start, ende: Date.now(), exit, ki: b.text, ...(abgebrochen ? { abgebrochen: true } : {}), ...(grund ? { grund } : {}) }; delete LAUFEND[id];
+    try { fs.writeFileSync(verlaufDatei(id), JSON.stringify([LETZTE[id], ...verlaufLesen(id)].slice(0, VERLAUF_MAX), null, 1)); } catch (e) {}
     sync(true);
   };
   p.on('error', (e) => { try { fs.appendFileSync(fehlerLog, `KI konnte nicht starten: ${e.message}\r\n`); } catch (x) {} fertig(-1); });
@@ -177,7 +202,7 @@ async function claudeStarten(id) {
 function laufStand() {
   const st = {};
   for (const id in LETZTE) st[id] = { laeuft: false, ...LETZTE[id] };
-  for (const id in LAUFEND) st[id] = { laeuft: true, start: LAUFEND[id].start };
+  for (const id in LAUFEND) st[id] = { laeuft: true, start: LAUFEND[id].start, ki: LAUFEND[id].ki };
   return st;
 }
 
@@ -236,7 +261,11 @@ const server = http.createServer(async (req, res) => {
       const neu = [];
       for (const n of fs.readdirSync(quelle).filter((x) => x.endsWith('.json'))) {
         const ziel = path.join(PROJEKTE, n);
-        if (!fs.existsSync(ziel)) { fs.copyFileSync(path.join(quelle, n), ziel); neu.push(n.slice(0, -5)); }
+        if (fs.existsSync(ziel)) continue;
+        // Übungsprojekt („Erste Schritte“): bekommt einen eigenen Projektordner unter <Datenordner>\beispiele\<id>, damit der erste Lauf sofort geht
+        const j = JSON.parse(fs.readFileSync(path.join(quelle, n), 'utf8'));
+        if (j.ordner === '{beispielordner}') { j.ordner = path.join(DATEN, 'beispiele', n.slice(0, -5)); fs.mkdirSync(j.ordner, { recursive: true }); }
+        fs.writeFileSync(ziel, JSON.stringify(j, null, 1)); neu.push(n.slice(0, -5));
       }
       return senden(res, 200, { ok: true, neu });
     }
@@ -349,6 +378,20 @@ const server = http.createServer(async (req, res) => {
       // Im Netzwerk erreichbar (PORT gesetzt) ohne Passwort: niemand von außen darf Claude starten
       if (process.env.PORT && !PASSWORT) return senden(res, 403, { fehler: T('nurMitPasswort') });
       const [c, o] = await claudeStarten(mc[1]); return senden(res, c, o);
+    }
+    // Lauf abbrechen (gleiche Regel wie Starten)
+    if (mc && req.method === 'DELETE') {
+      if (process.env.PORT && !PASSWORT) return senden(res, 403, { fehler: T('nurMitPasswort') });
+      const l = LAUFEND[mc[1]];
+      if (!l || !l.p) return senden(res, 404, { fehler: T('keinLauf') });
+      l.abgebrochen = true; laufBeenden(l.p);
+      return senden(res, 200, { ok: true });
+    }
+    // Läufe eines Projekts: Verlauf und Protokoll des letzten Laufs (Ende der Dateien, ohne Farbcodes)
+    const mv = p.match(/^\/api\/laeufe\/([a-z0-9][a-z0-9-]{0,60})$/);
+    if (mv && req.method === 'GET') {
+      const ende = (f) => { try { const t = fs.readFileSync(f, 'utf8'); return (t.length > 100000 ? '…\n' + t.slice(-100000) : t).replace(/\x1b\[[0-9;?]*[A-Za-z]/g, ''); } catch (e) { return ''; } };
+      return senden(res, 200, { verlauf: verlaufLesen(mv[1]), log: ende(path.join(LAEUFE, mv[1] + '.log')), fehler: ende(path.join(LAEUFE, mv[1] + '.fehler.log')) });
     }
     if (p.startsWith('/api/')) return senden(res, 404, { fehler: T('unbekannt') });
     // Screenshots: in den Projektdaten als „daten/bilder/…“ gespeichert, liegen im Datenordner; alles andere aus app\oberflaeche

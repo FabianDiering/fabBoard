@@ -18,7 +18,8 @@ Alle Daten liegen im **Datenordner** des Nutzers (Standard: `Dokumente\fabBoard`
 | `einstellungen.json` | `name`, `projekteOrdner`, `anbieter` und `modell` (Standard-KI), `kis` (alle eingerichteten KIs, `[{ anbieter, modell }]`), `sprache` (`de`, `en` oder leer = Systemsprache), optional `claude` (Pfad zu Claude Code) |
 | `bilder\<projekt-id>\<datei>.png` | Screenshots zu Nachrichten |
 | `_backup\` | automatische Sicherungen (je Datei die letzten 30) |
-| `laeufe\` | Protokolle der KI-Läufe und die Regel-Kopie `ki-auftrag.md` |
+| `laeufe\` | Protokolle der KI-Läufe (`<id>.log`, `<id>.fehler.log`: letzter Lauf), Verlauf `<id>.verlauf.json` (`[{ start, ende, exit, ki, abgebrochen, grund }]`, neueste zuerst, höchstens 50) und die Regel-Kopie `ki-auftrag.md` |
+| `beispiele\` | Projektordner des Übungsprojekts „Erste Schritte“ (in der Vorlage `"ordner": "{beispielordner}"`) |
 
 Alle Dateien sind UTF-8 ohne BOM. Datumsangaben: `YYYY-MM-DD`, Zeitangaben `YYYY-MM-DD HH:MM`.
 
@@ -68,7 +69,8 @@ All data lives in the user's **data folder** (default: `Documents\fabBoard`; its
 | `einstellungen.json` (settings) | `name`, `projekteOrdner` (projects folder), `anbieter` and `modell` (default AI provider and model), `kis` (all AIs set up, `[{ anbieter, modell }]`), `sprache` (language: `de`, `en` or empty = system language), optional `claude` (path to Claude Code) |
 | `bilder\<project-id>\<file>.png` | screenshots attached to messages |
 | `_backup\` | automatic backups (last 30 per file) |
-| `laeufe\` | logs of AI runs and the rules copy `ki-auftrag.md` |
+| `laeufe\` | logs of AI runs (`<id>.log`, `<id>.fehler.log`: last run), history `<id>.verlauf.json` (`[{ start, ende, exit, ki, abgebrochen, grund }]`, newest first, at most 50) and the rules copy `ki-auftrag.md` |
+| `beispiele\` | project folder of the practice project “First steps” (in the template `"ordner": "{beispielordner}"`) |
 
 All files are UTF-8 without BOM. Dates: `YYYY-MM-DD`, timestamps `YYYY-MM-DD HH:MM`.
 

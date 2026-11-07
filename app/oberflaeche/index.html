@@ -235,6 +235,24 @@ dialog.ew{width:min(620px,calc(100% - 28px))}
 .einst .zl .lk{font-size:10px}
 .einst .zl.an>span:first-child{font-weight:600}
 .einst .zl small{color:var(--muted);font-size:11px;flex:0 0 auto}
+/* Läufe-Dialog: Verlauf als Tabelle, Protokoll als Text mit eigenem Rollbalken */
+dialog .prot{max-width:760px}
+dialog .prot table{width:100%;border-collapse:collapse;font-size:12.5px;margin:4px 0 8px}
+dialog .prot th{text-align:left;font-weight:600;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:4px 8px 4px 0;border-bottom:1px solid var(--line)}
+dialog .prot td{padding:4px 8px 4px 0;border-bottom:1px solid var(--line)}
+dialog .prot td.err{color:var(--err)}
+dialog .prot td.an{color:var(--accent)}
+dialog .prot h3{margin:14px 0 4px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+dialog .prot pre{margin:0;max-height:38vh;overflow:auto;white-space:pre-wrap;word-break:break-word;font:12px/1.45 ui-monospace,Consolas,monospace;background:var(--field);border:1px solid var(--line);border-radius:6px;padding:8px 10px;color:var(--ink)}
+/* Suche (Strg+K) */
+dialog .suche{min-width:min(560px,90vw)}
+dialog .suche input{width:100%;box-sizing:border-box;font-size:15px}
+dialog .suche .treffer{margin-top:8px;max-height:55vh;overflow:auto}
+dialog .suche .tr{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:7px 4px;cursor:pointer;color:var(--ink);font:inherit}
+dialog .suche .tr:hover,dialog .suche .tr:focus{background:var(--mark);outline:none}
+dialog .suche .tr small{display:block;color:var(--muted);font-size:11px}
+dialog .suche .leer{color:var(--muted);font-size:13px;margin:6px 0}
+.lauf .ordnerlk{font-size:12px;letter-spacing:0;text-transform:none}
 .einst .hw{margin:4px 0 0;font-size:11.5px;color:var(--muted);line-height:1.4}
 /* „Projekte“ klappt die Liste aller Projekte auf und zu */
 .einst .klapp{display:flex;width:100%;justify-content:space-between;align-items:baseline;background:none;border:0;padding:0;cursor:pointer;color:var(--muted);text-align:left}
@@ -249,7 +267,7 @@ dialog.ew{width:min(620px,calc(100% - 28px))}
 </head>
 <body>
 <div class="wrap">
-  <div class="oben"><header class="kopf"><span class="mk"><span class="marke" id="marke">fabBoard<span class="pkt">.</span></span><span class="ver" id="version">v1.77</span></span><span class="kr"><button class="lk zahnrad" data-a="einstellungen" id="eKnopf" aria-controls="einst" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button><span id="lauf"></span></span></header>
+  <div class="oben"><header class="kopf"><span class="mk"><span class="marke" id="marke">fabBoard<span class="pkt">.</span></span><span class="ver" id="version">v1.78</span></span><span class="kr"><button class="lk zahnrad" data-a="suche" id="sKnopf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></button><button class="lk zahnrad" data-a="einstellungen" id="eKnopf" aria-controls="einst" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button><span id="lauf"></span></span></header>
   <nav class="tabs" id="tabs"></nav></div>
   <main id="main"></main>
 </div>
@@ -526,6 +544,9 @@ document.addEventListener('click', (e) => {
   if (a === 'projekt-bearb') return dialog(S.projekte[S.aktiv]);
   if (a === 'claude') return claudeStarten(S.projekte[S.aktiv]);
   if (a === 'ki-wechsel') return kiWechseln(S.projekte[S.aktiv]);
+  if (a === 'lauf-stopp') return laufStoppen(S.projekte[S.aktiv]);
+  if (a === 'lauf-log') { einstZu(); return laufProtokoll(S.projekte[S.aktiv]); }
+  if (a === 'suche') { einstZu(); return suche(); }
   if (a === 'ki-standard' || a === 'ki-weg') return kiListe(a === 'ki-standard' ? 'standard' : 'entfernen', b.dataset.id);
   if (a === 'einrichtung') return einrichtung();
   if (a === 'tour') { einstZu(); return tour(); }
@@ -565,6 +586,7 @@ document.addEventListener('click', (e) => {
   }
 });
 document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && !e.altKey && e.key.toLowerCase() === 'k') { e.preventDefault(); if (!$('#dlg').open) suche(); return; }
   if (e.key === 'Escape' && e.target.closest?.('form.neu')) { const id = S.neuIn; S.neuIn = null; render(); document.querySelector(`[data-thema="${id}"] .plusp`)?.focus(); return; }
   if (e.key === 'Escape' && S.einstAuf && !$('#dlg').open) { einstZu(); return; }
   if (e.target.id === 'postText' && e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); senden(); }
@@ -610,9 +632,13 @@ function laufHtml(p) {
   const l = S.lauf[p.id] || {};
   const kein = !p.ordner;
   let text = '', titel = l.laeuft ? T('start', { zeit: uhr(l.start) }) : '';
-  if (!l.laeuft && l.ende && l.exit !== 0) { text = '<span class="pt err" aria-hidden="true"></span><span class="err">' + T('fehlerLauf') + '</span>'; titel = T('fehlerLaufT', { zeit: uhr(l.ende), code: l.exit }); }
-  const zst = kein ? `<span>${T('ordnerFehlt')}</span>`
-    : text ? `<span class="zst" title="${esc(titel)}">${text}</span>` : '';
+  // Fehler im letzten Lauf: kurze Ursache in Alltagssprache (Server errät sie aus dem Protokoll), Erklärung im Tooltip
+  if (!l.laeuft && l.ende && l.abgebrochen) { text = `<span>${T('lAbgebrochen')}</span>`; titel = T('lAbgebrochenT', { zeit: uhr(l.ende) }); }
+  else if (!l.laeuft && l.ende && l.exit !== 0) { const g = l.grund || 'unbekannt'; text = '<span class="pt err" aria-hidden="true"></span><span class="err">' + T('grund_' + g) + '</span>'; titel = T('grund_' + g + 'T', { ki: kiName(p), zeit: uhr(l.ende), code: l.exit }); }
+  const proto = l.ende || l.laeuft ? `<button class="lk" data-a="lauf-log">${T(l.laeuft ? 'lLive' : 'lProtokoll')}</button>` : '';
+  const stopp = l.laeuft ? `<button class="lk" data-a="lauf-stopp">${T('lStopp')}</button>` : '';
+  const zst = kein ? `<button class="lk ordnerlk" data-a="projekt-bearb" title="${esc(T('ordnerFehlt'))}">${T('ordnerWaehlen')}</button>`
+    : (text ? `<span class="zst" title="${esc(titel)}">${text}</span>` : '') + stopp + proto;
   if (!S.ki) return `<div class="lauf"><button class="btn start" data-a="einrichtung">${T('kiEinrichten')}</button></div>`;
   // Umschalter zwischen den eingerichteten KIs, nur bei mehr als einer; gemerkt je Projekt
   // Logo der aktiven KI: im Umschalter oder (bei nur einer KI) allein daneben
@@ -636,6 +662,65 @@ function kiWechseln(p) {
   p.ki = S.kis[(i + 1) % S.kis.length].id;
   geaendert(p.id); render();
   toast(T('kiGewechselt', { ki: kiName(p), name: p.name }));
+}
+// Laufenden Lauf abbrechen (nach Rückfrage); der Server beendet das KI-Programm samt Unterprozessen
+async function laufStoppen(p) {
+  if (!p || !confirm(T('lStoppFrage', { ki: kiName(p), name: p.name }))) return;
+  try { const r = await fetch('api/claude/' + p.id, { method: 'DELETE' }); const j = await r.json(); if (!r.ok) throw new Error(j.fehler || r.status); }
+  catch (e) { toast(e.message); }
+  laufStand();
+}
+// Läufe eines Projekts: Verlauf (Datum, KI, Dauer, Ergebnis) und das Protokoll des letzten Laufs
+async function laufProtokoll(p) {
+  if (!p) return;
+  let j; try { j = await fetch('api/laeufe/' + p.id, { cache: 'no-store' }).then((r) => r.json()); } catch (e) { return toast(e.message); }
+  const dauer = (v) => { const m = Math.max(0, Math.round((v.ende - v.start) / 60000)); return m < 60 ? T('lMin', { m: m || '< 1' }) : T('lStd', { h: Math.floor(m / 60), mm: String(m % 60).padStart(2, '0') }); };
+  const erg = (v) => v.abgebrochen ? T('lAbgebrochen') : v.exit === 0 ? T('lOk') : T('grund_' + (v.grund || 'unbekannt'));
+  const zeit = (ms) => { const d = new Date(ms); const tag = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); return `${datum(tag)} ${d.toTimeString().slice(0, 5)}`; };
+  const l = S.lauf[p.id] || {};
+  const zeilen = (l.laeuft ? `<tr><td>${zeit(l.start)}</td><td>${esc(l.ki || kiName(p))}</td><td>–</td><td class="an">${esc(T('kiArbeitet', { ki: kiName(p) }))}</td></tr>` : '')
+    + (j.verlauf || []).map((v) => `<tr><td>${zeit(v.start)}</td><td>${esc(v.ki || '')}</td><td>${dauer(v)}</td><td${v.exit !== 0 && !v.abgebrochen ? ' class="err"' : ''}>${esc(erg(v))}</td></tr>`).join('');
+  const d = $('#dlg');
+  d.innerHTML = `<form class="f prot" method="dialog"><h2>${esc(T('lTitel', { name: p.name }))}</h2>
+    ${zeilen ? `<table><thead><tr><th>${T('lWann')}</th><th>${T('ki')}</th><th>${T('lDauer')}</th><th>${T('lErgebnis')}</th></tr></thead><tbody>${zeilen}</tbody></table>` : `<p>${T('lKeine')}</p>`}
+    ${j.fehler ? `<h3>${T('lFehlerausgabe')}</h3><pre>${esc(j.fehler)}</pre>` : ''}
+    ${j.log ? `<h3>${T(l.laeuft ? 'lLaufend' : 'lLetztes')}</h3><pre>${esc(j.log)}</pre>` : ''}
+    <div class="r"><button class="btn hell">${T('schliessen')}</button></div></form>`;
+  d.showModal();
+  d.querySelectorAll('pre').forEach((x) => { x.scrollTop = x.scrollHeight; });
+}
+// Suche über alle Projekte (Strg+K): Punkte, Kommentare, Nachrichten, Archiv; Treffer öffnet das Projekt und markiert den Eintrag
+function suche() {
+  const d = $('#dlg');
+  d.innerHTML = `<form class="f suche" method="dialog"><input type="search" id="sFeld" placeholder="${esc(T('sucheText'))}" aria-label="${esc(T('suchen'))}" autocomplete="off"><div id="sTreffer" class="treffer" role="listbox"></div></form>`;
+  const feld = $('#sFeld'); const box = $('#sTreffer');
+  const zeig = () => {
+    const q = feld.value.trim().toLowerCase();
+    if (q.length < 2) { box.innerHTML = `<p class="leer">${T('sucheMin')}</p>`; return; }
+    const tr = [];
+    for (const p of liste()) {
+      for (const t of p.themen || []) for (const it of t.items || []) if (it && [it.titel, it.text, it.kommentar].join(' ').toLowerCase().includes(q)) tr.push({ p, art: t.titel, titel: it.titel, ziel: { item: it.id, thema: t.id } });
+      for (const n of p.nachrichten || []) if (n && [n.text, n.antwort].join(' ').toLowerCase().includes(q)) tr.push({ p, art: T('sNachricht'), titel: n.text, ziel: { msg: n.id } });
+      for (const a of p.archiv || []) if (a && [a.titel, a.text, a.kommentar, a.ergebnis].join(' ').toLowerCase().includes(q)) tr.push({ p, art: T('sArchiv'), titel: a.titel, ziel: { arch: a.id } });
+    }
+    S.sTreffer = tr.slice(0, 40);
+    box.innerHTML = S.sTreffer.length ? S.sTreffer.map((x, i) => `<button type="button" class="tr" data-s="${i}" role="option"><small>${esc(x.p.name)} · ${esc(x.art || '')}</small><span>${esc(String(x.titel || '').slice(0, 140))}</span></button>`).join('') : `<p class="leer">${T('sucheNichts')}</p>`;
+  };
+  feld.oninput = zeig;
+  feld.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); box.querySelector('.tr')?.click(); } if (e.key === 'ArrowDown') { e.preventDefault(); box.querySelector('.tr')?.focus(); } };
+  box.onkeydown = (e) => { const a = document.activeElement; if (e.key === 'ArrowDown') { e.preventDefault(); a.nextElementSibling?.focus(); } if (e.key === 'ArrowUp') { e.preventDefault(); (a.previousElementSibling || feld).focus(); } };
+  box.onclick = (e) => {
+    const b = e.target.closest('[data-s]'); if (!b) return;
+    const x = S.sTreffer[+b.dataset.s]; d.close();
+    S.aktiv = x.p.id; S.bearbeiten = null; S.filter = 'alle';
+    if (x.ziel.thema && S.themaZu[x.p.id]) delete S.themaZu[x.p.id][x.ziel.thema];
+    if (x.ziel.arch) S.archivAuf[x.p.id] = true;
+    if (x.ziel.item) S.markiert = x.ziel.item;
+    render();
+    const el = document.querySelector(x.ziel.item ? `[data-item="${x.ziel.item}"]` : x.ziel.msg ? `[data-msg="${x.ziel.msg}"]` : `[data-arch="${x.ziel.arch}"]`);
+    el?.scrollIntoView({ block: 'center' });
+  };
+  d.showModal(); zeig(); feld.focus();
 }
 async function claudeStarten(p) {
   if ($('#postText')?.value.trim()) await senden();
@@ -683,7 +768,7 @@ function einstRender() {
   const cap = (t) => `<div class="cap">${t}</div>`;
   const p = S.projekte[S.aktiv];
   // Projekt-Werkzeuge stehen nur hier, nicht mehr im Board; Löschen fragt nach
-  const projekt = p ? grp(cap(`${T('diesesProjekt')} · ${esc(p.name)}`) + `<button class="a" data-a="projekt-bearb">${T('projektBearbeiten')}</button><button class="a" data-a="thema-neu">${T('plusThema')}</button>`
+  const projekt = p ? grp(cap(`${T('diesesProjekt')} · ${esc(p.name)}`) + `<button class="a" data-a="projekt-bearb">${T('projektBearbeiten')}</button><button class="a" data-a="lauf-log">${T('lLaeufe')}</button><button class="a" data-a="thema-neu">${T('plusThema')}</button>`
     + `<button class="a rot" data-a="projekt-del" data-id="${p.id}">${T('projektLoeschenPunkte')}</button>`) : '';
   // Themen umbenennen und (wenn leer) löschen
   const themen = p && p.themen.length ? grp(cap(T('themen')) + p.themen.map((t) => `<div class="zl" data-thema="${t.id}"><span title="${esc(t.titel)}">${esc(t.titel)}</span><span class="lks">`
@@ -769,6 +854,7 @@ function statisch() {
   $('#eKnopf').setAttribute('aria-label', T('einstellungen')); $('#eKnopf').title = T('einstellungen'); $('#einst').setAttribute('aria-label', T('einstellungen'));
   $('#tabs').setAttribute('aria-label', T('projekte')); $('#hoch').setAttribute('aria-label', T('nachOben'));
   $('#impK').textContent = T('impressum');
+  $('#sKnopf').title = T('suchenKuerzel', { k: window.fabApp?.mac ? '⌘K' : T('strgK') }); $('#sKnopf').setAttribute('aria-label', T('suchen'));
   kaffee();
   $('#newsMail').placeholder = T('newsPlatz'); $('#newsMail').setAttribute('aria-label', T('newsPlatz')); $('#newsK').textContent = T('newsKnopf');
 }
