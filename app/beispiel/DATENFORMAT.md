@@ -15,7 +15,7 @@ Alle Daten liegen im **Datenordner** des Nutzers (Standard: `Dokumente\fabBoard`
 |---|---|
 | `projekte\<id>.json` | ein Projekt mit offenen Einträgen, offenen Archiv-Einträgen und Nachrichten |
 | `projekte\<id>.archiv.json` | erledigtes Archiv des Projekts: `{ "id": "<id>.archiv", "archiv": [ … ] }` |
-| `einstellungen.json` | `name`, `projekteOrdner`, `anbieter`, `modell`, `sprache` (`de`, `en` oder leer = Systemsprache), optional `claude` (Pfad zu Claude Code) |
+| `einstellungen.json` | `name`, `projekteOrdner`, `anbieter` und `modell` (Standard-KI), `kis` (alle eingerichteten KIs, `[{ anbieter, modell }]`), `sprache` (`de`, `en` oder leer = Systemsprache), optional `claude` (Pfad zu Claude Code) |
 | `bilder\<projekt-id>\<datei>.png` | Screenshots zu Nachrichten |
 | `_backup\` | automatische Sicherungen (je Datei die letzten 30) |
 | `laeufe\` | Protokolle der KI-Läufe und die Regel-Kopie `ki-auftrag.md` |
@@ -28,6 +28,7 @@ Alle Dateien sind UTF-8 ohne BOM. Datumsangaben: `YYYY-MM-DD`, Zeitangaben `YYYY
 | `id` | Kurzname, Kleinbuchstaben, Ziffern und Bindestrich; gleich dem Dateinamen |
 | `name`, `art`, `beschreibung` | Anzeige im Board |
 | `ordner` | Projektordner auf dem Rechner; dort arbeitet die KI. Leer = KI-Start nicht möglich |
+| `ki` | optional: KI für dieses Projekt (ein `anbieter` aus `kis` in `einstellungen.json`). Leer oder nicht eingerichtet = Standard-KI |
 | `reihenfolge` | Position der Tabs (kleiner = weiter links) |
 | `erstellt`, `geaendert` | Datum bzw. Zeitpunkt der letzten Änderung |
 | `themen` | Liste `{ id, titel, items: [Einträge] }`. Das Thema mit `id: "spaeter"` überspringt die KI |
@@ -64,7 +65,7 @@ All data lives in the user's **data folder** (default: `Documents\fabBoard`; its
 |---|---|
 | `projekte\<id>.json` | one project with open items, open archive items and messages |
 | `projekte\<id>.archiv.json` | completed archive of the project: `{ "id": "<id>.archiv", "archiv": [ … ] }` |
-| `einstellungen.json` (settings) | `name`, `projekteOrdner` (projects folder), `anbieter` (AI provider), `modell` (model), `sprache` (language: `de`, `en` or empty = system language), optional `claude` (path to Claude Code) |
+| `einstellungen.json` (settings) | `name`, `projekteOrdner` (projects folder), `anbieter` and `modell` (default AI provider and model), `kis` (all AIs set up, `[{ anbieter, modell }]`), `sprache` (language: `de`, `en` or empty = system language), optional `claude` (path to Claude Code) |
 | `bilder\<project-id>\<file>.png` | screenshots attached to messages |
 | `_backup\` | automatic backups (last 30 per file) |
 | `laeufe\` | logs of AI runs and the rules copy `ki-auftrag.md` |
@@ -77,6 +78,7 @@ All files are UTF-8 without BOM. Dates: `YYYY-MM-DD`, timestamps `YYYY-MM-DD HH:
 | `id` | short name: lower-case letters, digits and hyphens; same as the file name |
 | `name`, `art` (type), `beschreibung` (description) | shown in the board |
 | `ordner` | project folder on the computer; the AI works there. Empty = the AI cannot be started |
+| `ki` | optional: AI for this project (an `anbieter` from `kis` in `einstellungen.json`). Empty or not set up = default AI |
 | `reihenfolge` | tab order (smaller = further left) |
 | `erstellt`, `geaendert` | created date and last change |
 | `themen` (topics) | list `{ id, titel, items: [items] }`. The AI skips the topic with `id: "spaeter"` (later) |

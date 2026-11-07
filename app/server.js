@@ -41,6 +41,9 @@ let E = {}; try { E = JSON.parse(fs.readFileSync(EDATEI, 'utf8')); } catch (e) {
 const EINSTELLUNGEN = { name: E.name || require('os').userInfo().username, projekteOrdner: E.projekteOrdner && fs.existsSync(E.projekteOrdner) ? E.projekteOrdner : (fs.existsSync(path.join(os.homedir(), 'Documents')) ? path.join(os.homedir(), 'Documents') : os.homedir()), datenOrdner: DATEN, anbieter: E.anbieter || '', modell: E.modell || '', sprache: E.sprache || '',
   // eingerichtet: Ersteinrichtung abgeschlossen (wer schon eine KI gewählt hat, gilt als eingerichtet)
   eingerichtet: !!(E.eingerichtet || E.anbieter),
+  // kis: alle eingerichteten KIs [{anbieter, modell}] (entschieden 2026-11-07); anbieter/modell bleibt die Standard-KI.
+  // Projekte können in ihrer Datei eine andere KI aus der Liste wählen (Feld „ki“), sonst gilt die Standard-KI.
+  kis: Array.isArray(E.kis) ? E.kis.filter((k) => k && k.anbieter) : (E.anbieter ? [{ anbieter: E.anbieter, modell: E.modell || '' }] : []),
   // Versionsnummer: einzige Quelle ist package.json (Installer und Board zeigen dieselbe)
   version: require('./package.json').version,
   // Spenden („Spendier einen Kaffee“, Ko-fi): Link aus package.json, leer = nicht anzeigen
@@ -131,6 +134,10 @@ function projektCommit(ordner, nachricht) {
   g(['add', '-A']);
   if (g(['diff', '--cached', '--quiet']).status === 1) g(['commit', '-q', '-m', nachricht]);
 }
+// KI eines Projekts: Feld „ki“ der Projektdatei, wenn diese KI eingerichtet ist, sonst die Standard-KI
+function projektKi(j) {
+  return EINSTELLUNGEN.kis.find((k) => k.anbieter === j.ki) || { anbieter: EINSTELLUNGEN.anbieter, modell: EINSTELLUNGEN.modell };
+}
 async function claudeStarten(id) {
   if (LAUFEND[id]) return [409, { fehler: T('kiArbeitetSchon') }];
   sync(false);
@@ -143,7 +150,8 @@ async function claudeStarten(id) {
   const prompt = `Arbeite das fabBoard-Projekt ${id} ab. Lies zuerst die Regeln in ${AUFTRAG} und befolge sie genau. Projektdatei: ${f}. Datenordner (Bildpfade „daten/…“ beginnen dort): ${DATEN}. Sprache für alle Texte im Board: ${T('spracheName')}.`;
   let b;
   LAUFEND[id] = { start: Date.now() }; // gegen Doppelklick, solange der Startbefehl ermittelt wird
-  try { b = await KI.startBefehl(EINSTELLUNGEN.anbieter, { prompt, ordner: j.ordner, root: DATEN, modell: EINSTELLUNGEN.modell, claudeModell: modellWaehlen(j), claudePfad: CLAUDE_PFAD }); }
+  const k = projektKi(j);
+  try { b = await KI.startBefehl(k.anbieter, { prompt, ordner: j.ordner, root: DATEN, modell: k.modell, claudeModell: modellWaehlen(j), claudePfad: CLAUDE_PFAD }); }
   catch (e) { return [400, { fehler: e.message }]; }
   finally { delete LAUFEND[id]; }
   if (b.gitSelbst) projektCommit(j.ordner, 'Stand vor fabBoard-Lauf');
@@ -234,7 +242,8 @@ const server = http.createServer(async (req, res) => {
     }
     if (p === '/api/einstellungen' && req.method === 'GET') {
       const a = KI.finde(EINSTELLUNGEN.anbieter);
-      return senden(res, 200, { ...EINSTELLUNGEN, ki: a ? { id: a.id, name: a.name, kurz: a.kurz } : null });
+      const kis = EINSTELLUNGEN.kis.map((k) => KI.finde(k.anbieter)).filter(Boolean).map((x) => ({ id: x.id, name: x.name, kurz: x.kurz }));
+      return senden(res, 200, { ...EINSTELLUNGEN, ki: a ? { id: a.id, name: a.name, kurz: a.kurz } : null, kis });
     }
     // Einrichtungs-Assistent: Anbieter auflisten, prüfen, Schlüssel speichern, Wahl speichern.
     // Im Netzwerk (PORT gesetzt) gesperrt: KI-Wahl und Schlüssel ändert nur, wer direkt am Rechner sitzt.
@@ -245,7 +254,23 @@ const server = http.createServer(async (req, res) => {
     if (p === '/api/anbieter/wahl' && req.method === 'POST') {
       const w = JSON.parse((await body(req)).toString('utf8') || '{}');
       if (!KI.finde(w.anbieter)) return senden(res, 400, { fehler: T('anbieterUnbekannt') });
-      einstellungenSpeichern({ anbieter: w.anbieter, modell: String(w.modell || '') });
+      // Gewählte KI kommt in die Liste (vorhandene: Modell aktualisieren); Standard wird sie, wenn es noch keine gibt oder es gewünscht ist
+      const modell = String(w.modell || '');
+      const kis = EINSTELLUNGEN.kis.filter((k) => k.anbieter !== w.anbieter).concat([{ anbieter: w.anbieter, modell }]);
+      const standard = w.standard || !EINSTELLUNGEN.anbieter || EINSTELLUNGEN.anbieter === w.anbieter;
+      einstellungenSpeichern({ kis, ...(standard ? { anbieter: w.anbieter, modell } : {}) });
+      return senden(res, 200, { ok: true, standard: !!standard });
+    }
+    // Standard-KI festlegen oder eine KI aus der Liste entfernen (die letzte bleibt; wer die Standard-KI entfernt, bekommt die nächste)
+    if ((p === '/api/anbieter/standard' || p === '/api/anbieter/entfernen') && req.method === 'POST') {
+      const id = JSON.parse((await body(req)).toString('utf8') || '{}').anbieter;
+      const k = EINSTELLUNGEN.kis.find((x) => x.anbieter === id);
+      if (!k) return senden(res, 400, { fehler: T('anbieterUnbekannt') });
+      if (p.endsWith('standard')) { einstellungenSpeichern({ anbieter: k.anbieter, modell: k.modell }); return senden(res, 200, { ok: true }); }
+      const kis = EINSTELLUNGEN.kis.filter((x) => x !== k);
+      if (!kis.length) return senden(res, 400, { fehler: T('letzteKi') });
+      const neu = EINSTELLUNGEN.anbieter === id ? { anbieter: kis[0].anbieter, modell: kis[0].modell } : {};
+      einstellungenSpeichern({ kis, ...neu });
       return senden(res, 200, { ok: true });
     }
     const mk = p.match(/^\/api\/anbieter\/([a-z0-9-]{1,40})\/(pruefung|schluessel|installieren|anmelden)$/);

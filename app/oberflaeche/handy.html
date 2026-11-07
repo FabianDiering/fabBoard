@@ -52,7 +52,7 @@ const ortszeit = () => { const d = new Date(); return new Date(d.getTime() - d.g
 const nid = (p) => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
 // Name der am PC gewählten KI (daten/einstellungen.json, Feld anbieter; siehe anbieter.js); unbekannt = „KI“
 const KI_KURZ = { 'claude': 'Claude', 'anthropic-key': 'Claude', 'codex': 'Codex', 'gemini': 'Gemini', 'mistral': 'Mistral', 'openai-key': 'Codex', 'google-key': 'Gemini', 'mistral-key': 'Mistral', 'ollama': 'Ollama', 'lmstudio': 'LM Studio' };
-let KI = T('ki');
+let KI = T('ki'), KI_STANDARD = KI;
 // Feste Texte (Leiste, Projekt-Auswahl) in der gewählten Sprache
 const statisch = () => { document.documentElement.lang = sprache(); $('#projekt').setAttribute('aria-label', T('hProjekt')); $('#neu').textContent = T('hNeuLaden'); $('#speichern').textContent = T('speichern'); };
 statisch();
@@ -87,7 +87,7 @@ async function start() {
     S.dateien = liste.filter((f) => f.name.endsWith('.json') && !f.name.endsWith('.archiv.json')).map((f) => f.name.slice(0, -5));
     if (!S.dateien.includes(S.aktiv)) S.aktiv = S.dateien[0] || '';
     // KI-Name und Sprache wie am PC (einstellungen.json); ohne Sprache-Einstellung gilt die Sprache des Handys
-    try { const e = JSON.parse(b64aus((await gh('einstellungen.json')).content)); setzeSprache(e.sprache || ''); statisch(); KI = KI_KURZ[e.anbieter] || T('ki'); } catch (e) {}
+    try { const e = JSON.parse(b64aus((await gh('einstellungen.json')).content)); setzeSprache(e.sprache || ''); statisch(); KI = KI_STANDARD = KI_KURZ[e.anbieter] || T('ki'); } catch (e) {}
     // Name und Zahl offener Punkte aller Projekte für das Aufklapp-Menü
     await Promise.all(S.dateien.filter((id) => id !== S.aktiv).map(async (id) => { try { merkeInfo(id, JSON.parse(b64aus((await gh(`projekte/${id}.json`)).content))); } catch (e) {} }));
     await laden();
@@ -119,6 +119,8 @@ async function speichern() {
 // ---------- Anzeige: offene Einträge je Thema (ohne „Später“), Kommentar, neue Nachricht
 function render() {
   const p = S.p;
+  // KI dieses Projekts (Feld „ki“, am PC umschaltbar), sonst die Standard-KI aus einstellungen.json
+  KI = KI_KURZ[p.ki] || KI_STANDARD;
   const themen = (p.themen || []).filter((t) => t.id !== 'spaeter' && t.items.length);
   const offen = (p.nachrichten || []).filter((n) => n.status !== 'erledigt');
   $('#inhalt').innerHTML = themen.map((t) => `<h2>${esc(t.titel)}</h2>` + t.items.map((it) => `

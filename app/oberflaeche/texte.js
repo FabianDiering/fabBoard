@@ -15,7 +15,9 @@
       einrichtung: 'Einrichtung', einrichtungTitel: 'KI und Sprache wählen', speichert: 'Speichert …',
       // Einstellungen (Seitenleiste)
       einstellungen: 'Einstellungen', schliessen: 'Schließen', diesesProjekt: 'Dieses Projekt', projektLoeschenPunkte: 'Projekt löschen …', themen: 'Themen',
-      neuesProjektPlus: '+ Neues Projekt', kiWechseln: 'KI wechseln oder prüfen', keineKi: 'Noch keine KI gewählt', darstellung: 'Darstellung',
+      neuesProjektPlus: '+ Neues Projekt', kiWechseln: 'KI wechseln oder prüfen', keineKi: 'Noch keine KI gewählt', kis: 'KIs', kiHinzu: 'KI hinzufügen oder prüfen', kiStandard: 'Standard', kiAlsStandard: 'Als Standard', entfernen: 'Entfernen',
+      kiHinweis: 'Jedes Projekt merkt sich seine KI; umschalten mit dem Knopf neben dem Start-Knopf. Neue Projekte nehmen die Standard-KI.', kiEntfernenFrage: '„{name}“ aus der Liste entfernen? Projekte mit dieser KI nehmen danach die Standard-KI.',
+      kiUmschalten: 'Zur nächsten KI wechseln (gilt für dieses Projekt)', kiUmschaltenA: 'KI für dieses Projekt: {ki}. Zur nächsten wechseln', kiGewechselt: '„{name}“ arbeitet jetzt mit {ki}.', darstellung: 'Darstellung',
       hellDunkel: 'Hell/Dunkel', system: 'System', hell: 'Hell', dunkel: 'Dunkel', datenUeber: 'Daten · Über', datenordner: 'Datenordner', version: 'Version',
       impressum: 'Impressum', impName: 'Name', impAnschrift: 'Anschrift', impEmail: 'E-Mail', impFolgt: 'folgt',
       impHinweis: 'Die Anschrift wird ergänzt, sobald die Rechtsform geklärt ist.',
@@ -60,7 +62,7 @@
       ewSchluesselEin: 'API-Schlüssel einfügen', ewSchluessel: 'API-Schlüssel', ewModell: 'Modell', ewModellWaehlen: '– Modell wählen –',
       ewSchluesselWeg: 'Schlüssel entfernen', ewErneut: 'Erneut prüfen', ewSchluesselFrage: 'Gespeicherten Schlüssel von diesem Rechner entfernen?',
       ewBedingungen: 'Nutzungsbedingungen', ewBedingungenText: 'Bitte prüfe die Nutzungsbedingungen deines Anbieters, bevor du mit fabBoard arbeitest. fabBoard startet nur das offizielle Programm von {name}, mit deiner eigenen Anmeldung bzw. deinem eigenen Schlüssel.',
-      ewLizenz: ' Bei lokalen Modellen gilt die Lizenz des jeweiligen Modells.', ewBedingungenOeffnen: 'Nutzungsbedingungen öffnen', ewEingerichtet: 'Eingerichtet: fabBoard arbeitet jetzt mit {name}.',
+      ewLizenz: ' Bei lokalen Modellen gilt die Lizenz des jeweiligen Modells.', ewBedingungenOeffnen: 'Nutzungsbedingungen öffnen', ewEingerichtet: 'Eingerichtet: fabBoard arbeitet jetzt mit {name}.', ewHinzu: '{name} ist eingerichtet. Mit dem Knopf neben „Starten“ wählst du sie für ein Projekt.',
       // Anbieter (anbieter.js)
       kontoClaude: 'Claude-Abo (Pro oder Max)', kontoCodex: 'ChatGPT-Konto (auch das kostenlose)', kontoGemini: 'Google-Konto (auch das kostenlose)', kontoMistral: 'Mistral-Konto (auch das kostenlose)',
       vibeAnmelden: 'Mistral Vibe einmal mit diesem Befehl starten, am besten in einem leeren Ordner: dem Ordner vertrauen, „Launch browser“ wählen, im Browser „Autorisieren“ und danach ins Fenster zurückkehren. Zum Schluss mit /exit beenden.',
@@ -83,7 +85,7 @@
       gitGesperrt: 'Hinweis: Git-Befehle sind in diesem Lauf gesperrt. fabBoard legt die Commits vor und nach dem Lauf selbst an; führe keine git-Befehle aus.',
       // Server (server.js)
       kiArbeitetSchon: 'Die KI arbeitet schon an diesem Projekt', projektFehlt: 'Projekt nicht gefunden', projektordnerFehlt: 'Projektordner fehlt oder existiert nicht',
-      nurAmRechner: 'Einrichtung nur direkt am Rechner möglich', anbieterUnbekannt: 'Unbekannter Anbieter', schluesselLeer: 'Bitte einen Schlüssel eintragen',
+      nurAmRechner: 'Einrichtung nur direkt am Rechner möglich', anbieterUnbekannt: 'Unbekannter Anbieter', letzteKi: 'Die letzte KI bleibt in der Liste', schluesselLeer: 'Bitte einen Schlüssel eintragen',
       nichtGefunden: 'Nicht gefunden', unbekannt: 'Unbekannt', nurMitPasswort: 'Die KI starten ist im Netzwerk nur mit Passwort erlaubt', spracheName: 'Deutsch',
       // Rechtsklick-Menü der App (main.js)
       rsKeineVorschlaege: 'Keine Vorschläge', rsWoerterbuch: 'Zum Wörterbuch hinzufügen', rsAusschneiden: 'Ausschneiden', rsEinfuegen: 'Einfügen', rsAllesMarkieren: 'Alles markieren',
@@ -152,7 +154,9 @@
       nichtMoeglich: 'Not possible', allgemein: 'General', nachOben: 'Back to top', projekte: 'Projects', lokal: 'Local',
       einrichtung: 'Setup', einrichtungTitel: 'Choose AI and language', speichert: 'Saving …',
       einstellungen: 'Settings', schliessen: 'Close', diesesProjekt: 'This project', projektLoeschenPunkte: 'Delete project …', themen: 'Topics',
-      neuesProjektPlus: '+ New project', kiWechseln: 'Change or check AI', keineKi: 'No AI chosen yet', darstellung: 'Appearance',
+      neuesProjektPlus: '+ New project', kiWechseln: 'Change or check AI', keineKi: 'No AI chosen yet', kis: 'AIs', kiHinzu: 'Add or check AI', kiStandard: 'Default', kiAlsStandard: 'Make default', entfernen: 'Remove',
+      kiHinweis: 'Each project remembers its AI; switch with the button next to the start button. New projects use the default AI.', kiEntfernenFrage: 'Remove “{name}” from the list? Projects using this AI will then use the default AI.',
+      kiUmschalten: 'Switch to the next AI (for this project)', kiUmschaltenA: 'AI for this project: {ki}. Switch to the next one', kiGewechselt: '“{name}” now works with {ki}.', darstellung: 'Appearance',
       hellDunkel: 'Light/dark', system: 'System', hell: 'Light', dunkel: 'Dark', datenUeber: 'Data · About', datenordner: 'Data folder', version: 'Version',
       impressum: 'Legal notice', impName: 'Name', impAnschrift: 'Address', impEmail: 'Email', impFolgt: 'to follow',
       impHinweis: 'The address will be added once the legal form is settled.',
@@ -190,7 +194,7 @@
       ewSchluesselEin: 'Paste API key', ewSchluessel: 'API key', ewModell: 'Model', ewModellWaehlen: '– choose model –',
       ewSchluesselWeg: 'Remove key', ewErneut: 'Check again', ewSchluesselFrage: 'Remove the saved key from this computer?',
       ewBedingungen: 'Terms of use', ewBedingungenText: 'Please check your provider’s terms of use before working with fabBoard. fabBoard only starts the official {name} program, with your own sign-in or your own key.',
-      ewLizenz: ' For local models, the licence of the model applies.', ewBedingungenOeffnen: 'Open terms of use', ewEingerichtet: 'All set: fabBoard now works with {name}.',
+      ewLizenz: ' For local models, the licence of the model applies.', ewBedingungenOeffnen: 'Open terms of use', ewEingerichtet: 'All set: fabBoard now works with {name}.', ewHinzu: '{name} is set up. Use the button next to “Start” to pick it for a project.',
       kontoClaude: 'Claude subscription (Pro or Max)', kontoCodex: 'ChatGPT account (the free one works too)', kontoGemini: 'Google account (the free one works too)', kontoMistral: 'Mistral account (the free one works too)',
       vibeAnmelden: 'Start Mistral Vibe once with this command, ideally in an empty folder: trust the folder, choose “Launch browser”, click “Authorize” in the browser and return to the window. Then quit with /exit.',
       agyAnmelden: 'Start Antigravity once, ideally in an empty folder: trust the folder and sign in with your Google account in the browser. Then quit with /quit. The installation downloads about 220 MB and shows no progress.',
@@ -211,7 +215,7 @@
       keinSchluessel: '{name}: no API key saved. Please enter it under “Settings”', keinModell: '{name}: no model chosen. Please choose one under “Settings”',
       gitGesperrt: 'Note: git commands are blocked in this run. fabBoard makes the commits before and after the run itself; do not run any git commands.',
       kiArbeitetSchon: 'The AI is already working on this project', projektFehlt: 'Project not found', projektordnerFehlt: 'Project folder missing or does not exist',
-      nurAmRechner: 'Setup is only possible directly on the computer', anbieterUnbekannt: 'Unknown provider', schluesselLeer: 'Please enter a key',
+      nurAmRechner: 'Setup is only possible directly on the computer', anbieterUnbekannt: 'Unknown provider', letzteKi: 'The last AI stays in the list', schluesselLeer: 'Please enter a key',
       nichtGefunden: 'Not found', unbekannt: 'Unknown', nurMitPasswort: 'Starting the AI over the network requires a password', spracheName: 'English',
       rsKeineVorschlaege: 'No suggestions', rsWoerterbuch: 'Add to dictionary', rsAusschneiden: 'Cut', rsEinfuegen: 'Paste', rsAllesMarkieren: 'Select all',
       // First-run setup and short tour (index.html)

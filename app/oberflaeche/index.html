@@ -227,6 +227,7 @@ dialog.ew{width:min(620px,calc(100% - 28px))}
 .einst .zl .lk{font-size:10px}
 .einst .zl.an>span:first-child{font-weight:600}
 .einst .zl small{color:var(--muted);font-size:11px;flex:0 0 auto}
+.einst .hw{margin:4px 0 0;font-size:11.5px;color:var(--muted);line-height:1.4}
 /* „Projekte“ klappt die Liste aller Projekte auf und zu */
 .einst .klapp{display:flex;width:100%;justify-content:space-between;align-items:baseline;background:none;border:0;padding:0;cursor:pointer;color:var(--muted);text-align:left}
 .einst .klapp:hover{color:var(--ink)}
@@ -240,7 +241,7 @@ dialog.ew{width:min(620px,calc(100% - 28px))}
 </head>
 <body>
 <div class="wrap">
-  <div class="oben"><header class="kopf"><span class="mk"><span class="marke" id="marke">fabBoard<span class="pkt">.</span></span><span class="ver" id="version">v1.73</span></span><span class="kr"><button class="lk zahnrad" data-a="einstellungen" id="eKnopf" aria-controls="einst" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button><span id="lauf"></span></span></header>
+  <div class="oben"><header class="kopf"><span class="mk"><span class="marke" id="marke">fabBoard<span class="pkt">.</span></span><span class="ver" id="version">v1.74</span></span><span class="kr"><button class="lk zahnrad" data-a="einstellungen" id="eKnopf" aria-controls="einst" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button><span id="lauf"></span></span></header>
   <nav class="tabs" id="tabs"></nav></div>
   <main id="main"></main>
 </div>
@@ -339,7 +340,7 @@ async function abgleich() {
 function render() {
   merken();
   const p = S.projekte[S.aktiv];
-  const lp = (id) => S.lauf?.[id]?.laeuft ? `<span class="lp" title="${esc(T('kiArbeitet', { ki: kiName() }))}" aria-label="${esc(T('kiArbeitet', { ki: kiName() }))}"></span>` : '';
+  const lp = (id) => S.lauf?.[id]?.laeuft ? `<span class="lp" title="${esc(T('kiArbeitet', { ki: kiName(S.projekte[id]) }))}" aria-label="${esc(T('kiArbeitet', { ki: kiName(S.projekte[id]) }))}"></span>` : '';
   $('#tabs').classList.toggle('auf', !!S.tabsAuf);
   $('#tabs').innerHTML = (p ? `<button class="tabwahl" data-a="tabs-auf" aria-expanded="${S.tabsAuf ? 'true' : 'false'}">${lp(p.id)}${esc(p.name)}<small>${T('offenN', { n: zaehle(p).offen })}</small><span class="pf" aria-hidden="true">${S.tabsAuf ? '▴' : '▾'}</span></button>` : '')
     + liste().map((x) => `<button class="tab${x.id === S.aktiv ? ' an' : ''}" data-tab="${x.id}" ${x.id === S.aktiv ? 'aria-current="page"' : ''}>${lp(x.id)}${esc(x.name)}<small>${T('offenN', { n: zaehle(x).offen })}</small></button>`).join('')
@@ -515,6 +516,8 @@ document.addEventListener('click', (e) => {
   if (a === 'projekt-neu') return dialog(null);
   if (a === 'projekt-bearb') return dialog(S.projekte[S.aktiv]);
   if (a === 'claude') return claudeStarten(S.projekte[S.aktiv]);
+  if (a === 'ki-wechsel') return kiWechseln(S.projekte[S.aktiv]);
+  if (a === 'ki-standard' || a === 'ki-weg') return kiListe(a === 'ki-standard' ? 'standard' : 'entfernen', b.dataset.id);
   if (a === 'einrichtung') return einrichtung();
   if (a === 'tour') { einstZu(); return tour(); }
   if (a === 'ordner-aendern') return ordnerAendern();
@@ -582,8 +585,10 @@ document.addEventListener('submit', (e) => {
 
 // ---------- Gewählte KI starten (Claude, Codex, Gemini … – festgelegt im Einrichtungs-Assistenten)
 S.lauf = {};
-S.ki = null; // {id, name, kurz} aus api/einstellungen
-const kiName = () => S.ki?.kurz || T('ki');
+S.ki = null; // Standard-KI {id, name, kurz} aus api/einstellungen
+S.kis = []; // alle eingerichteten KIs; ein Projekt kann sich eine davon merken (Feld „ki“), sonst gilt die Standard-KI
+const projektKi = (p) => S.kis.find((k) => k.id === p?.ki) || S.ki;
+const kiName = (p = S.projekte[S.aktiv]) => projektKi(p)?.kurz || T('ki');
 const uhr = (ms) => ms ? new Date(ms).toTimeString().slice(0, 5) : '';
 // „Codex arbeitet seit 3 Min“ – jede Sekunde nachgestellt, ohne neu zu rendern
 const seit = (ms) => { const m = Math.max(0, Math.floor((Date.now() - ms) / 60000)); const k = kiName(); return m < 1 ? T('gestartet', { ki: k }) : m < 60 ? T('seitMin', { ki: k, m }) : T('seitStd', { ki: k, h: Math.floor(m / 60), mm: String(m % 60).padStart(2, '0') }); };
@@ -597,7 +602,9 @@ function laufHtml(p) {
   const zst = kein ? `<span>${T('ordnerFehlt')}</span>`
     : text ? `<span class="zst" title="${esc(titel)}">${text}</span>` : '';
   if (!S.ki) return `<div class="lauf"><button class="btn start" data-a="einrichtung">${T('kiEinrichten')}</button></div>`;
-  return `<div class="lauf">${zst}<button class="btn start${l.laeuft ? ' puls' : ''}" data-a="claude"${l.laeuft || kein ? ' disabled' : ''}${l.laeuft ? ` title="${esc(titel)}"` : ''}>${esc(T(l.laeuft ? 'kiArbeitet' : 'kiStarten', { ki: kiName() }))}</button></div>`;
+  // Umschalter zwischen den eingerichteten KIs, nur bei mehr als einer; gemerkt je Projekt
+  const um = S.kis.length > 1 ? `<button class="btn hell kiwahl" data-a="ki-wechsel"${l.laeuft ? ' disabled' : ''} title="${esc(T('kiUmschalten'))}" aria-label="${esc(T('kiUmschaltenA', { ki: kiName(p) }))}"><span aria-hidden="true">⇄</span> ${esc(kiName(p))}</button>` : '';
+  return `<div class="lauf">${zst}${um}<button class="btn start${l.laeuft ? ' puls' : ''}" data-a="claude"${l.laeuft || kein ? ' disabled' : ''}${l.laeuft ? ` title="${esc(titel)}"` : ''}>${esc(T(l.laeuft ? 'kiArbeitet' : 'kiStarten', { ki: kiName() }))}</button></div>`;
 }
 async function laufStand() {
   try {
@@ -606,6 +613,14 @@ async function laufStand() {
     if (JSON.stringify(st) !== vorher) { const a = document.activeElement; if (!(a && /TEXTAREA|INPUT|SELECT/.test(a.tagName)) && !$('#dlg').open) render(); }
     auslagern();
   } catch (e) {}
+}
+// Nächste eingerichtete KI für dieses Projekt; gespeichert in der Projektdatei (Feld „ki“)
+function kiWechseln(p) {
+  if (!p || S.kis.length < 2 || S.lauf[p.id]?.laeuft) return;
+  const i = S.kis.findIndex((k) => k.id === projektKi(p)?.id);
+  p.ki = S.kis[(i + 1) % S.kis.length].id;
+  geaendert(p.id); render();
+  toast(T('kiGewechselt', { ki: kiName(p), name: p.name }));
 }
 async function claudeStarten(p) {
   if ($('#postText')?.value.trim()) await senden();
@@ -616,6 +631,18 @@ async function claudeStarten(p) {
     toast(T('arbeitetAb', { ki: kiName(), name: p.name }));
   } catch (e) { toast(T('startNicht', { fehler: e.message })); }
   laufStand();
+}
+
+// KI-Liste neu vom Server holen (nach Einrichten, Standard wählen, Entfernen)
+async function kisLaden() {
+  try { const e = await fetch('api/einstellungen', { cache: 'no-store' }).then((r) => r.json()); S.ki = e.ki || null; S.kis = e.kis || []; } catch (e) {}
+}
+async function kiListe(was, id) {
+  const k = S.kis.find((x) => x.id === id);
+  if (was === 'entfernen' && !confirm(T('kiEntfernenFrage', { name: k?.name || id }))) return;
+  const x = await fetch('api/anbieter/' + was, { method: 'POST', body: JSON.stringify({ anbieter: id }) }).then((y) => y.json()).catch((er) => ({ fehler: er.message }));
+  if (x.fehler) return toast(x.fehler);
+  await kisLaden(); render(); einstRender();
 }
 
 // Projekt löschen: nach Rückfrage verschiebt der Server die Dateien in den Backup-Ordner (daten/_backup/geloescht)
@@ -649,7 +676,13 @@ function einstRender() {
   const projekte = grp(`<button class="klapp" data-a="proj-auf" aria-expanded="${!!S.projAuf}"><span class="cap">${T('projekte')} · ${liste().length}</span><span aria-hidden="true">${S.projAuf ? '▴' : '▾'}</span></button>`
     + (S.projAuf ? liste().map((x) => `<div class="zl${x.id === S.aktiv ? ' an' : ''}"><span><button class="a" data-tab="${x.id}"${x.id === S.aktiv ? ' aria-current="page"' : ''}>${esc(x.name)}</button></span><small>${T('offenN', { n: zaehle(x).offen })}</small></div>`).join('') : '')
     + `<button class="a" data-a="projekt-neu">${T('neuesProjektPlus')}</button>`);
-  const ki = grp(cap(T('ki')) + `<div class="zl"><span>${esc(S.ki?.name || T('keineKi'))}</span>${S.ki ? '<small>✓</small>' : ''}</div><button class="a" data-a="einrichtung">${T('kiWechseln')}</button>`);
+  // Eingerichtete KIs: Standard für Projekte ohne eigene Wahl, weitere hinzufügen, entfernen
+  const kiZeilen = S.kis.length ? S.kis.map((k) => `<div class="zl"><span title="${esc(k.name)}">${esc(k.name)}</span><span class="lks">`
+    + (k.id === S.ki?.id ? `<small>${T('kiStandard')}</small>` : `<button class="lk" data-a="ki-standard" data-id="${esc(k.id)}">${T('kiAlsStandard')}</button>`)
+    + (S.kis.length > 1 ? `<button class="lk" data-a="ki-weg" data-id="${esc(k.id)}">${T('entfernen')}</button>` : '') + '</span></div>').join('')
+    : `<div class="zl"><span>${T('keineKi')}</span></div>`;
+  const ki = grp(cap(T('kis')) + kiZeilen + `<button class="a" data-a="einrichtung">${T(S.kis.length ? 'kiHinzu' : 'kiWechseln')}</button>`
+    + (S.kis.length > 1 ? `<p class="hw">${T('kiHinweis')}</p>` : ''));
   const sw = (a, akt, werte) => `<span class="sw" role="group">${werte.map(([w, n]) => `<button data-a="${a}" data-w="${w}" aria-pressed="${w === akt}" class="${w === akt ? 'an' : ''}">${n}</button>`).join('')}</span>`;
   const darst = grp(cap(T('darstellung'))
     + `<div class="zl"><span>${T('sprache')}</span>${sw('spr', S.sprachWahl || '', [['', T('system')], ['de', 'DE'], ['en', 'EN']])}</div>`
@@ -860,8 +893,8 @@ function ewFertig() {
     e.preventDefault();
     const x = await fetch('api/anbieter/wahl', { method: 'POST', body: JSON.stringify({ anbieter: a.id, modell: a.lokal ? EW.modell : '' }) }).then((y) => y.json()).catch((er) => ({ fehler: er.message }));
     if (x.fehler) { $('#eFehl').textContent = x.fehler; return; }
-    S.ki = { id: a.id, name: a.name, kurz: a.kurz }; render();
-    toast(T('ewEingerichtet', { name: a.name }));
+    await kisLaden(); render(); einstRender();
+    toast(T(x.standard ? 'ewEingerichtet' : 'ewHinzu', { name: a.name }));
     if (EW.erst) return erstProjekt();
     d.close();
   };
@@ -1001,7 +1034,7 @@ function tour() {
 }
 
 (async () => {
-  try { const e = await fetch('api/einstellungen', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : {})).catch(() => ({})); if (e.name) S.name = e.name; S.ki = e.ki || null; S.datenOrdner = e.datenOrdner || ''; S.spenden = e.spenden || ''; S.sprachWahl = e.sprache || ''; setzeSprache(S.sprachWahl); if (e.version) $('#version').textContent = 'v' + e.version.split('.').slice(0, 2).join('.'); statisch();
+  try { const e = await fetch('api/einstellungen', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : {})).catch(() => ({})); if (e.name) S.name = e.name; S.ki = e.ki || null; S.kis = e.kis || []; S.datenOrdner = e.datenOrdner || ''; S.spenden = e.spenden || ''; S.sprachWahl = e.sprache || ''; setzeSprache(S.sprachWahl); if (e.version) $('#version').textContent = 'v' + e.version.split('.').slice(0, 2).join('.'); statisch();
     await laden(); render(); setInterval(abgleich, 4000); await laufStand(); setInterval(laufStand, 4000); window.addEventListener('focus', abgleich);
     // Erster Start: Ersteinrichtung; sonst Assistent, falls noch keine KI gewählt ist. Nicht im Netzwerk (dort ist die Einrichtung gesperrt)
     if (/^(localhost|127\.0\.0\.1)(:|$)/.test(location.host)) {
