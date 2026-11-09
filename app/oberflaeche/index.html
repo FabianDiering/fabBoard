@@ -831,7 +831,7 @@ function einstRender() {
   } else if (r === 'darst') {
     const sw = (a, akt, werte) => `<span class="sw" role="group">${werte.map(([w, nm]) => `<button data-a="${a}" data-w="${w}" aria-pressed="${w === akt}" class="${w === akt ? 'an' : ''}">${nm}</button>`).join('')}</span>`;
     inhalt = `<h3>${titel.darst}</h3>`
-      + `<div class="zl"><span>${T('sprache')}</span>${sw('spr', S.sprachWahl || '', [['', T('system')], ['de', 'DE'], ['en', 'EN']])}</div>`
+      + `<div class="zl"><span>${T('sprache')}</span>${sw('spr', S.sprachWahl || (document.documentElement.lang === 'en' ? 'en' : 'de'), [['de', 'DE'], ['en', 'EN']])}</div>`
       + `<div class="zl"><span>${T('hellDunkel')}</span>${sw('hell', document.documentElement.dataset.theme || '', [['', T('system')], ['light', T('hell')], ['dark', T('dunkel')]])}</div>`;
   } else if (r === 'daten') {
     // Für Anfänger erklärt: was der Datenordner ist und wann man ihn ändert
