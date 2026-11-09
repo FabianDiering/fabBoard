@@ -557,6 +557,8 @@ document.addEventListener('click', (e) => {
   if (el.closest('[data-a="einst-zu"]')) return einstZu();
   const rt = el.closest('[data-reiter]');
   if (rt) { S.einstReiter = rt.dataset.reiter; try { localStorage.setItem('fabboard-reiter', S.einstReiter); } catch (er) {} einstRender(); $('#einst .reiter .an')?.focus(); return; }
+  const ua = el.closest('[data-a="updates-auto"]');
+  if (ua) { const an = ua.dataset.w === '1'; fetch('api/updates', { method: 'POST', body: JSON.stringify({ auto: an }) }).then((r) => r.json()).then((x) => { S.updatesAuto = !!x.updatesAuto; einstRender(); }).catch(() => toast(T('ewNicht'))); return; }
   const dw = el.closest('[data-a="spr"], [data-a="hell"]');
   if (dw) { if (dw.dataset.a === 'hell') { hellSetzen(dw.dataset.w); einstRender(); } else spracheSetzen(dw.dataset.w); return; }
   if (el.closest('#marke')) { S.filter = 'alle'; render(); return; }
@@ -766,7 +768,7 @@ async function claudeStarten(p) {
 
 // KI-Liste neu vom Server holen (nach Einrichten, Standard wählen, Entfernen)
 async function kisLaden() {
-  try { const e = await fetch('api/einstellungen', { cache: 'no-store' }).then((r) => r.json()); S.ki = e.ki || null; S.kis = e.kis || []; } catch (e) {}
+  try { const e = await fetch('api/einstellungen', { cache: 'no-store' }).then((r) => r.json()); S.ki = e.ki || null; S.kis = e.kis || []; S.updatesAuto = e.updatesAuto === true; } catch (e) {}
 }
 async function kiListe(was, id) {
   const k = S.kis.find((x) => x.id === id);
@@ -837,7 +839,8 @@ function einstRender() {
       + `<div class="zl"><span>${T('datenordner')}</span><span class="w" title="${esc(S.datenOrdner || '')}">${esc(S.datenOrdner || '–')}</span></div>`
       + `<div>${window.fabApp ? `<button class="a" data-a="ordner-aendern">${T('ordnerAendern')}</button>` : ''}<button class="a" data-a="tour">${T('tourZeigen')}</button>`
       + (S.spenden ? `<a class="a" href="${esc(S.spenden)}" target="_blank" rel="noopener" title="${esc(T('spendenText'))}">${T('spenden')}</a>` : '') + '</div>'
-      + (window.fabApp ? `<p class="hw">${T('ordnerErkl')}</p>` : '');
+      + (window.fabApp ? `<p class="hw">${T('ordnerErkl')}</p>` : '')
+      + (window.fabApp ? `<h3>${T('updTitel')}</h3><div class="zl"><span>${T('updAuto')}</span><span class="sw" role="group">${[['1', T('updAn')], ['0', T('updAus')]].map(([w, nm]) => `<button data-a="updates-auto" data-w="${w}" aria-pressed="${(w === '1') === !!S.updatesAuto}" class="${(w === '1') === !!S.updatesAuto ? 'an' : ''}">${nm}</button>`).join('')}</span></div><p class="hw">${T('updHinweis')}</p>` : '');
   } else if (r === 'tech') {
     inhalt = `<h3>${titel.tech}</h3><dl class="tech"><dt>${T('version')}</dt><dd>${ver}</dd>`
       + [['techProgramm', 'techProgrammW'], ['techServer', 'techServerW'], ['techDaten', 'techDatenW'], ['techKi', 'techKiW'], ['techSicher', 'techSicherW']].map(([a, w]) => `<dt>${T(a)}</dt><dd>${T(w)}</dd>`).join('') + '</dl>';
@@ -1211,7 +1214,7 @@ function tour() {
 }
 
 (async () => {
-  try { const e = await fetch('api/einstellungen', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : {})).catch(() => ({})); if (e.name) S.name = e.name; S.ki = e.ki || null; S.kis = e.kis || []; S.datenOrdner = e.datenOrdner || ''; S.spenden = e.spenden || ''; S.sprachWahl = e.sprache || ''; setzeSprache(S.sprachWahl); if (e.version) $('#version').textContent = 'v' + e.version.split('.').slice(0, 2).join('.'); statisch();
+  try { const e = await fetch('api/einstellungen', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : {})).catch(() => ({})); if (e.name) S.name = e.name; S.ki = e.ki || null; S.kis = e.kis || []; S.datenOrdner = e.datenOrdner || ''; S.updatesAuto = e.updatesAuto === true; S.spenden = e.spenden || ''; S.sprachWahl = e.sprache || ''; setzeSprache(S.sprachWahl); if (e.version) $('#version').textContent = 'v' + e.version.split('.').slice(0, 2).join('.'); statisch();
     await laden(); render(); setInterval(abgleich, 4000); await laufStand(); setInterval(laufStand, 4000); window.addEventListener('focus', abgleich);
     // Erster Start: Ersteinrichtung; sonst Assistent, falls noch keine KI gewählt ist. Nicht im Netzwerk (dort ist die Einrichtung gesperrt)
     if (/^(localhost|127\.0\.0\.1)(:|$)/.test(location.host)) {

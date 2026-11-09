@@ -316,6 +316,8 @@ function updater() {
   return AU;
 }
 async function updatesPruefen(vonHand) {
+  // Von selbst nur, wenn der Nutzer es in den Einstellungen erlaubt hat (Standard aus, entschieden 2026-11-09)
+  if (!vonHand) { try { if (!(await api('/api/einstellungen')).updatesAuto) return; } catch (e) { return; } }
   const au = updater();
   if (!au) return;
   try {

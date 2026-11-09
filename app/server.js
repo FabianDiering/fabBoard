@@ -45,6 +45,8 @@ const EINSTELLUNGEN = { name: E.name || require('os').userInfo().username, proje
   // Projekte können in ihrer Datei eine andere KI aus der Liste wählen (Feld „ki“), sonst gilt die Standard-KI.
   kis: Array.isArray(E.kis) ? E.kis.filter((k) => k && k.anbieter) : (E.anbieter ? [{ anbieter: E.anbieter, modell: E.modell || '' }] : []),
   // Versionsnummer: einzige Quelle ist package.json (Installer und Board zeigen dieselbe)
+  // updatesAuto: automatische Update-Prüfung bei GitHub; Standard aus (entschieden 2026-11-09), nur auf ausdrücklichen Wunsch an
+  updatesAuto: E.updatesAuto === true,
   version: require('./package.json').version,
   // Spenden („Spendier einen Kaffee“, Ko-fi): Link aus package.json, leer = nicht anzeigen
   spenden: /^https:\/\//.test(require('./package.json').spendenLink || '') ? require('./package.json').spendenLink : '' };
@@ -239,6 +241,11 @@ const server = http.createServer(async (req, res) => {
       if (!['', 'de', 'en'].includes(w)) return senden(res, 400, { fehler: T('unbekannt') });
       einstellungenSpeichern({ sprache: w }); TX.setzeSprache(w);
       return senden(res, 200, { ok: true, sprache: TX.sprache() });
+    }
+    if (p === '/api/updates' && req.method === 'POST') {
+      const w = JSON.parse((await body(req)).toString('utf8') || '{}').auto === true;
+      einstellungenSpeichern({ updatesAuto: w });
+      return senden(res, 200, { ok: true, updatesAuto: w });
     }
     // Ersteinrichtung (nur direkt am Rechner): abschließen, Datenordner wechseln, Beispielprojekte anlegen
     if (/^\/api\/(eingerichtet|datenordner|beispiele)$/.test(p) && process.env.PORT) return senden(res, 403, { fehler: T('nurAmRechner') });
