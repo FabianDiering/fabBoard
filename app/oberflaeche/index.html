@@ -940,7 +940,7 @@ function impressum() {
 function datenschutz() {
   const d = $('#dlg');
   d.innerHTML = `<form class="f imp ds" method="dialog"><h2>${T('datenschutz')}</h2>
-    ${T('dsTeile').map(([t, x]) => `<h3>${esc(t)}</h3><p>${esc(x)}</p>`).join('')}
+    ${T('dsTeile').map(([t, x]) => `<h3>${esc(t)}</h3>${x.split('\n').map((q) => `<p>${esc(q)}</p>`).join('')}`).join('')}
     <p class="copy">${T('dsStand')}</p>
     <div class="r"><button type="button" class="btn hell" data-a="impressum">${T('impressum')}</button><button class="btn hell">${T('schliessen')}</button></div></form>`;
   if (!d.open) d.showModal();
@@ -1060,7 +1060,7 @@ function ewFertig() {
   d.innerHTML = `<form class="f ew"><div class="schritt">${ewNr(3)}</div><h2>${T('ewBedingungen')}</h2>
     ${haftKasten()}
     ${EW.erst ? `<label class="ok"><input type="checkbox" id="eHaft"><span>${T('haftOk')}</span></label>
-    <details class="dsein"><summary>${T('dsLesen')}</summary>${T('dsTeile').map(([t, x]) => `<h3>${esc(t)}</h3><p>${esc(x)}</p>`).join('')}<p class="copy">${T('dsStand')}</p></details>` : ''}
+    <details class="dsein"><summary>${T('dsLesen')}</summary>${T('dsTeile').map(([t, x]) => `<h3>${esc(t)}</h3>${x.split('\n').map((q) => `<p>${esc(q)}</p>`).join('')}`).join('')}<p class="copy">${T('dsStand')}</p></details>` : ''}
     <p>${esc(T('ewBedingungenText', { name: a.name }))}${a.lokal ? T('ewLizenz') : ''}</p>
     <p><a href="${esc(a.bedingungen)}" target="_blank" rel="noopener">${T('ewBedingungenOeffnen')}</a></p><p class="fehl" id="eFehl"></p>
     <div class="r"><button type="button" class="btn hell" id="eZur">${T('zurueck')}</button><button class="btn">${EW.erst ? T('weiter') : T('fertig')}</button></div></form>`;
