@@ -27,7 +27,7 @@
       // Haftung und Nutzung: deutlich in der Ersteinrichtung und im Impressum (entschieden 2026-11-09)
       haftung: 'Haftung und Nutzung', haftT: 'Wichtig: Bitte vor dem ersten Lauf lesen',
       haftPunkte: ['fabBoard startet eine KI, die selbstständig in deinem Projektordner arbeitet: Sie legt Dateien an, ändert sie und kann sie auch löschen.', 'Eine KI macht Fehler. Prüfe, was sie geändert hat, bevor du dich darauf verlässt, zum Beispiel bei Texten, Zahlen oder Programmcode.', 'Sichere deine Projektordner regelmäßig. Dafür genügt es, den Ordner zu kopieren.', 'Gib der KI nur Ordner, in denen sie arbeiten darf, und keine geheimen Daten wie Passwörter.', 'fabBoard ist kostenlos und wird ohne Gewähr bereitgestellt (MIT-Lizenz). Du nutzt es auf eigene Verantwortung. Für Schäden, etwa verlorene oder falsch geänderte Dateien, wird nicht gehaftet, soweit das gesetzlich zulässig ist.'],
-      haftOk: 'Ich habe das gelesen und nutze fabBoard auf eigene Verantwortung.', haftNoetig: 'Bitte zuerst bestätigen, dass du den Hinweis gelesen hast.',
+      haftOk: 'Ich habe den Hinweis gelesen und die Datenschutzerklärung zur Kenntnis genommen. Ich nutze fabBoard auf eigene Verantwortung.', haftNoetig: 'Bitte zuerst bestätigen, dass du den Hinweis gelesen und die Datenschutzerklärung zur Kenntnis genommen hast.', dsLesen: 'Datenschutzerklärung lesen',
       // Datenschutzerklärung in einfacher Sprache (entschieden 2026-11-09)
       datenschutz: 'Datenschutz', dsStand: 'Stand: November 2026',
       dsTeile: [
@@ -201,7 +201,7 @@
       impHinweis: 'The address will be added once the legal form is settled.',
       haftung: 'Liability and use', haftT: 'Important: please read before your first run',
       haftPunkte: ['fabBoard starts an AI that works on its own in your project folder: it creates files, changes them and can also delete them.', 'An AI makes mistakes. Check what it changed before you rely on it, for example texts, numbers or program code.', 'Back up your project folders regularly. Simply copying the folder is enough.', 'Only give the AI folders it may work in, and no secret data such as passwords.', 'fabBoard is free and provided without warranty (MIT licence). You use it at your own risk. No liability is accepted for damage, such as lost or wrongly changed files, to the extent permitted by law.'],
-      haftOk: 'I have read this and use fabBoard at my own risk.', haftNoetig: 'Please confirm first that you have read the notice.',
+      haftOk: 'I have read the notice and taken note of the privacy policy. I use fabBoard at my own risk.', haftNoetig: 'Please confirm first that you have read the notice and taken note of the privacy policy.', dsLesen: 'Read the privacy policy',
       datenschutz: 'Privacy', dsStand: 'As of November 2026',
       dsTeile: [
        ['In short', 'fabBoard is a program on your computer. It has no user account, collects no data about you and sends nothing to the developer. There are no ads and no usage statistics (telemetry).'],
