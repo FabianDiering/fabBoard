@@ -163,6 +163,9 @@
       mProtokolle: 'Protokolle öffnen', mUeber: 'Über fabBoard', mWiederholen: 'Wiederholen', mBoardOeffnen: 'Board öffnen',
       mUeberText: 'Projektboard, in dem eine KI deiner Wahl für dich an deinen Projekten arbeitet.\n\n© 2026 Fabian Diering · MIT-Lizenz',
       hintergrundT: 'fabBoard läuft im Hintergrund weiter', hintergrund: 'Screenshot mit {kuerzel}. Beenden über das Symbol im Infobereich.',
+      startLaedt: 'Wird gestartet …', startFehlerT: 'fabBoard konnte nicht starten',
+      startFehler: 'Das Board ließ sich nach 30 Sekunden noch nicht öffnen. Oft hilft es, kurz zu warten und es noch einmal zu versuchen. Klappt es weiter nicht: fabBoard beenden und den Computer neu starten.',
+      startNochmal: 'Nochmal versuchen',
       kuerzelBelegt: 'Das Tastenkürzel {kuerzel} ist schon von einem anderen Programm belegt; Screenshot über das Menü „Datei“ oder das Symbol im Infobereich.',
       // Screenshot
       sAuswahl: 'Bereich ziehen · Enter = ganzer Bildschirm · Esc = abbrechen', sTitel: 'Screenshot an {ki}', sRechteck: 'Rechteck', sPfeil: 'Pfeil',
@@ -323,6 +326,9 @@
       mProtokolle: 'Open logs', mUeber: 'About fabBoard', mWiederholen: 'Redo', mBoardOeffnen: 'Open board',
       mUeberText: 'A project board where an AI of your choice works on your projects for you.\n\n© 2026 Fabian Diering · MIT License',
       hintergrundT: 'fabBoard keeps running in the background', hintergrund: 'Screenshot with {kuerzel}. Quit via the icon in the notification area.',
+      startLaedt: 'Starting …', startFehlerT: 'fabBoard could not start',
+      startFehler: 'The board still could not be opened after 30 seconds. It often helps to wait a moment and try again. If it still does not work: quit fabBoard and restart your computer.',
+      startNochmal: 'Try again',
       kuerzelBelegt: 'The shortcut {kuerzel} is already used by another program; take screenshots via the “File” menu or the notification area icon.',
       // Screenshot
       sAuswahl: 'Drag an area · Enter = whole screen · Esc = cancel', sTitel: 'Screenshot to {ki}', sRechteck: 'Rectangle', sPfeil: 'Arrow',

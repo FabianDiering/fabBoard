@@ -1,6 +1,6 @@
 // fabBoard als Desktop-App (Electron). Startpunkt: "npm.cmd start" im Ordner app.
 // Zeigt die fabBoard-Oberfläche (index.html) in einem eigenen Fenster, dazu App-Menü, Symbol im Infobereich und Screenshot (Strg+Alt+S).
-const { app, BrowserWindow, Menu, Tray, Notification, globalShortcut, desktopCapturer, screen, clipboard, nativeImage, ipcMain, dialog, shell, systemPreferences } = require('electron');
+const { app, BrowserWindow, Menu, Tray, Notification, globalShortcut, desktopCapturer, screen, clipboard, nativeImage, ipcMain, dialog, shell, systemPreferences, nativeTheme } = require('electron');
 const net = require('net');
 const fs = require('fs');
 const path = require('path');
@@ -36,14 +36,52 @@ function serverLaeuft() {
 const api = (p, opt) => fetch(ADRESSE + p, { cache: 'no-store', ...opt }).then((r) => r.json());
 const kiName = async () => { try { return (await api('/api/einstellungen')).ki?.kurz || 'KI'; } catch (e) { return 'KI'; } };
 
-async function fensterOeffnen() {
-  // Läuft noch kein Server, startet die App ihren server.js (im selben Ordner) selbst mit.
-  if (!(await serverLaeuft())) require(path.join(__dirname, 'server.js'));
+const warten = (ms) => new Promise((ok) => setTimeout(ok, ms));
+// Läuft noch kein Server, startet die App ihren server.js (im selben Ordner) selbst mit. Ein Fehler darin
+// (z. B. Datenordner nicht beschreibbar) darf das Fenster nicht verhindern; er führt unten zur verständlichen Meldung.
+async function serverStarten() {
+  if (await serverLaeuft()) return;
+  try { require(path.join(__dirname, 'server.js')); } catch (e) { console.log(e.message); }
+}
 
+// Startseite, solange der eingebaute Server hochfährt (beim ersten Start prüft Windows neue Programme oft einige Sekunden),
+// damit nie ein leeres Fenster zu sehen ist. Texte nach Systemsprache, weil die Board-Sprache noch nicht bekannt ist.
+const startText = (k) => TEXTE[app.getLocale().toLowerCase().startsWith('de') ? 'de' : 'en'][k];
+function startSeite() {
+  const html = `<!doctype html><html><head><meta charset="utf-8"><style>
+:root{--bg:#FCFCFA;--ink:#1A1A1A;--muted:#6B6B66}
+@media (prefers-color-scheme:dark){:root{--bg:#141516;--ink:#ECECE8;--muted:#9A9A94}}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink)}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;font:14px Inter,system-ui,sans-serif}
+b{font:600 34px 'Source Serif 4',Georgia,serif}b i{font-style:normal;color:#F07C1F}p{margin:0;color:var(--muted)}
+</style></head><body><b>fabBoard<i>.</i></b><p>${startText('startLaedt')}</p></body></html>`;
+  return 'data:text/html;charset=utf-8,' + encodeURIComponent(html);
+}
+
+// Lädt das Board erst, wenn der Server Verbindungen annimmt; klappt das Laden trotzdem nicht, jede Sekunde neu
+// (bis zu 30 Sekunden), danach eine Meldung mit „Nochmal versuchen“ (entschieden 2026-11-09).
+async function boardLaden() {
+  await serverStarten();
+  const bis = Date.now() + 30000;
+  while (Date.now() < bis) {
+    if (await serverLaeuft()) {
+      try { await fenster.loadURL(ADRESSE); return; } catch (e) {}
+      await warten(1000);
+    } else await warten(250);
+  }
+  zeigen();
+  const r = await dialog.showMessageBox(fenster, { type: 'warning', title: 'fabBoard', message: startText('startFehlerT'), detail: startText('startFehler'),
+    buttons: [startText('startNochmal'), startText('mBeenden')], defaultId: 0, cancelId: 1 });
+  if (r.response === 0) return boardLaden();
+  allesBeenden();
+}
+
+async function fensterOeffnen() {
   fenster = new BrowserWindow({
     width: 1280,
     height: 860,
     title: 'fabBoard',
+    backgroundColor: nativeTheme.shouldUseDarkColors ? '#141516' : '#FCFCFA', // kein weißes Aufblitzen vor dem ersten Bild
     icon: ICON, // Symbol in der Taskleiste und oben links im Fenster
     autoHideMenuBar: true, // Menü erscheint mit Alt, damit das Board ruhig bleibt
     // Sicherheit: Die Oberfläche bekommt keinen Zugriff auf Node.js oder das Dateisystem (Electron-Standard, hier ausdrücklich)
@@ -61,7 +99,8 @@ async function fensterOeffnen() {
     e.preventDefault(); fenster.hide();
     hintergrundHinweis();
   });
-  fenster.loadURL(ADRESSE);
+  await fenster.loadURL(startSeite()).catch(() => {});
+  boardLaden();
 }
 function zeigen() { if (!fenster) return; if (fenster.isMinimized()) fenster.restore(); fenster.show(); fenster.focus(); }
 // Beim ersten Schließen einmal erklären, dass fabBoard weiterläuft (Merkdatei im Einstellungsordner der App)
