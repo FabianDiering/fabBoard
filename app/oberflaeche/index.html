@@ -81,6 +81,15 @@ dialog .imp dd{margin:0}
 dialog .imp p{margin:0;font-size:12px;color:var(--muted)}
 dialog .imp a{color:var(--accent)}
 dialog .imp p.copy{margin:2px 0 10px;font-size:13px;color:var(--text2)}
+/* Haftungshinweis: deutlich abgesetzter Kasten (entschieden 2026-11-09), schwarzer Rand statt Orange */
+.wichtig{border:2px solid var(--ink);border-radius:8px;background:var(--field);padding:10px 14px}
+.wichtig h3{margin:0 0 4px;font:600 15px/1.3 var(--serif);color:var(--ink)}
+.wichtig ul{margin:0;padding-left:18px;font-size:13px;line-height:1.55;color:var(--text2)}
+.wichtig li,.ew .wichtig li{display:list-item;margin:2px 0;padding:0;border:0;border-radius:0;background:none}
+.f label.ok{display:flex;gap:8px;align-items:flex-start;text-transform:none;letter-spacing:0;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer}
+.f label.ok input{width:auto;margin:2px 0 0;accent-color:var(--ink)}
+dialog .imp h3{margin:12px 0 4px;font:600 15px/1.3 var(--serif)}
+dialog .ds p{margin:0 0 4px;font-size:13px;line-height:1.55;color:var(--text2)}
 .rechts{min-width:0}
 textarea.kom{width:100%;min-height:34px;border:1px solid var(--line);border-radius:6px;background:var(--kfield);padding:5px 8px;font:12.5px/1.4 var(--sans);resize:vertical;vertical-align:top}
 .plusp{display:block;background:none;border:0;padding:5px 0 4px;font-size:12.5px;color:var(--muted);cursor:pointer}
@@ -916,6 +925,7 @@ function impressum() {
     <dl><dt>${T('impName')}</dt><dd>Fabian Diering</dd><dt>${T('impAnschrift')}</dt><dd>${T('impFolgt')}</dd><dt>${T('impEmail')}</dt><dd><a href="mailto:fab@fabboard.de">fab@fabboard.de</a></dd></dl>
     <p class="copy">© 2026 Fabian Diering</p>
     <p>${T('impHinweis')}</p>
+    <h3>${T('haftung')}</h3>${haftKasten()}
     <div class="r"><button class="btn hell">${T('schliessen')}</button></div></form>`;
   d.showModal();
 }
@@ -1026,15 +1036,20 @@ async function ewAnmelden(a) {
     } catch (e) {}
   }
 }
+// Haftungshinweis als Kasten; in der Ersteinrichtung muss er bestätigt werden (entschieden 2026-11-09)
+const haftKasten = () => `<div class="wichtig"><h3>${T('haftT')}</h3><ul>${T('haftPunkte').map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>`;
 function ewFertig() {
   const d = $('#dlg'); const a = ewA();
   d.innerHTML = `<form class="f ew"><div class="schritt">${ewNr(3)}</div><h2>${T('ewBedingungen')}</h2>
+    ${haftKasten()}
+    ${EW.erst ? `<label class="ok"><input type="checkbox" id="eHaft"><span>${T('haftOk')}</span></label>` : ''}
     <p>${esc(T('ewBedingungenText', { name: a.name }))}${a.lokal ? T('ewLizenz') : ''}</p>
     <p><a href="${esc(a.bedingungen)}" target="_blank" rel="noopener">${T('ewBedingungenOeffnen')}</a></p><p class="fehl" id="eFehl"></p>
     <div class="r"><button type="button" class="btn hell" id="eZur">${T('zurueck')}</button><button class="btn">${EW.erst ? T('weiter') : T('fertig')}</button></div></form>`;
   $('#eZur').onclick = ewPruefen;
   d.querySelector('form').onsubmit = async (e) => {
     e.preventDefault();
+    const haft = $('#eHaft'); if (haft && !haft.checked) { $('#eFehl').textContent = T('haftNoetig'); haft.focus(); return; }
     const x = await fetch('api/anbieter/wahl', { method: 'POST', body: JSON.stringify({ anbieter: a.id, modell: a.lokal ? EW.modell : '' }) }).then((y) => y.json()).catch((er) => ({ fehler: er.message }));
     if (x.fehler) { $('#eFehl').textContent = x.fehler; return; }
     await kisLaden(); render(); einstRender();
