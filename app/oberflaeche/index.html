@@ -974,10 +974,19 @@ function ewWahl() {
     <p>${T('ewText')}</p>
     ${spracheFeld()}
     ${Object.keys(GRUPPEN()).map(gruppe).join('')}
+    ${haftKasten()}
+    <label class="ok"><input type="checkbox" id="eHaft"><span>${T('haftOk')}</span></label>
+    <details class="dsein"><summary>${T('dsLesen')}</summary>${T('dsTeile').map(([t, x]) => `<h3>${esc(t)}</h3>${x.split('\n').map((q) => `<p>${esc(q)}</p>`).join('')}`).join('')}<p class="copy">${T('dsStand')}</p></details>
+    <p class="fehl" id="eFehl"></p>
     <div class="r"><button type="button" class="btn hell" id="eZu">${T('spaeter')}</button><button class="btn" id="eWeiter"${EW.wahl ? '' : ' disabled'}>${T('weiter')}</button></div></form>`;
   $('#eZu').onclick = () => d.close();
   d.querySelector('form').onchange = (e) => { if (e.target.id === 'eSprache') return spracheWechseln(e.target.value); EW.wahl = e.target.value; if (EW.wahl !== EW.liste.gewaehlt) EW.modell = ''; $('#eWeiter').disabled = false; };
-  d.querySelector('form').onsubmit = (e) => { e.preventDefault(); if (EW.wahl) ewPruefen(); };
+  d.querySelector('form').onsubmit = (e) => {
+    e.preventDefault();
+    // Bei jeder neuen KI: erst den Hinweis bestätigen, bevor etwas installiert wird (entschieden 2026-11-09)
+    if (!$('#eHaft').checked) { $('#eFehl').textContent = T('haftNoetig'); $('#eHaft').focus(); return; }
+    if (EW.wahl) ewPruefen();
+  };
 }
 async function ewPruefen() {
   const d = $('#dlg'); const a = ewA();
@@ -1061,16 +1070,12 @@ const haftKasten = () => `<div class="wichtig"><h3>${T('haftT')}</h3><ul>${T('ha
 function ewFertig() {
   const d = $('#dlg'); const a = ewA();
   d.innerHTML = `<form class="f ew"><div class="schritt">${ewNr(3)}</div><h2>${T('ewBedingungen')}</h2>
-    ${haftKasten()}
-    ${EW.erst ? `<label class="ok"><input type="checkbox" id="eHaft"><span>${T('haftOk')}</span></label>
-    <details class="dsein"><summary>${T('dsLesen')}</summary>${T('dsTeile').map(([t, x]) => `<h3>${esc(t)}</h3>${x.split('\n').map((q) => `<p>${esc(q)}</p>`).join('')}`).join('')}<p class="copy">${T('dsStand')}</p></details>` : ''}
     <p>${esc(T('ewBedingungenText', { name: a.name }))}${a.lokal ? T('ewLizenz') : ''}</p>
     <p><a href="${esc(a.bedingungen)}" target="_blank" rel="noopener">${T('ewBedingungenOeffnen')}</a></p><p class="fehl" id="eFehl"></p>
     <div class="r"><button type="button" class="btn hell" id="eZur">${T('zurueck')}</button><button class="btn">${EW.erst ? T('weiter') : T('fertig')}</button></div></form>`;
   $('#eZur').onclick = ewPruefen;
   d.querySelector('form').onsubmit = async (e) => {
     e.preventDefault();
-    const haft = $('#eHaft'); if (haft && !haft.checked) { $('#eFehl').textContent = T('haftNoetig'); haft.focus(); return; }
     const x = await fetch('api/anbieter/wahl', { method: 'POST', body: JSON.stringify({ anbieter: a.id, modell: a.lokal ? EW.modell : '' }) }).then((y) => y.json()).catch((er) => ({ fehler: er.message }));
     if (x.fehler) { $('#eFehl').textContent = x.fehler; return; }
     await kisLaden(); render(); einstRender();
