@@ -129,6 +129,7 @@ function menueBauen() {
       { label: t('mProtokolle'), click: () => ordnerOeffnen('laeufe') },
       { type: 'separator' },
       { label: t('impressum'), click: () => imBoard("document.getElementById('impK').click()") },
+      { label: t('datenschutz'), click: () => imBoard("document.getElementById('dsK').click()") },
       ...(app.isPackaged ? [{ label: t('updSuchen'), click: () => updatesPruefen(true) }] : []),
       { label: t('mUeber'), click: ueber },
     ] },
