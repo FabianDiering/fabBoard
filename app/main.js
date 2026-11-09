@@ -322,7 +322,7 @@ if (!app.requestSingleInstanceLock()) app.quit();
 else {
   app.on('second-instance', zeigen);
   app.whenReady().then(async () => {
-    if (process.platform === 'win32') app.setAppUserModelId('fabBoard'); // Absendername der Mitteilungen
+    if (process.platform === 'win32') app.setAppUserModelId('io.github.fabiandiering.fabboard'); // wie appId in package.json: gleiche Gruppe in der Taskleiste, Absender der Mitteilungen
     menueBauen(); trayBauen();
     await fensterOeffnen();
     fenster.webContents.on('did-finish-load', () => setTimeout(spracheAbgleichen, 1500));
