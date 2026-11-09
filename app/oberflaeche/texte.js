@@ -123,9 +123,9 @@
       // Rechtsklick-Menü der App (main.js)
       rsKeineVorschlaege: 'Keine Vorschläge', rsWoerterbuch: 'Zum Wörterbuch hinzufügen', rsAusschneiden: 'Ausschneiden', rsEinfuegen: 'Einfügen', rsAllesMarkieren: 'Alles markieren',
       // Ersteinrichtung und kurze Tour (index.html)
-      erstWillkommenT: 'Willkommen bei fabBoard', erstWillkommen: 'fabBoard ist dein Projektboard: Du sammelst Aufgaben, Fragen und Ideen, und eine KI deiner Wahl arbeitet sie für dich ab.',
+      erstWillkommenT: 'Willkommen bei', erstWillkommen: 'fabBoard ist dein Projektboard: Du sammelst Aufgaben, Fragen und Ideen, und eine KI deiner Wahl arbeitet sie für dich ab.',
       erstPunkt1: 'Du wählst die KI: Claude, ChatGPT, Gemini, Mistral oder eine KI auf deinem eigenen Rechner.', erstPunkt2: 'Deine Projekte bleiben auf deinem Rechner.', erstPunkt4: 'Die KI arbeitet an mehreren Projekten gleichzeitig.',
-      erstPunkt3: 'Kostenlos, und der Programmcode ist für alle einsehbar (MIT-Lizenz).', erstLos: 'Los geht’s',
+      erstPunkt3: 'fabBoard kostet nichts und ist Open Source: Der Programmcode ist öffentlich, du kannst ihn dir ansehen.', erstLos: 'Los geht’s',
       erstOrdnerT: 'Wo sollen deine Projekte liegen?', erstOrdner: 'fabBoard speichert deine Projekte, Screenshots und Protokolle in diesem Ordner:',
       erstOrdnerAendern: 'Anderen Ordner wählen …', erstOrdnerHinweis: 'Der vorgeschlagene Ordner passt für die meisten. Wählst du einen anderen, startet fabBoard kurz neu.',
       erstOrdnerNurApp: 'Den Ordner kannst du in der Desktop-App ändern.', erstNeustart: 'fabBoard startet mit dem neuen Ordner neu …', ordnerUngueltig: 'Dieser Ordner geht nicht.',
@@ -286,9 +286,9 @@
       nichtGefunden: 'Not found', unbekannt: 'Unknown', nurMitPasswort: 'Starting the AI from another device requires a password', spracheName: 'English',
       rsKeineVorschlaege: 'No suggestions', rsWoerterbuch: 'Add to dictionary', rsAusschneiden: 'Cut', rsEinfuegen: 'Paste', rsAllesMarkieren: 'Select all',
       // First-run setup and short tour (index.html)
-      erstWillkommenT: 'Welcome to fabBoard', erstWillkommen: 'fabBoard is your project board: you collect tasks, questions and ideas, and an AI of your choice works through them for you.',
+      erstWillkommenT: 'Welcome to', erstWillkommen: 'fabBoard is your project board: you collect tasks, questions and ideas, and an AI of your choice works through them for you.',
       erstPunkt1: 'You choose the AI: Claude, ChatGPT, Gemini, Mistral or an AI on your own computer.', erstPunkt2: 'Your projects stay on your computer.', erstPunkt4: 'The AI works on several projects at once.',
-      erstPunkt3: 'Free, and the program code is open for everyone to see (MIT license).', erstLos: 'Let’s go',
+      erstPunkt3: 'fabBoard is free and open source: the program code is public, so you can take a look.', erstLos: 'Let’s go',
       erstOrdnerT: 'Where should your projects live?', erstOrdner: 'fabBoard stores your projects, screenshots and logs in this folder:',
       erstOrdnerAendern: 'Choose another folder …', erstOrdnerHinweis: 'The suggested folder suits most people. If you choose another one, fabBoard restarts briefly.',
       erstOrdnerNurApp: 'You can change the folder in the desktop app.', erstNeustart: 'fabBoard is restarting with the new folder …', ordnerUngueltig: 'This folder does not work.',

@@ -208,6 +208,7 @@ dialog.ew{width:min(620px,calc(100% - 28px))}
 .ew ul.punkte{margin:8px 0 2px;padding-left:18px;font-size:13px;line-height:1.6;color:var(--text2)}
 .ew ul.punkte li{display:list-item;padding:0;border:0;border-radius:0;background:none}
 .ew h2.gross{font-size:24px}
+.ew h2.gross .marke{font-size:1.1em;cursor:default}
 /* Kurze Tour: dunkle Fläche mit Ausschnitt um das gezeigte Element, Karte mit Text daneben */
 .tour{position:fixed;inset:0;z-index:20}
 .tour .tring{position:fixed;border-radius:8px;box-shadow:0 0 0 9999px rgba(0,0,0,.45);outline:2px solid var(--accent);outline-offset:0;transition:all .2s ease;pointer-events:none}
@@ -290,7 +291,7 @@ dialog .suche .leer{color:var(--muted);font-size:13px;margin:6px 0}
 </head>
 <body>
 <div class="wrap">
-  <div class="oben"><header class="kopf"><span class="mk"><span class="marke" id="marke">fabBoard<span class="pkt">.</span></span><span class="ver" id="version">v1.84</span></span><span class="kr"><button class="lk zahnrad" data-a="suche" id="sKnopf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></button><button class="lk zahnrad" data-a="einstellungen" id="eKnopf" aria-controls="einst" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button><span id="lauf"></span></span></header>
+  <div class="oben"><header class="kopf"><span class="mk"><span class="marke" id="marke">fabBoard<span class="pkt">.</span></span><span class="ver" id="version">v1.85</span></span><span class="kr"><button class="lk zahnrad" data-a="suche" id="sKnopf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></button><button class="lk zahnrad" data-a="einstellungen" id="eKnopf" aria-controls="einst" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button><span id="lauf"></span></span></header>
   <nav class="tabs" id="tabs"></nav></div>
   <main id="main"></main>
 </div>
@@ -1091,7 +1092,7 @@ async function ersteinrichtung() {
   erstWillkommen();
 }
 function erstWillkommen() {
-  const d = erstDialog(`<div class="schritt">${T('ewSchritt', { n: 1, von: erstVon() })}</div><h2 class="gross">${T('erstWillkommenT')}</h2>
+  const d = erstDialog(`<div class="schritt">${T('ewSchritt', { n: 1, von: erstVon() })}</div><h2 class="gross">${T('erstWillkommenT')} <span class="marke" aria-label="fabBoard">fabBoard<span class="pkt" aria-hidden="true">.</span></span></h2>
     <p>${T('erstWillkommen')}</p><ul class="punkte"><li>${T('erstPunkt1')}</li><li>${T('erstPunkt4')}</li><li>${T('erstPunkt2')}</li><li>${T('erstPunkt3')}</li></ul>
     ${spracheFeld()}
     <div class="r"><button type="button" class="btn hell" id="eZu">${T('spaeter')}</button><button class="btn">${T('erstLos')}</button></div>`);
