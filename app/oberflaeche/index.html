@@ -950,7 +950,8 @@ function datenschutz() {
   d.scrollTop = 0;
 }
 // Sprachwahl oben im Assistenten: Wie das System / Deutsch / English; gespeichert in einstellungen.json (Feld sprache)
-const spracheFeld = () => `<label class="spr">${T('sprache')}<select id="eSprache">${[['', T('spracheAuto')], ['de', 'Deutsch'], ['en', 'English']].map(([w, n]) => `<option value="${w}"${w === (S.sprachWahl || '') ? ' selected' : ''}>${n}</option>`).join('')}</select></label>`;
+// Sprachwahl nur Deutsch/English (entschieden 2026-11-09): vorgewählt ist die Sprache, die gerade gilt (folgt zunächst dem System); ohne Änderung bleibt die Einstellung „wie das System“
+const spracheFeld = () => `<label class="spr">Sprache / Language<select id="eSprache">${[['de', 'Deutsch'], ['en', 'English']].map(([w, n]) => `<option value="${w}"${w === (document.documentElement.lang === 'en' ? 'en' : 'de') ? ' selected' : ''}>${n}</option>`).join('')}</select></label>`;
 async function spracheSetzen(w) {
   const x = await fetch('api/sprache', { method: 'POST', body: JSON.stringify({ sprache: w }) }).then((y) => y.json()).catch((er) => ({ fehler: er.message }));
   if (x.fehler) { toast(x.fehler); return false; }
