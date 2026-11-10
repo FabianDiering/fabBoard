@@ -287,6 +287,8 @@ dialog .suche .tr:hover,dialog .suche .tr:focus{background:var(--mark);outline:n
 dialog .suche .tr small{display:block;color:var(--muted);font-size:11px}
 dialog .suche .leer{color:var(--muted);font-size:13px;margin:6px 0}
 .lauf .ordnerlk{font-size:12px;letter-spacing:0;text-transform:none}
+/* Tastenkürzel im Fließtext deutlich sichtbar, wie eine Taste (Wunsch Test v1.86, 2026-11-10) */
+.taste{font:700 1.1em/1 var(--sans);padding:3px 7px;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;background:var(--field);color:var(--ink);white-space:nowrap}
 .einst kbd{flex:0 0 auto;font:600 12px/1 inherit;font-family:inherit;padding:4px 7px;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;background:var(--field);color:var(--ink);white-space:nowrap}
 .einst .hw{margin:6px 0 4px;font-size:12.5px;color:var(--muted);line-height:1.45;max-width:560px}
 .sw{display:inline-flex;flex:0 0 auto;border:1px solid var(--line);border-radius:6px;overflow:hidden}
@@ -1259,7 +1261,7 @@ function erstProjekt() {
 function erstKuerzel() {
   if (!window.fabApp) return erstEnde();
   const d = erstDialog(`<div class="schritt">${T('ewSchritt', { n: 7, von: 7 })}</div><h2>${T('erstKuerzelT')}</h2>
-    <p>${T('erstKuerzel', { kuerzel: kuerzelText() })}</p>
+    <p>${T('erstKuerzel', { kuerzel: `<kbd class="taste">${esc(kuerzelText())}</kbd>` })}</p>
     <div class="r"><button class="btn">${T('erstFertig')}</button></div>`);
   d.querySelector('form').onsubmit = (e) => { e.preventDefault(); erstEnde(); };
 }
