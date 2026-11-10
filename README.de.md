@@ -35,5 +35,12 @@ Beim ersten Start hilft dir ein kurzer Einrichtungs-Assistent, deine KI zu wähl
 
 Die Regeln für die KI stehen in [`app/ki-auftrag.md`](app/ki-auftrag.md). Den Aufbau der Projektdateien beschreibt [`app/beispiel/DATENFORMAT.md`](app/beispiel/DATENFORMAT.md), dazu gibt es zwei Beispielprojekte auf Deutsch und Englisch.
 
+## Code signing policy
+Free code signing provided by [SignPath.io](https://about.signpath.io), certificate by [SignPath Foundation](https://signpath.org).
+
+- **Team:** Autor, Prüfer und Freigabe: [Fabian Diering](https://github.com/FabianDiering) (Inhaber des Projekts). Änderungen von anderen werden vor dem Übernehmen geprüft.
+- **Signierte Dateien:** nur der Windows-Installer und die Programmdateien, die der GitHub-Ablauf [`installer.yml`](.github/workflows/installer.yml) aus diesem Repository baut. Jede Version wird vor dem Signieren von Hand freigegeben.
+- **Datenschutz:** Dieses Programm überträgt keine Informationen an andere Systeme im Netz, außer der Nutzer oder die Person, die es installiert oder bedient, verlangt es ausdrücklich. Insbesondere: Deine Projekte gehen nur an die gewählte KI, wenn du sie startest; nach Updates sucht fabBoard nur, wenn du es auslöst oder die automatische Suche einschaltest. Einzelheiten stehen in der Datenschutzerklärung in der App (Einstellungen → Funktionen → Datenschutz).
+
 ## Lizenz
 MIT – siehe [LICENSE](LICENSE). © 2026 Fabian Diering

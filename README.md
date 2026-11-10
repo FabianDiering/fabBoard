@@ -35,5 +35,12 @@ On first start, a short setup assistant helps you choose your AI and get it read
 
 The rules the AI follows are in [`app/ki-auftrag.md`](app/ki-auftrag.md). The format of the project files is described in [`app/beispiel/DATENFORMAT.md`](app/beispiel/DATENFORMAT.md), with two example projects in German and English.
 
+## Code signing policy
+Free code signing provided by [SignPath.io](https://about.signpath.io), certificate by [SignPath Foundation](https://signpath.org).
+
+- **Team:** Authors, reviewers and approvers: [Fabian Diering](https://github.com/FabianDiering) (project owner). Changes by other contributors are reviewed before they are merged.
+- **Signed files:** only the Windows installer and the program files built from this repository by the GitHub Actions workflow [`installer.yml`](.github/workflows/installer.yml). Every release is approved by hand before it is signed.
+- **Privacy:** This program will not transfer any information to other networked systems unless specifically requested by the user or the person installing or operating it. In particular: your projects are sent to the AI you chose only when you start it; updates are only checked when you ask for it or switch on automatic update checks. Details are in the privacy statement inside the app (settings → Features → Privacy).
+
 ## Licence
 MIT – see [LICENSE](LICENSE). © 2026 Fabian Diering
