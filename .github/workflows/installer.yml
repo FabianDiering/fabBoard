@@ -31,6 +31,14 @@ jobs:
         run: |
           v=$(node -p "require('./package.json').version")
           if [ "${GITHUB_REF_TYPE}" = "tag" ] && [ "v$v" != "${GITHUB_REF_NAME}" ]; then echo "Tag ${GITHUB_REF_NAME} passt nicht zu package.json ($v)"; exit 1; fi
+      # Entwurf vorher selbst anlegen: Sonst legen die gleichzeitigen Uploads von electron-builder zwei Entwürfe an (beobachtet bei 1.86.0)
+      - name: Release-Entwurf anlegen
+        shell: bash
+        run: |
+          v=$(node -p "require('./package.json').version")
+          gh release view "v$v" > /dev/null 2>&1 || gh release create "v$v" --draft --title "$v" --notes "" --target "$GITHUB_SHA"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Installer bauen und als Entwurf hochladen
         run: npx electron-builder --win nsis --publish always
         env:
