@@ -166,8 +166,13 @@ dialog h2{margin:0 0 4px;font:600 26px var(--serif)}
 .lauf{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:6px 8px;font-size:12px;color:var(--muted)}
 .lauf .btn{min-height:30px;padding:0 12px;font-size:12.5px}
 .lauf .an{color:var(--accent)}
-.lauf .kiwahl{display:inline-flex;align-items:center;gap:6px}
-.lauf .kiwahl .pf{color:var(--muted);font-size:11px}
+.lauf .kiwahl{display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:0 6px 0 10px;border:1px solid var(--ink);border-radius:6px;color:var(--ink);cursor:pointer}
+.lauf .kiwahl:hover{background:var(--field)}
+.lauf .kiwahl.aus{opacity:.5;cursor:default}
+.lauf .kiwahl select{border:0;background:transparent;color:var(--ink);font:500 12.5px var(--sans);cursor:pointer;padding:0 2px}
+.lauf .kiwahl select:focus{outline:0}
+.lauf .kiwahl:focus-within{outline:2px solid var(--accent);outline-offset:1px}
+.lauf .kiwahl option{color:#141516;background:#FFFFFF}
 .lauf .kiallein{display:inline-flex;align-items:center;color:var(--ink)}
 .kilogo{width:15px;height:15px;flex:0 0 auto;fill:currentColor}
 .kilogo.bst{display:inline-flex;align-items:center;justify-content:center;border:1.4px solid currentColor;border-radius:50%;font-size:9px;font-weight:700;line-height:1;box-sizing:border-box}
@@ -586,7 +591,6 @@ document.addEventListener('click', (e) => {
   if (a === 'projekt-neu') return dialog(null);
   if (a === 'projekt-bearb') return dialog(S.projekte[S.aktiv]);
   if (a === 'claude') return claudeStarten(S.projekte[S.aktiv]);
-  if (a === 'ki-wechsel') return kiWechseln(S.projekte[S.aktiv]);
   if (a === 'lauf-stopp') return laufStoppen(S.projekte[S.aktiv]);
   if (a === 'msg-ablegen') return senden();
   if (a === 'lauf-log') { einstZu(); return laufProtokoll(S.projekte[S.aktiv]); }
@@ -653,6 +657,7 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && S.einstAuf && !$('#dlg').open) { einstZu(); return; }
   if (e.target.id === 'postText' && e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); senden(); }
 });
+document.addEventListener('change', (e) => { if (e.target.matches?.('[data-ki-wahl]')) kiSetzen(S.projekte[S.aktiv], e.target.value); });
 document.addEventListener('input', (e) => {
   if (e.target.id === 'postText') { entwurf(S.aktiv, e.target.value); gr(e.target); ablegenZeigen(); return; }
   if (!e.target.matches('textarea.kom')) return;
@@ -705,7 +710,9 @@ function laufHtml(p) {
   // Umschalter zwischen den eingerichteten KIs, nur bei mehr als einer; gemerkt je Projekt
   // Logo der aktiven KI: im Umschalter oder (bei nur einer KI) allein daneben
   const logo = kiLogo(projektKi(p));
-  const um = S.kis.length > 1 ? `<button class="btn hell kiwahl" data-a="ki-wechsel"${l.laeuft ? ' disabled' : ''} title="${esc(T('kiUmschalten'))}" aria-label="${esc(T('kiUmschaltenA', { ki: kiName(p) }))}">${logo}${esc(kiName(p))}<span class="pf" aria-hidden="true">⇄</span></button>`
+  // Auswahlliste statt Reihum-Knopf (entschieden 2026-11-10): zeigt alle KIs, die gewählte gilt für dieses Projekt
+  const um = S.kis.length > 1 ? `<label class="kiwahl${l.laeuft ? ' aus' : ''}" title="${esc(T('kiWahlT'))}">${logo}<select data-ki-wahl aria-label="${esc(T('kiWahlT'))}"${l.laeuft ? ' disabled' : ''}>`
+    + S.kis.map((k) => `<option value="${esc(k.id)}"${k.id === projektKi(p)?.id ? ' selected' : ''}>${esc(k.kurz)}</option>`).join('') + '</select></label>'
     : logo ? `<span class="kiallein" title="${esc(projektKi(p)?.name || '')}">${logo}</span>` : '';
   return `<div class="lauf">${zst}${um}<button class="btn start${l.laeuft ? ' puls' : ''}" data-a="claude"${l.laeuft || kein ? ' disabled' : ''}${l.laeuft ? ` title="${esc(titel)}"` : ''}>${esc(T(l.laeuft ? 'kiArbeitet' : 'kiStarten', { ki: kiName() }))}</button></div>`;
 }
@@ -718,10 +725,10 @@ async function laufStand() {
   } catch (e) {}
 }
 // Nächste eingerichtete KI für dieses Projekt; gespeichert in der Projektdatei (Feld „ki“)
-function kiWechseln(p) {
-  if (!p || S.kis.length < 2 || S.lauf[p.id]?.laeuft) return;
-  const i = S.kis.findIndex((k) => k.id === projektKi(p)?.id);
-  p.ki = S.kis[(i + 1) % S.kis.length].id;
+// KI für ein Projekt festlegen (Auswahlliste im Kopf oder „Projekt bearbeiten“)
+function kiSetzen(p, id) {
+  if (!p || S.lauf[p.id]?.laeuft || !S.kis.some((k) => k.id === id) || id === projektKi(p)?.id) return;
+  p.ki = id;
   geaendert(p.id); render();
   toast(T('kiGewechselt', { ki: kiName(p), name: p.name }));
 }
@@ -854,12 +861,14 @@ function einstRender() {
     inhalt = projekt + themen + projekte;
   } else if (r === 'ki') {
     // Eingerichtete KIs: Standard für Projekte ohne eigene Wahl, weitere hinzufügen, entfernen
-    const kiZeilen = S.kis.length ? S.kis.map((x) => `<div class="zl"><span title="${esc(x.name)}">${esc(x.name)}</span><span class="lks">`
+    // Wie viele Projekte die KI nutzen (Projekte ohne eigene Wahl zählen bei der Standard-KI)
+    const nutzen = (x) => { const n = liste().filter((q) => projektKi(q)?.id === x.id).length; return n === 0 ? T('kiProjekte0') : n === 1 ? T('kiProjekte1') : T('kiProjekteN', { n }); };
+    const kiZeilen = S.kis.length ? S.kis.map((x) => `<div class="zl"><span title="${esc(x.name)}">${esc(x.name)} <small>· ${nutzen(x)}</small></span><span class="lks">`
       + (x.id === S.ki?.id ? `<small>${T('kiStandard')}</small>` : `<button class="lk" data-a="ki-standard" data-id="${esc(x.id)}">${T('kiAlsStandard')}</button>`)
       + (S.kis.length > 1 ? `<button class="lk" data-a="ki-weg" data-id="${esc(x.id)}">${T('entfernen')}</button>` : '') + '</span></div>').join('')
       : `<div class="zl"><span>${T('keineKi')}</span></div>`;
     inhalt = `<h3>${titel.ki}</h3>` + kiZeilen + `<button class="a" data-a="einrichtung">${T(S.kis.length ? 'kiHinzu' : 'kiWechseln')}</button>`
-      + (S.kis.length > 1 ? `<p class="hw">${T('kiHinweis')}</p>` : '');
+      + (S.kis.length ? `<p class="hw">${T(S.kis.length > 1 ? 'kiHinweis' : 'kiHinweisEins')}</p>` : '');
   } else if (r === 'darst') {
     const sw = (a, akt, werte) => `<span class="sw" role="group">${werte.map(([w, nm]) => `<button data-a="${a}" data-w="${w}" aria-pressed="${w === akt}" class="${w === akt ? 'an' : ''}">${nm}</button>`).join('')}</span>`;
     inhalt = `<h3>${titel.darst}</h3>`
@@ -917,6 +926,7 @@ async function dialog(p) {
     <label>${T('art')}<input name="art" spellcheck="true" lang="${sprache()}" value="${esc(p?.art || T('projekt'))}" placeholder="${T('artBeispiel')}"></label>
     <label>${T('kurzbeschreibung')}<textarea name="beschreibung" spellcheck="true" lang="${sprache()}" rows="2">${esc(p?.beschreibung || '')}</textarea></label>
     ${ordner}
+    ${S.kis.length > 1 ? `<label>${T('kiWahlT')}<select name="ki"><option value="">${esc(T('kiStandardOpt', { ki: S.ki?.name || '' }))}</option>${S.kis.map((k) => `<option value="${esc(k.id)}"${p?.ki === k.id ? ' selected' : ''}>${esc(k.name)}</option>`).join('')}</select></label>` : ''}
     ${neu ? `<label>${T('themenKomma')}<input name="themen" spellcheck="true" lang="${sprache()}" value="${T('allgemein')}"></label>` : `<label>${T('reihenfolge')}<input name="reihenfolge" type="number" value="${p.reihenfolge ?? 9}"></label>`}
     <div class="r"><button type="button" class="btn hell" id="dAbbr">${T('abbrechen')}</button><button class="btn">${neu ? T('anlegen') : T('speichern')}</button></div></form>`;
   $('#dAbbr').onclick = () => d.close();
@@ -939,9 +949,10 @@ async function dialog(p) {
       let id = slug(fd.get('name')); while (S.projekte[id]) id += '-2';
       const themen = fd.get('themen').split(',').map((s) => s.trim()).filter(Boolean).map((s) => ({ id: slug(s), titel: s, items: [] }));
       S.projekte[id] = { id, name: fd.get('name').trim(), art: fd.get('art').trim(), beschreibung: fd.get('beschreibung').trim(), ordner: ordnerAus(fd), reihenfolge: Math.max(0, ...liste().map((x) => x.reihenfolge || 0)) + 1, erstellt: heute(), themen, archiv: [] };
+      if (fd.get('ki')) S.projekte[id].ki = fd.get('ki');
       for (const t of themen) S.frisch.add(id + '/' + t.id);
       S.mtime[id] = null; S.aktiv = id; S.filter = 'alle'; geaendert(id);
-    } else { Object.assign(p, { name: fd.get('name').trim(), art: fd.get('art').trim(), beschreibung: fd.get('beschreibung').trim(), reihenfolge: +fd.get('reihenfolge'), ordner: ordnerAus(fd) }); geaendert(p.id); }
+    } else { Object.assign(p, { name: fd.get('name').trim(), art: fd.get('art').trim(), beschreibung: fd.get('beschreibung').trim(), reihenfolge: +fd.get('reihenfolge'), ordner: ordnerAus(fd) }); if (fd.has('ki') && !S.lauf[p.id]?.laeuft) { if (fd.get('ki')) p.ki = fd.get('ki'); else delete p.ki; } geaendert(p.id); }
     d.close(); render();
   };
   d.showModal();
