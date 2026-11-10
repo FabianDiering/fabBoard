@@ -149,7 +149,7 @@
       // Installieren und Anmelden per Knopf (Einrichtungs-Assistent, anbieter.js)
       installierenKnopf: 'fabBoard arbeitet über das offizielle Programm {prog} und kann es für dich installieren. Das kann einige Minuten dauern.',
       anmeldenKnopf: 'Melde dich mit deinem Konto an. fabBoard öffnet dafür ein Fenster mit {prog}; die Anmeldung selbst passiert im Browser.',
-      ewInstallieren: 'Jetzt installieren', ewAnmelden: 'Jetzt anmelden', ewAnmeldenNochmal: 'Fenster erneut öffnen', ewSelbst: 'Lieber selbst eingeben',
+      ewInstallieren: 'Jetzt installieren', ewAnmelden: 'Jetzt anmelden', ewAnmeldenNochmal: 'Fenster erneut öffnen', ewSelbst: 'Für Erfahrene: Befehle selbst im Terminal eingeben',
       ewInstalliert: 'Wird installiert … Schritt {n} von {von} · {zeit}', ewInstallHinweis: 'Lädt herunter, das kann eine Weile dauern.',
       ewInstallFehler: 'Die Installation hat nicht geklappt: {zeile}. Du kannst es noch einmal versuchen oder die Befehle unten selbst eingeben.',
       anmeldenBrowser: 'Melde dich mit deinem Konto an. Das geht im Browser, ein zusätzliches Fenster brauchst du nicht.',
@@ -323,7 +323,7 @@
       // Install and sign in with one click (setup wizard, anbieter.js)
       installierenKnopf: 'fabBoard works through the official {prog} program and can install it for you. This may take a few minutes.',
       anmeldenKnopf: 'Sign in with your account. fabBoard opens a window with {prog} for this; the sign-in itself happens in the browser.',
-      ewInstallieren: 'Install now', ewAnmelden: 'Sign in now', ewAnmeldenNochmal: 'Open window again', ewSelbst: 'Rather enter it yourself',
+      ewInstallieren: 'Install now', ewAnmelden: 'Sign in now', ewAnmeldenNochmal: 'Open window again', ewSelbst: 'For experienced users: enter the commands yourself in a terminal',
       ewInstalliert: 'Installing … step {n} of {von} · {zeit}', ewInstallHinweis: 'Downloading, this may take a while.',
       ewInstallFehler: 'The installation did not work: {zeile}. You can try again or enter the commands below yourself.',
       anmeldenBrowser: 'Sign in with your account. This happens in the browser, you do not need an extra window.',
