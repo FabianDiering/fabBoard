@@ -54,14 +54,16 @@ const UV_INSTALL = WIN ? 'powershell -ExecutionPolicy ByPass -c "irm https://ast
 
 // gruppe: abo (Konto/Abo), schluessel (eigener API-Schlüssel), lokal (Modell auf dem eigenen Rechner)
 // konto, anmeldenText: Schlüssel in oberflaeche/texte.js (Deutsch/Englisch)
+// ohneFenster: Argumente für die Anmeldung unsichtbar im Hintergrund (Link und Code zeigt der Assistent); codeEingabe: Programm nimmt einen Code aus dem Browser an
+// Ohne ohneFenster (Antigravity, Mistral Vibe: Anmeldung nur in deren Bildschirmoberfläche) öffnet fabBoard weiter ein Fenster
 // motor: welches offizielle Programm die Arbeit macht
 // Gemini mit Google-Konto läuft über Antigravity CLI (agy): Google hat Gemini CLI für private Konten am 18.06.2026 abgeschaltet.
 // Gemini CLI bleibt nur für den eigenen API-Schlüssel (google-key).
 const ANBIETER = [
   { id: 'claude', gruppe: 'abo', name: 'Claude Code', kurz: 'Claude', konto: 'kontoClaude', programm: 'claude', motor: 'claude',
-    installieren: [CLAUDE_INSTALL], anmelden: 'claude auth login', bedingungen: 'https://www.anthropic.com/legal/consumer-terms' },
+    installieren: [CLAUDE_INSTALL], anmelden: 'claude auth login', ohneFenster: ['auth', 'login'], codeEingabe: true, bedingungen: 'https://www.anthropic.com/legal/consumer-terms' },
   { id: 'codex', gruppe: 'abo', name: 'OpenAI Codex', kurz: 'Codex', konto: 'kontoCodex', programm: 'codex', motor: 'codex',
-    installieren: [CODEX_INSTALL], anmelden: 'codex login', bedingungen: 'https://openai.com/policies/row-terms-of-use/' },
+    installieren: [CODEX_INSTALL], anmelden: 'codex login', ohneFenster: ['login'], bedingungen: 'https://openai.com/policies/row-terms-of-use/' },
   { id: 'gemini', gruppe: 'abo', name: 'Gemini (Antigravity)', kurz: 'Gemini', konto: 'kontoGemini', programm: 'agy', motor: 'agy',
     installieren: [AGY_INSTALL], anmelden: 'agy', anmeldenText: 'agyAnmelden', bedingungen: 'https://antigravity.google/terms' },
   { id: 'mistral', gruppe: 'abo', name: 'Mistral (Vibe)', kurz: 'Mistral', konto: 'kontoMistral', programm: 'vibe', motor: 'vibe',
@@ -203,7 +205,7 @@ async function pruefen(id, modell, claudePfad) {
       else { const r = await ausfuehren(exe, ['-p', 'OK', '--output-format', 'json'], 60); try { an = JSON.parse(r.out.slice(r.out.indexOf('{'))).status === 'SUCCESS'; } catch (e) {} }
     }
     s.push(an ? { titel: T('angemeldetT'), ok: true, text: T('angemeldet', { prog }) }
-      : { titel: T('anmeldenT'), ok: false, aktion: 'anmelden', text: T('anmeldenKnopf', { prog }),
+      : { titel: T('anmeldenT'), ok: false, aktion: 'anmelden', text: T(a.ohneFenster ? 'anmeldenBrowser' : 'anmeldenKnopf', { prog }), ohneFenster: !!a.ohneFenster, codeEingabe: !!a.codeEingabe,
         selbst: a.anmeldenText ? T(a.anmeldenText) : T('anmelden', { shell }), befehle: [a.anmelden] });
   }
   return { schritte: s, bereit: s.every((x) => x.ok) };
@@ -288,6 +290,49 @@ function anmeldenOeffnen(id) {
   return { ok: true };
 }
 
+// Anmeldung ohne Terminal (entschieden 2026-11-09): Claude Code und Codex laufen unsichtbar im Hintergrund. Sie öffnen selbst den Browser
+// und geben den Anmelde-Link aus; den zeigt der Assistent mit „Anmeldeseite öffnen“ / „Link kopieren“ (falls kein Browser aufgeht).
+// Verlangt die Seite einen Code (Claude), tippt ihn der Nutzer in ein Feld im Assistenten; fabBoard reicht ihn an das Programm weiter.
+const ANMELD = {};
+function anmeldenStand(id) { const j = ANMELD[id]; return j ? { laeuft: j.laeuft, url: j.url, code: j.code, zeile: j.zeile, start: j.start, n: j.n } : {}; }
+function anmelden(id, claudePfad) {
+  const a = finde(id);
+  if (!a || !a.anmelden) throw new Error(T('anbieterUnbekannt'));
+  if (!a.ohneFenster) { anmeldenOeffnen(id); return { fenster: true }; }
+  const exe = (a.motor === 'claude' && claudePfad) || programmFinden(a.programm);
+  if (!exe) throw new Error(T('programmFehlt', { name: a.name }));
+  const alt = ANMELD[id]; if (alt?.laeuft) { try { alt.p.kill(); } catch (e) {} }
+  const ordner = path.join(os.tmpdir(), 'fabboard-anmeldung'); // leerer Ordner: keine Rückfrage nach dem Vertrauen für den Benutzerordner
+  fs.mkdirSync(ordner, { recursive: true });
+  const job = { laeuft: true, start: Date.now(), url: '', code: null, zeile: '', p: null, aus: '', n: 0 }; // n: Zahl der Ausgaben, damit das Board neue Meldungen erkennt
+  ANMELD[id] = job;
+  const [cmd, args, o] = aufruf(exe, a.ohneFenster);
+  try { job.p = spawn(cmd, args, { ...o, cwd: ordner, env: pfadMitProgrammen(process.env), windowsHide: true, stdio: ['pipe', 'pipe', 'pipe'] }); }
+  catch (e) { job.laeuft = false; job.code = -1; job.zeile = e.message; return anmeldenStand(id); }
+  const t = setTimeout(() => { try { job.p.kill(); } catch (e) {} }, 15 * 60 * 1000);
+  const lesen = (c) => {
+    job.aus = (job.aus + ohneSteuerzeichen(c)).slice(-20000); job.n++;
+    const u = job.aus.match(/https:\/\/[^\s"'<>]+/);
+    if (u && !job.url) job.url = u[0];
+    const z = job.aus.split(/\r?\n|\r/).map((x) => x.trim()).filter((x) => x && !/^https:\/\//.test(x));
+    if (z.length) job.zeile = z[z.length - 1].slice(0, 300);
+  };
+  job.p.stdout.on('data', lesen); job.p.stderr.on('data', lesen);
+  job.p.stdin.on('error', () => {});
+  job.p.on('error', (e) => { clearTimeout(t); job.laeuft = false; job.code = -1; job.zeile = e.message; });
+  job.p.on('close', (c) => { clearTimeout(t); job.laeuft = false; job.code = c == null ? -1 : c; });
+  return anmeldenStand(id);
+}
+// Code aus dem Browser an das wartende Anmeldeprogramm weitergeben
+function anmeldenCode(id, code) {
+  const j = ANMELD[id];
+  const c = String(code || '').trim();
+  if (!j || !j.laeuft || !j.p) throw new Error(T('anmKeineAnmeldung'));
+  if (!c || c.length > 2000 || /[\r\n]/.test(c)) throw new Error(T('anmCodeUngueltig'));
+  j.p.stdin.write(c + '\n');
+  return { ok: true };
+}
+
 // Startbefehl für einen Lauf. Ergebnis: {exe, args, env, gitSelbst, text}
 // gitSelbst: Codex sperrt in seinem Schutzmodus .git, deshalb legt fabBoard die Commits vor und nach dem Lauf selbst an.
 async function startBefehl(id, { prompt, ordner, root, modell, claudeModell, claudePfad }) {
@@ -326,4 +371,4 @@ async function startBefehl(id, { prompt, ordner, root, modell, claudeModell, cla
   return { exe, env, text: a.name, args: [...va.vor, '--trust', '--workdir', ordner, '--add-dir', root, '--prompt', prompt, '--auto-approve'] };
 }
 
-module.exports = { ANBIETER, finde, oeffentlich, pruefen, startBefehl, aufruf, schluesselSpeichern, schluesselLesen, lokaleModelle, installieren, installStand, anmeldenOeffnen };
+module.exports = { ANBIETER, finde, oeffentlich, pruefen, startBefehl, aufruf, schluesselSpeichern, schluesselLesen, lokaleModelle, installieren, installStand, anmeldenOeffnen, anmelden, anmeldenStand, anmeldenCode };

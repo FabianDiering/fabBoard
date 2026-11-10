@@ -207,6 +207,7 @@ dialog.ew{width:min(620px,calc(100% - 28px))}
 .ew .fehl{color:var(--err);font-size:13px}
 .ew .stand{margin-top:6px;font-size:13px;color:var(--text2)}
 .ew .stand:empty{display:none}
+.ew .stand .anmhw{display:block;margin-top:10px;font-size:12.5px;color:var(--muted);font-family:var(--sans)}
 .ew .stand.fehl{color:var(--err)}
 .ew ul.punkte{margin:8px 0 2px;padding-left:18px;font-size:13px;line-height:1.6;color:var(--text2)}
 .ew ul.punkte li{display:list-item;padding:0;border:0;border-radius:0;background:none}
@@ -1038,7 +1039,7 @@ async function ewPruefen() {
   // Fehlt Programm oder Anmeldung, gibt es einen Knopf; die Befehle zum Selbst-Eingeben stehen aufklappbar darunter
   const befehle = (s) => (s.befehle || []).map((b) => `<div class="cmd"><code>${esc(b)}</code><button type="button" class="btn hell klein" data-kopie="${esc(b)}">${T('kopieren')}</button></div>`).join('');
   const schritt = (s) => `<li class="${s.ok ? 'ok' : 'nein'}"><span class="ic" aria-hidden="true">${s.ok ? '✓' : '!'}</span><div><b>${esc(s.titel)}</b><p>${esc(s.text)}</p>
-    ${s.aktion && !s.ok ? `<div class="cmd"><button type="button" class="btn klein" data-aktion="${s.aktion}">${T(s.aktion === 'installieren' ? 'ewInstallieren' : 'ewAnmelden')}</button></div>
+    ${s.aktion && !s.ok ? `<div class="cmd"><button type="button" class="btn klein" data-aktion="${s.aktion}"${s.ohneFenster ? ' data-ohne-fenster="1"' : ''}${s.codeEingabe ? ' data-code="1"' : ''}>${T(s.aktion === 'installieren' ? 'ewInstallieren' : 'ewAnmelden')}</button></div>
       <p class="stand" id="eStand-${s.aktion}" aria-live="polite"></p>
       <details class="selbst"><summary>${T('ewSelbst')}</summary><p>${esc(s.selbst || '')}</p>${befehle(s)}</details>` : befehle(s)}
     ${s.link ? `<p style="margin-top:6px"><a href="${esc(s.link)}" target="_blank" rel="noopener">${esc(s.linkText || s.link)}</a></p>` : ''}
@@ -1088,10 +1089,13 @@ async function ewInstallieren(a, nurZeigen) {
     try { j = await fetch(`api/anbieter/${a.id}/installieren`, { cache: 'no-store' }).then((x) => x.json()); } catch (e) {}
   }
 }
-// Anmeldung: fabBoard öffnet ein Fenster mit dem Anmeldebefehl und prüft alle paar Sekunden, ob sie geklappt hat (bis 15 Minuten)
+// Anmeldung: Bei Claude Code und Codex läuft sie unsichtbar im Hintergrund (entschieden 2026-11-09): Der Assistent zeigt den Anmelde-Link
+// (falls kein Browser aufgeht) und bei Claude ein Feld für den Code aus dem Browser. Bei den übrigen öffnet fabBoard ein Fenster.
+// In beiden Fällen prüft fabBoard alle paar Sekunden, ob die Anmeldung geklappt hat (bis 15 Minuten).
 async function ewAnmelden(a) {
   const d = $('#dlg'); const knopf = d.querySelector('[data-aktion="anmelden"]'); const st = $('#eStand-anmelden');
   if (!knopf || !st) return;
+  if (knopf.dataset.ohneFenster) return ewAnmeldenOhneFenster(a, knopf, st);
   const x = await fetch(`api/anbieter/${a.id}/anmelden`, { method: 'POST' }).then((y) => y.json()).catch((e) => ({ fehler: e.message }));
   if (x.fehler) { st.classList.add('fehl'); st.textContent = x.fehler; return; }
   knopf.textContent = T('ewAnmeldenNochmal'); st.textContent = T('ewAnmeldenOffen');
@@ -1103,6 +1107,51 @@ async function ewAnmelden(a) {
       const r = await fetch(`api/anbieter/${a.id}/pruefung?modell=${encodeURIComponent(EW.modell)}`, { cache: 'no-store' }).then((y) => y.json());
       if (r.schritte.every((s) => s.ok || s.aktion !== 'anmelden')) { ewPruefen(); return; }
     } catch (e) {}
+  }
+}
+async function ewAnmeldenOhneFenster(a, knopf, st) {
+  const d = $('#dlg');
+  knopf.disabled = true; st.classList.remove('fehl'); st.textContent = T('ewAnmVorbereiten');
+  let j = await fetch(`api/anbieter/${a.id}/anmelden`, { method: 'POST' }).then((y) => y.json()).catch((e) => ({ fehler: e.message }));
+  if (j.fehler) { st.classList.add('fehl'); st.textContent = j.fehler; knopf.disabled = false; return; }
+  // Bereich mit Hinweis, Link-Knöpfen und Code-Feld; Link und Code-Feld erscheinen, sobald das Programm den Link ausgegeben hat
+  st.innerHTML = `<span id="eAnmText">${esc(T('ewAnmLaeuft'))}</span><span id="eAnmLink" hidden><span class="anmhw">${esc(T('ewAnmLink'))}</span>
+    <span class="cmd"><a class="btn hell klein" id="eAnmOeffnen" href="#" target="_blank" rel="noopener">${T('ewSeiteOeffnen')}</a><button type="button" class="btn hell klein" id="eAnmKopie">${T('ewLinkKopieren')}</button></span>
+    ${knopf.dataset.code ? `<span class="anmhw">${esc(T('ewCodeT'))}</span><span class="cmd"><input id="eAnmCode" autocomplete="off" spellcheck="false" aria-label="${esc(T('ewCodeFeld'))}" placeholder="${esc(T('ewCodeFeld'))}"><button type="button" class="btn klein" id="eAnmCodeOk">${T('ewCodeOk')}</button></span>` : ''}</span>`;
+  const linkZeigen = (u) => {
+    if (!u || !$('#eAnmLink')) return;
+    $('#eAnmLink').hidden = false; $('#eAnmOeffnen').href = u;
+    $('#eAnmKopie').onclick = async () => { try { await navigator.clipboard.writeText(u); $('#eAnmKopie').textContent = T('kopiert'); } catch (e) { $('#eAnmKopie').textContent = T('nichtMoeglich'); } };
+  };
+  let codeBei = null; // Ausgabe-Zähler beim Senden des Codes; eine neue Fehlerzeile danach heißt: Code nicht angenommen
+  const codeSenden = async () => {
+    const f = $('#eAnmCode'); const c = f.value.trim(); if (!c) return f.focus();
+    const x = await fetch(`api/anbieter/${a.id}/anmeldecode`, { method: 'POST', body: JSON.stringify({ code: c }) }).then((y) => y.json()).catch((e) => ({ fehler: e.message }));
+    $('#eAnmText').textContent = x.fehler || T('ewCodeGesendet'); if (!x.fehler) { f.value = ''; codeBei = j.n || 0; }
+  };
+  if ($('#eAnmCodeOk')) { $('#eAnmCodeOk').onclick = codeSenden; $('#eAnmCode').onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); codeSenden(); } }; }
+  linkZeigen(j.url);
+  const ende = Date.now() + 15 * 60 * 1000; let n = 0;
+  while (d.open && $('#eStand-anmelden') === st && Date.now() < ende) {
+    await new Promise((ok) => setTimeout(ok, 1500));
+    if (!d.open || $('#eStand-anmelden') !== st) return;
+    try { j = await fetch(`api/anbieter/${a.id}/anmelden`, { cache: 'no-store' }).then((y) => y.json()); } catch (e) { continue; }
+    linkZeigen(j.url);
+    if (codeBei !== null && (j.n || 0) > codeBei && /invalid|error|fail/i.test(j.zeile || '')) { $('#eAnmText').textContent = T('ewCodeFalsch'); codeBei = null; }
+    // Programm beendet: neu prüfen; hat es nicht geklappt, Meldung und Knopf wieder frei
+    if (!j.laeuft) {
+      const r = await fetch(`api/anbieter/${a.id}/pruefung?modell=${encodeURIComponent(EW.modell)}`, { cache: 'no-store' }).then((y) => y.json()).catch(() => null);
+      if (!r || r.schritte.every((s) => s.ok || s.aktion !== 'anmelden')) { ewPruefen(); return; }
+      st.classList.add('fehl'); st.textContent = T('ewAnmFehler', { zeile: j.zeile || String(j.code) });
+      knopf.textContent = T('ewAnmNochmal'); knopf.disabled = false; d.querySelector('details.selbst').open = true; return;
+    }
+    // zusätzlich alle 6 Sekunden den Anmeldestatus prüfen (falls das Programm nach Erfolg weiterläuft)
+    if (++n % 4 === 0) {
+      try {
+        const r = await fetch(`api/anbieter/${a.id}/pruefung?modell=${encodeURIComponent(EW.modell)}`, { cache: 'no-store' }).then((y) => y.json());
+        if (r.schritte.every((s) => s.ok || s.aktion !== 'anmelden')) { ewPruefen(); return; }
+      } catch (e) {}
+    }
   }
 }
 // Haftungshinweis als Kasten; in der Ersteinrichtung muss er bestätigt werden (entschieden 2026-11-09)
