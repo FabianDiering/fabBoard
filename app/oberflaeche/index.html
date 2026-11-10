@@ -1021,7 +1021,8 @@ function ewWahl() {
     <p class="fehl" id="eFehl"></p>
     <div class="r"><button type="button" class="btn hell" id="eZu">${T('spaeter')}</button><button class="btn" id="eWeiter"${EW.wahl ? '' : ' disabled'}>${T('weiter')}</button></div></form>`;
   $('#eZu').onclick = () => d.close();
-  d.querySelector('form').onchange = (e) => { if (e.target.id === 'eSprache') return spracheWechseln(e.target.value); EW.wahl = e.target.value; if (EW.wahl !== EW.liste.gewaehlt) EW.modell = ''; $('#eWeiter').disabled = false; };
+  // Nur die Auswahl der KI (name="a") ändert EW.wahl; das Häkchen beim Haftungshinweis darf sie nicht überschreiben (Fehler in v1.86, Test 2026-11-10)
+  d.querySelector('form').onchange = (e) => { if (e.target.id === 'eSprache') return spracheWechseln(e.target.value); if (e.target.name !== 'a') return; EW.wahl = e.target.value; if (EW.wahl !== EW.liste.gewaehlt) EW.modell = ''; $('#eWeiter').disabled = false; };
   d.querySelector('form').onsubmit = (e) => {
     e.preventDefault();
     // Bei jeder neuen KI: erst den Hinweis bestätigen, bevor etwas installiert wird (entschieden 2026-11-09)
