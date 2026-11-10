@@ -1260,7 +1260,8 @@ function erstProjekt() {
     if (w === 'beispiel') {
       const x = await fetch('api/beispiele', { method: 'POST' }).then((y) => y.json()).catch((er) => ({ fehler: er.message }));
       if (x.fehler) { $('#eFehl').textContent = x.fehler; return; }
-      await laden(); S.aktiv = x.neu?.[0] || liste()[0]?.id || null; render();
+      // Zuerst das Übungsprojekt öffnen (das einzige mit Projektordner), nicht das alphabetisch erste (Befund Test v1.86, 2026-11-10)
+      await laden(); const neu = x.neu || []; S.aktiv = neu.find((id) => S.projekte[id]?.ordner) || neu[0] || liste()[0]?.id || null; render();
     }
     EW.nachher = w === 'eigen' ? 'projekt' : null;
     erstKuerzel();
