@@ -10,22 +10,28 @@ fabBoard is a desktop board for working on your projects with an AI coding agent
 - **German and English:** follows your system language, can be changed in the setup.
 - **Free and open source** (MIT licence). If fabBoard helps you, I'd appreciate a coffee: [ko-fi.com/fabboard](https://ko-fi.com/fabboard)
 
-> **Status: early preview.** There is no installer yet; fabBoard currently runs from source on Windows. A Windows installer and a Mac version are planned.
+> **Status: preview release for Windows.** fabBoard is currently being tested with its first users. A Mac version is planned.
+
+## Download and install
+1. Download the latest `fabBoard-Setup-….exe` from [Releases](https://github.com/FabianDiering/fabBoard/releases).
+2. Double-click the file. fabBoard installs without further questions and without administrator rights, and starts by itself.
+3. A short setup assistant helps you choose your AI, install it and sign in. Everything works with buttons, there is nothing to type.
+
+As long as the installer is not yet signed, Windows shows a warning (“Windows protected your PC”). Continue with “More info” and “Run anyway”.
 
 ## Requirements
 - Windows 10 or 11
-- [Node.js](https://nodejs.org) (LTS)
-- [Git](https://git-scm.com) – fabBoard creates a commit before and after each AI run, so every change can be undone
-- At least one AI agent; fabBoard checks which ones are installed and signed in and shows you the commands for anything missing
+- An account with an AI (e.g. Claude or ChatGPT), your own API key or a local model. You don't need any other programs, fabBoard fetches everything it needs by itself.
+- Recommended: [Git](https://git-scm.com) in the project folder. fabBoard then saves a state before and after each AI run, so every change can be undone. fabBoard also works without Git.
 
-## Getting started
+## Run from source (for developers)
+You need [Node.js](https://nodejs.org) (LTS):
 ```
 git clone https://github.com/FabianDiering/fabBoard.git
 cd fabBoard\app
 npm install
 npm start
 ```
-On first start, a short setup assistant helps you choose your AI and get it ready (installed, signed in or API key saved). You can open it again at any time with the gear icon at the top right.
 
 ## How it works
 1. Create a project and link it to its folder on your computer.

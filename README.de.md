@@ -10,22 +10,28 @@ fabBoard ist ein Board für den Desktop, mit dem du deine Projekte zusammen mit 
 - **Deutsch und Englisch:** richtet sich nach der Systemsprache, umstellbar in der Einrichtung.
 - **Kostenlos und Open Source** (MIT-Lizenz). Wenn dir fabBoard hilft, freue ich mich über einen Kaffee: [ko-fi.com/fabboard](https://ko-fi.com/fabboard)
 
-> **Stand: frühe Vorschau.** Einen Installer gibt es noch nicht; fabBoard läuft derzeit unter Windows aus dem Quellcode. Ein Windows-Installer und eine Mac-Fassung sind geplant.
+> **Stand: Vorabversion für Windows.** fabBoard wird gerade mit ersten Nutzern getestet. Eine Mac-Fassung ist geplant.
+
+## Herunterladen und installieren
+1. Unter [Releases](https://github.com/FabianDiering/fabBoard/releases) die neueste Datei `fabBoard-Setup-….exe` herunterladen.
+2. Doppelklick auf die Datei. fabBoard installiert sich ohne weitere Fragen und ohne Administratorrechte und startet von selbst.
+3. Ein kurzer Einrichtungs-Assistent hilft dir, deine KI zu wählen, sie zu installieren und dich anzumelden. Alles geht per Knopf, du musst nichts abtippen.
+
+Solange der Installer noch nicht signiert ist, zeigt Windows eine Warnung („Der Computer wurde durch Windows geschützt“). Weiter geht es mit „Weitere Informationen“ und „Trotzdem ausführen“.
 
 ## Voraussetzungen
 - Windows 10 oder 11
-- [Node.js](https://nodejs.org) (LTS)
-- [Git](https://git-scm.com) – fabBoard legt vor und nach jedem KI-Lauf einen Commit an, so lässt sich jede Änderung rückgängig machen
-- Mindestens ein KI-Assistent; fabBoard prüft, welche installiert und angemeldet sind, und zeigt dir die Befehle für Fehlendes
+- Ein Konto bei einer KI (z. B. Claude oder ChatGPT), ein eigener API-Schlüssel oder ein lokales Modell. Weitere Programme brauchst du nicht, fabBoard holt alles Nötige selbst.
+- Empfohlen: [Git](https://git-scm.com) im Projektordner. Dann legt fabBoard vor und nach jedem KI-Lauf einen Stand an, so lässt sich jede Änderung rückgängig machen. Ohne Git funktioniert fabBoard ebenfalls.
 
-## Loslegen
+## Aus dem Quellcode starten (für Entwickler)
+Dafür brauchst du [Node.js](https://nodejs.org) (LTS):
 ```
 git clone https://github.com/FabianDiering/fabBoard.git
 cd fabBoard\app
 npm install
 npm start
 ```
-Beim ersten Start hilft dir ein kurzer Einrichtungs-Assistent, deine KI zu wählen und startklar zu machen (installiert, angemeldet oder API-Schlüssel gespeichert). Über das Zahnrad oben rechts öffnest du ihn jederzeit wieder.
 
 ## So funktioniert es
 1. Projekt anlegen und mit seinem Ordner auf deinem Rechner verbinden.
