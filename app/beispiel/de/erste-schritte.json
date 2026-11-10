@@ -2,7 +2,7 @@
  "id": "erste-schritte",
  "name": "Erste Schritte",
  "art": "Einführung",
- "beschreibung": "Ein kleines Übungsprojekt: Einmal den ganzen Ablauf erleben – Auftrag geben, KI starten, Ergebnis ansehen. Der Projektordner liegt im fabBoard-Datenordner unter „beispiele“.",
+ "beschreibung": "Ein kleines Übungsprojekt: Einmal den ganzen Ablauf erleben – Auftrag geben, KI starten, Frage beantworten, Ergebnis ansehen. Der Projektordner liegt im fabBoard-Datenordner unter „beispiele“.",
  "ordner": "{beispielordner}",
  "reihenfolge": 10,
  "erstellt": "2026-11-07",
@@ -29,7 +29,7 @@
      "id": "es2",
      "typ": "info",
      "titel": "2. Oben rechts auf „Starten“ klicken",
-     "text": "Die KI arbeitet jetzt im Projektordner. Das dauert meist ein bis zwei Minuten; der Knopf pulsiert so lange. Mit „Mitlesen“ siehst du, was sie gerade tut.",
+     "text": "Die KI liest deinen Auftrag, ändert aber noch nichts. Sie stellt dir Fragen im Board, zum Beispiel was in die Datei soll. Das dauert meist ein bis zwei Minuten; der Knopf pulsiert so lange. Mit „Mitlesen“ siehst du, was sie gerade tut.",
      "optionen": [],
      "mehrfach": false,
      "kommentar": "",
@@ -40,21 +40,10 @@
     },
     {
      "id": "es3",
-     "typ": "frage",
-     "titel": "3. Welcher Gruß soll in die Datei?",
-     "text": "Die KI liest deine Antworten beim nächsten Lauf. Wähle eine Antwort und starte die KI noch einmal – sie ändert die Datei dann entsprechend.",
-     "optionen": [
-      {
-       "t": "Ein kurzer, freundlicher Gruß",
-       "empf": true,
-       "gewaehlt": false
-      },
-      {
-       "t": "Ein kleines Gedicht",
-       "empf": false,
-       "gewaehlt": false
-      }
-     ],
+     "typ": "info",
+     "titel": "3. Frage beantworten und noch einmal starten",
+     "text": "Wähle bei der neuen Frage eine Antwort und starte die KI noch einmal. Erst jetzt legt sie die Datei hallo.txt an. So bestimmst immer du, was die KI tun darf.",
+     "optionen": [],
      "mehrfach": false,
      "kommentar": "",
      "von": "claude",
@@ -69,7 +58,7 @@
  "nachrichten": [
   {
    "id": "esm1",
-   "text": "Lege im Projektordner die Datei hallo.txt mit einem kurzen Gruß an und schreib in deiner Antwort in einem Satz, was du gemacht hast.",
+   "text": "Lege im Projektordner die Datei hallo.txt mit einem Gruß an.",
    "erstellt": "2026-11-07 09:00",
    "von": "fabian",
    "status": "offen",

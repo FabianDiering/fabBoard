@@ -2,7 +2,7 @@
  "id": "first-steps",
  "name": "First steps",
  "art": "Introduction",
- "beschreibung": "A small practice project: go through the whole flow once – give an instruction, start the AI, look at the result. The project folder is in the fabBoard data folder under “beispiele”.",
+ "beschreibung": "A small practice project: go through the whole flow once – give an instruction, start the AI, answer a question, look at the result. The project folder is in the fabBoard data folder under “beispiele”.",
  "ordner": "{beispielordner}",
  "reihenfolge": 10,
  "erstellt": "2026-11-07",
@@ -29,7 +29,7 @@
      "id": "es2",
      "typ": "info",
      "titel": "2. Click “Start” at the top right",
-     "text": "The AI now works in the project folder. This usually takes a minute or two; the button pulses meanwhile. “Follow” shows what it is doing right now.",
+     "text": "The AI reads your instruction but does not change anything yet. It asks you questions on the board, for example what should go into the file. This usually takes a minute or two; the button pulses meanwhile. “Follow” shows what it is doing right now.",
      "optionen": [],
      "mehrfach": false,
      "kommentar": "",
@@ -40,21 +40,10 @@
     },
     {
      "id": "es3",
-     "typ": "frage",
-     "titel": "3. Which greeting should go into the file?",
-     "text": "The AI reads your answers on its next run. Pick an answer and start the AI again – it will then change the file accordingly.",
-     "optionen": [
-      {
-       "t": "A short, friendly greeting",
-       "empf": true,
-       "gewaehlt": false
-      },
-      {
-       "t": "A little poem",
-       "empf": false,
-       "gewaehlt": false
-      }
-     ],
+     "typ": "info",
+     "titel": "3. Answer the question and start again",
+     "text": "Pick an answer to the new question and start the AI again. Only now does it create the file hello.txt. This way you always decide what the AI may do.",
+     "optionen": [],
      "mehrfach": false,
      "kommentar": "",
      "von": "claude",
@@ -69,7 +58,7 @@
  "nachrichten": [
   {
    "id": "esm1",
-   "text": "Create the file hello.txt with a short greeting in the project folder and say in one sentence in your answer what you did.",
+   "text": "Create the file hello.txt with a greeting in the project folder.",
    "erstellt": "2026-11-07 09:00",
    "von": "fabian",
    "status": "offen",
