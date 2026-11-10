@@ -769,6 +769,9 @@ function suche() {
     const el = document.querySelector(x.ziel.item ? `[data-item="${x.ziel.item}"]` : x.ziel.msg ? `[data-msg="${x.ziel.msg}"]` : `[data-arch="${x.ziel.arch}"]`);
     el?.scrollIntoView({ block: 'center' });
   };
+  // Klick auf den abgedunkelten Bereich neben der Suche schließt sie (entschieden 2026-11-09); nur hier, nicht bei Einrichtung und Bedingungen
+  const daneben = (e) => { if (e.target === d) { const r = d.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) d.close(); } };
+  d.addEventListener('click', daneben); d.addEventListener('close', () => d.removeEventListener('click', daneben), { once: true });
   d.showModal(); zeig(); feld.focus();
 }
 async function claudeStarten(p) {
