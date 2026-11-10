@@ -126,6 +126,8 @@ textarea.kom{width:100%;min-height:34px;border:1px solid var(--line);border-radi
 .badge.w{border-color:var(--accent);color:var(--accent)}
 .post textarea{display:block;margin:0 0 6px;width:100%;min-height:56px;border:1px solid var(--line);border-radius:6px;background:var(--kfield);padding:7px 10px;font:13px/1.45 var(--sans);resize:vertical}
 .post textarea:focus{outline:0;border-color:var(--accent)}
+.post .ablegen{display:flex;justify-content:flex-end;margin:0 0 8px}
+.post .ablegen[hidden]{display:none}
 .msg{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;padding:5px 0;border-bottom:1px solid var(--line);align-items:start}
 .msg>div{min-width:0}
 .msg .tx{margin:1px 0 0;font-size:13px;line-height:1.5;color:var(--text2);white-space:pre-wrap}
@@ -434,7 +436,7 @@ function render() {
   if (!p.themen.length) h += `<section class="ab" data-thema="allgemein"><div class="l"><span class="nr">01 —</span> ${esc(T('allgemein'))}</div><div><p class="leer">${T('keinePunkte')}</p><button class="plusp" data-a="punkt-neu">${T('plusPunkt')}</button></div></section>`;
   h += archivHtml(p, String(Math.max(p.themen.length, 1) + 1).padStart(2, '0'));
   $('#main').innerHTML = h;
-  const pf = $('#postText'); if (pf) { pf.value = entwurf(p.id); gr(pf); }
+  const pf = $('#postText'); if (pf) { pf.value = entwurf(p.id); gr(pf); ablegenZeigen(); }
   document.querySelectorAll('textarea.kom').forEach(gr);
   S.markiert = null;
 }
@@ -475,12 +477,15 @@ function postHtml(p) {
   const n = (p.nachrichten || []).filter((x) => x.status !== 'erledigt');
   return `<section class="ab post"><div class="l"><span class="nr">${esc(T('an', { wer: kiName() }))}</span><span class="z">${T('offenN', { n: n.length })}</span></div><div>
     <textarea id="postText" spellcheck="true" lang="${sprache()}" placeholder="${esc(T('nachrichtPlatzhalter', { ki: kiName(), name: p.name }))}" aria-label="${esc(T('nachrichtA', { ki: kiName() }))}"></textarea>
+    <div class="ablegen" id="postAblegen" hidden><button type="button" class="btn hell klein" data-a="msg-ablegen">${T('insBoard')}</button></div>
     ${n.slice(0, 8).map(msgHtml).join('')}${n.length > 8 ? `<p class="leer">${T('aeltere', { n: n.length - 8 })}</p>` : ''}</div></section>`;
 }
 async function kopieren(p, text) {
   const s = `fabBoard · ${p.name}: ${text}`;
   try { await navigator.clipboard.writeText(s); return true; } catch (e) { return false; }
 }
+// „Ins Board legen“: Nachricht mit der Maus ablegen, ohne die KI zu starten (entschieden 2026-11-10); erscheint, sobald etwas im Feld steht
+function ablegenZeigen() { const k = $('#postAblegen'); if (k) k.hidden = !$('#postText')?.value.trim(); }
 async function senden() {
   const p = S.projekte[S.aktiv]; const ta = $('#postText'); const text = ta?.value.trim(); if (!p || !text) return;
   p.nachrichten ||= [];
@@ -581,6 +586,7 @@ document.addEventListener('click', (e) => {
   if (a === 'claude') return claudeStarten(S.projekte[S.aktiv]);
   if (a === 'ki-wechsel') return kiWechseln(S.projekte[S.aktiv]);
   if (a === 'lauf-stopp') return laufStoppen(S.projekte[S.aktiv]);
+  if (a === 'msg-ablegen') return senden();
   if (a === 'lauf-log') { einstZu(); return laufProtokoll(S.projekte[S.aktiv]); }
   if (a === 'suche') { einstZu(); return suche(); }
   if (a === 'ki-standard' || a === 'ki-weg') return kiListe(a === 'ki-standard' ? 'standard' : 'entfernen', b.dataset.id);
@@ -646,7 +652,7 @@ document.addEventListener('keydown', (e) => {
   if (e.target.id === 'postText' && e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); senden(); }
 });
 document.addEventListener('input', (e) => {
-  if (e.target.id === 'postText') { entwurf(S.aktiv, e.target.value); gr(e.target); return; }
+  if (e.target.id === 'postText') { entwurf(S.aktiv, e.target.value); gr(e.target); ablegenZeigen(); return; }
   if (!e.target.matches('textarea.kom')) return;
   const { p, it } = finde(e.target); it.kommentar = e.target.value; gr(e.target); geaendert(p.id);
 });
