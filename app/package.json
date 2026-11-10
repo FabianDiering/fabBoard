@@ -10,7 +10,7 @@
     "installer-ohne-veroeffentlichen": "electron-builder --win nsis --publish never"
   },
   "keywords": [],
-  "author": "Fabian Diering",
+  "author": "Fabian Martin Diering",
   "license": "MIT",
   "type": "commonjs",
   "devDependencies": {
@@ -25,7 +25,7 @@
   "build": {
     "appId": "io.github.fabiandiering.fabboard",
     "productName": "fabBoard",
-    "copyright": "© 2026 Fabian Diering",
+    "copyright": "© 2026 Fabian Martin Diering",
     "directories": {
       "output": "dist"
     },

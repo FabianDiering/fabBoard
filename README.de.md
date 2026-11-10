@@ -49,4 +49,4 @@ Free code signing provided by [SignPath.io](https://about.signpath.io), certific
 - **Datenschutz:** Dieses Programm überträgt keine Informationen an andere Systeme im Netz, außer der Nutzer oder die Person, die es installiert oder bedient, verlangt es ausdrücklich. Insbesondere: Deine Projekte gehen nur an die gewählte KI, wenn du sie startest; nach Updates sucht fabBoard nur, wenn du es auslöst oder die automatische Suche einschaltest. Einzelheiten stehen in der Datenschutzerklärung in der App (Einstellungen → Funktionen → Datenschutz).
 
 ## Lizenz
-MIT – siehe [LICENSE](LICENSE). © 2026 Fabian Diering
+MIT – siehe [LICENSE](LICENSE). © 2026 Fabian Martin Diering

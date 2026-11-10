@@ -49,4 +49,4 @@ Free code signing provided by [SignPath.io](https://about.signpath.io), certific
 - **Privacy:** This program will not transfer any information to other networked systems unless specifically requested by the user or the person installing or operating it. In particular: your projects are sent to the AI you chose only when you start it; updates are only checked when you ask for it or switch on automatic update checks. Details are in the privacy statement inside the app (settings → Features → Privacy).
 
 ## Licence
-MIT – see [LICENSE](LICENSE). © 2026 Fabian Diering
+MIT – see [LICENSE](LICENSE). © 2026 Fabian Martin Diering
