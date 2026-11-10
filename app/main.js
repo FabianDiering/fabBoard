@@ -277,9 +277,9 @@ ipcMain.on('shot:wahl', (e, r) => {
   editorOeffnen(bild, d);
 });
 // Board: Ordner wählen (Datenordner) und App neu starten; nur vom Hauptfenster aus
-ipcMain.handle('app:ordner', async (e, start) => {
+ipcMain.handle('app:ordner', async (e, start, titel) => {
   if (!fenster || e.sender !== fenster.webContents) return '';
-  const r = await dialog.showOpenDialog(fenster, { title: t('datenordner'), defaultPath: start || app.getPath('documents'), properties: ['openDirectory', 'createDirectory'] });
+  const r = await dialog.showOpenDialog(fenster, { title: typeof titel === 'string' && titel ? titel.slice(0, 120) : t('datenordner'), defaultPath: (typeof start === 'string' && start) || app.getPath('documents'), properties: ['openDirectory', 'createDirectory'] });
   return r.canceled || !r.filePaths[0] ? '' : r.filePaths[0];
 });
 ipcMain.on('app:neustart', (e) => {

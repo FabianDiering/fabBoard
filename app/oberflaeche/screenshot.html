@@ -134,6 +134,8 @@ addEventListener('keydown', (e) => {
   const imText = e.target === kom;
   if (e.key === 'Escape') { e.preventDefault(); fabShot.abbrechen(); return; }
   if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); senden(e.shiftKey); return; }
+  // Strg+Umschalt+S: senden und KI starten, wie im Board (entschieden 2026-11-09); Strg+Umschalt+Enter bleibt erhalten
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && !e.altKey && e.code === 'KeyS') { e.preventDefault(); senden(true); return; }
   if (imText || e.target.tagName === 'SELECT') return;
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); zurueck(); return; }
   if (!e.ctrlKey && !e.metaKey && !e.altKey && (e.key === 'r' || e.key === 'R' || e.key === 'p' || e.key === 'P')) { e.preventDefault(); werkzeug(e.key.toLowerCase() === 'p'); }

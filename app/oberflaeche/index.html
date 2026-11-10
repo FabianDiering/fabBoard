@@ -284,6 +284,7 @@ dialog .suche .tr:hover,dialog .suche .tr:focus{background:var(--mark);outline:n
 dialog .suche .tr small{display:block;color:var(--muted);font-size:11px}
 dialog .suche .leer{color:var(--muted);font-size:13px;margin:6px 0}
 .lauf .ordnerlk{font-size:12px;letter-spacing:0;text-transform:none}
+.einst kbd{flex:0 0 auto;font:600 12px/1 inherit;font-family:inherit;padding:4px 7px;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;background:var(--field);color:var(--ink);white-space:nowrap}
 .einst .hw{margin:6px 0 4px;font-size:12.5px;color:var(--muted);line-height:1.45;max-width:560px}
 .sw{display:inline-flex;flex:0 0 auto;border:1px solid var(--line);border-radius:6px;overflow:hidden}
 .sw button{background:none;border:0;padding:2px 8px;font-size:12px;color:var(--ink);cursor:pointer}
@@ -616,7 +617,24 @@ document.addEventListener('click', (e) => {
     geaendert(p.id); render();
   }
 });
+// Tastenkürzel im Board (entschieden 2026-11-09), Übersicht im Reiter „Tastenkürzel“ (F1); Buchstaben über e.code, damit sie mit Umschalt und jeder Tastaturbelegung gehen
+function projektWechseln(i) {
+  const l = liste(); if (!l[i]) return;
+  S.aktiv = l[i].id; S.bearbeiten = null; S.neuIn = null; S.tabsAuf = false; render(); scrollTo(0, 0);
+}
+function kuerzelZeigen() { S.einstAuf = true; S.einstReiter = 'kuerzel'; einstRender(); $('#einst .reiter .an')?.focus(); }
 document.addEventListener('keydown', (e) => {
+  const mod = e.ctrlKey || e.metaKey;
+  const frei = !$('#dlg').open && !$('.tour') && !S.einstAuf;
+  if (e.key === 'F1' && !$('#dlg').open) { e.preventDefault(); kuerzelZeigen(); return; }
+  if (frei && mod && e.shiftKey && !e.altKey && e.code === 'KeyS') { e.preventDefault(); $('[data-a="claude"]:not([disabled])')?.click(); return; }
+  if (frei && mod && e.shiftKey && !e.altKey && e.code === 'KeyX') { e.preventDefault(); $('[data-a="lauf-stopp"]')?.click(); return; }
+  if (frei && mod && !e.shiftKey && !e.altKey && e.code === 'KeyN') { e.preventDefault(); const f = $('#postText'); if (f) { f.scrollIntoView({ block: 'center' }); f.focus(); } return; }
+  if (frei && mod && !e.shiftKey && !e.altKey && /^Digit[1-9]$/.test(e.code)) { e.preventDefault(); projektWechseln(+e.code.slice(5) - 1); return; }
+  if (frei && e.ctrlKey && !e.altKey && e.key === 'Tab') {
+    e.preventDefault(); const l = liste(); if (l.length < 2) return;
+    const i = l.findIndex((x) => x.id === S.aktiv); projektWechseln((i + (e.shiftKey ? -1 : 1) + l.length) % l.length); return;
+  }
   if ((e.ctrlKey || e.metaKey) && !e.altKey && e.key.toLowerCase() === 'k') { e.preventDefault(); if (!$('#dlg').open) suche(); return; }
   if (e.key === 'Escape' && e.target.closest?.('form.neu')) { const id = S.neuIn; S.neuIn = null; render(); document.querySelector(`[data-thema="${id}"] .plusp`)?.focus(); return; }
   if (e.key === 'Escape' && S.einstAuf && !$('#dlg').open) { einstZu(); return; }
@@ -791,7 +809,7 @@ async function projektLoeschen(p) {
 }
 
 // ---------- Einstellungen: großer Dialog mit Reitern (entschieden 2026-11-09); der zuletzt gewählte Reiter bleibt gemerkt
-const REITER = ['projekt', 'ki', 'darst', 'daten', 'tech', 'info'];
+const REITER = ['projekt', 'ki', 'darst', 'kuerzel', 'daten', 'tech', 'info'];
 const GITHUB = 'https://github.com/FabianDiering/fabBoard';
 try { const r = localStorage.getItem('fabboard-reiter'); if (REITER.includes(r)) S.einstReiter = r; } catch (e) {}
 function einstRender() {
@@ -804,7 +822,7 @@ function einstRender() {
   const ver = esc($('#version').textContent);
   const p = S.projekte[S.aktiv];
   const n = liste().length;
-  const titel = { projekt: T(n > 1 ? 'projekte' : 'projekt'), ki: T('kiAuswahl'), darst: T('darstellung'), daten: T('daten'), tech: T('techT'), info: T('featT') };
+  const titel = { projekt: T(n > 1 ? 'projekte' : 'projekt'), ki: T('kiAuswahl'), darst: T('darstellung'), kuerzel: T('kuerzelT'), daten: T('daten'), tech: T('techT'), info: T('featT') };
   let inhalt = '';
   if (r === 'projekt') {
     // Projekt-Werkzeuge stehen nur hier, nicht im Board; Löschen fragt nach
@@ -831,6 +849,11 @@ function einstRender() {
     inhalt = `<h3>${titel.darst}</h3>`
       + `<div class="zl"><span>${T('sprache')}</span>${sw('spr', S.sprachWahl || (document.documentElement.lang === 'en' ? 'en' : 'de'), [['de', 'DE'], ['en', 'EN']])}</div>`
       + `<div class="zl"><span>${T('hellDunkel')}</span>${sw('hell', document.documentElement.dataset.theme || '', [['', T('system')], ['light', T('hell')], ['dark', T('dunkel')]])}</div>`;
+  } else if (r === 'kuerzel') {
+    // Übersicht aller Tastenkürzel; auf dem Mac mit ⌘ ⇧ ⌥ statt Strg/Umschalt/Alt (Strg+Tab bleibt, ⌘+Tab gehört dem System)
+    const zeile = ([k, w]) => `<div class="zl"><span>${esc(w)}</span><kbd>${esc(tasten(k))}</kbd></div>`;
+    inhalt = `<h3>${titel.kuerzel}</h3><p class="hw">${T('kuerzelErkl')}</p>` + grp(cap(T('kuerzelBoard')) + T('kuerzelListe').map(zeile).join(''))
+      + (window.fabApp ? grp(cap(T('kuerzelShot')) + T('kuerzelShotListe').map(zeile).join('')) : '');
   } else if (r === 'daten') {
     // Für Anfänger erklärt: was der Datenordner ist und wann man ihn ändert
     inhalt = `<h3>${titel.daten}</h3><p class="hw">${T('datenErkl')}</p>`
@@ -860,13 +883,14 @@ async function ordnerFeld(akt) {
   const o = await fetch('api/ordner', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   const bsp = (o ? o.basis : 'C:\\…\\Projekte') + '\\…';
   const pfad = (ein) => `<label id="dPfadL"${ein ? '' : ' hidden'}>${T('vollerPfad')}<input name="ordner" value="${esc(akt)}" placeholder="${esc(bsp)}"></label>`;
-  if (!o) return `<label>${T('projektordner')}<input name="ordner" value="${esc(akt)}" placeholder="${esc(bsp)}"></label>`;
+  const knopf = window.fabApp ? `<div><button type="button" class="btn hell klein" id="dOrdner">${T('ordnerAuswaehlen')}</button></div>` : '';
+  if (!o) return `<label>${T('projektordner')}<input name="ordner" value="${esc(akt)}" placeholder="${esc(bsp)}"></label>${knopf}`;
   const voll = (n) => o.basis + '\\' + n;
   const treffer = o.ordner.find((n) => voll(n).toLowerCase() === akt.toLowerCase());
   const anders = !!akt && !treffer;
   return `<label>${esc(T('projektordnerIn', { basis: o.basis.split('\\').pop() }))}<select name="wahl" id="dWahl"><option value="">${T('keinOrdner')}</option>
     ${o.ordner.map((n) => `<option value="${esc(voll(n))}"${n === treffer ? ' selected' : ''}>${esc(n)}</option>`).join('')}
-    <option value="*"${anders ? ' selected' : ''}>${T('andererPfad')}</option></select></label>${pfad(anders)}`;
+    <option value="*"${anders ? ' selected' : ''}>${T('andererPfad')}</option></select></label>${pfad(anders)}${knopf}`;
 }
 const ordnerAus = (fd) => { const w = fd.get('wahl'); return (w === null || w === '*' ? fd.get('ordner') || '' : w).trim().replace(/^"+|"+$/g, '').trim(); };
 async function dialog(p) {
@@ -881,6 +905,18 @@ async function dialog(p) {
     <div class="r"><button type="button" class="btn hell" id="dAbbr">${T('abbrechen')}</button><button class="btn">${neu ? T('anlegen') : T('speichern')}</button></div></form>`;
   $('#dAbbr').onclick = () => d.close();
   const wahl = $('#dWahl'); if (wahl) wahl.onchange = () => { $('#dPfadL').hidden = wahl.value !== '*'; };
+  // Ordner über das Auswahlfenster von Windows/macOS statt Pfad abtippen (entschieden 2026-11-09); passt er zur Liste, wird er dort gewählt
+  const ok = $('#dOrdner');
+  if (ok) ok.onclick = async () => {
+    const feld = d.querySelector('input[name=ordner]');
+    const jetzt = (wahl && wahl.value && wahl.value !== '*') ? wahl.value : feld?.value || p?.ordner || '';
+    const neuO = await fabApp.ordnerWaehlen(jetzt, T('ordnerWaehlen'));
+    if (!neuO) return;
+    const opt = wahl && [...wahl.options].find((x) => x.value && x.value !== '*' && x.value.toLowerCase() === neuO.toLowerCase());
+    if (opt) { wahl.value = opt.value; $('#dPfadL').hidden = true; return; }
+    if (wahl) { wahl.value = '*'; $('#dPfadL').hidden = false; }
+    if (feld) feld.value = neuO;
+  };
   d.querySelector('form').onsubmit = (e) => {
     e.preventDefault(); const fd = new FormData(e.target);
     if (neu) {
@@ -1093,6 +1129,7 @@ const erstVon = () => (window.fabApp ? 7 : 6);
 function ewNr(n) { return T('ewSchritt', EW.erst ? { n: n + 2, von: erstVon() } : { n, von: 3 }); }
 const kuerzelText = () => (window.fabApp?.mac ? '⌘⌥S' : T('kuerzelSchreibweise'));
 const kiKuerzelText = () => (window.fabApp?.mac ? '⌘⇧S' : T('kuerzelKiSchreibweise'));
+const tasten = (k) => (window.fabApp?.mac ? k.replace(/(Strg|Ctrl)\+(?!Tab)/g, '⌘').replace(/(Umschalt|Shift)\+/g, '⇧').replace(/Alt\+/g, '⌥') : k);
 function erstDialog(html) {
   const d = $('#dlg');
   d.innerHTML = `<form class="f ew">${html}</form>`;
