@@ -43,3 +43,11 @@ jobs:
         run: npx electron-builder --win nsis --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Produktblätter (Deutsch, Englisch) neben den Installer legen, damit man vor dem Herunterladen sieht, worum es geht
+      - name: Produktblaetter anhaengen
+        shell: bash
+        run: |
+          v=$(node -p "require('./package.json').version")
+          gh release upload "v$v" dokumente/fabBoard-Produktblatt.pdf dokumente/fabBoard-Product-Sheet.pdf --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

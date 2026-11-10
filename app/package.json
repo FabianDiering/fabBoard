@@ -35,7 +35,14 @@
       "!icon-erstellen.ps1",
       "!icon-vorschau*.png",
       "!beispiel/beispiele_erstellen.py",
-      "!**/*.log"
+      "!**/*.log",
+      "!dokumente/**"
+    ],
+    "extraResources": [
+      {
+        "from": "dokumente",
+        "to": "dokumente"
+      }
     ],
     "electronLanguages": [
       "de",

@@ -166,6 +166,8 @@ function menueBauen() {
       { label: t('mFehlerMelden'), click: () => shell.openExternal(REPO + '/issues') },
       ...(SPENDEN ? [{ label: t('spenden'), click: () => shell.openExternal(SPENDEN) }] : []),
       { label: t('mProtokolle'), click: () => ordnerOeffnen('laeufe') },
+      // Produktblatt (eine Seite, worum es bei fabBoard geht); liegt dem Installer bei (entschieden 2026-11-10)
+      { label: t('mProduktblatt'), click: () => shell.openPath(path.join(app.isPackaged ? process.resourcesPath : __dirname, 'dokumente', t('produktblattDatei'))) },
       { type: 'separator' },
       { label: t('impressum'), click: () => imBoard("document.getElementById('impK').click()") },
       { label: t('datenschutz'), click: () => imBoard("document.getElementById('dsK').click()") },
