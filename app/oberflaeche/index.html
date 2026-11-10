@@ -1092,6 +1092,7 @@ const ERST_MERK = 'fabboard-ersteinrichtung';
 const erstVon = () => (window.fabApp ? 7 : 6);
 function ewNr(n) { return T('ewSchritt', EW.erst ? { n: n + 2, von: erstVon() } : { n, von: 3 }); }
 const kuerzelText = () => (window.fabApp?.mac ? '⌘⌥S' : T('kuerzelSchreibweise'));
+const kiKuerzelText = () => (window.fabApp?.mac ? '⌘⇧S' : T('kuerzelKiSchreibweise'));
 function erstDialog(html) {
   const d = $('#dlg');
   d.innerHTML = `<form class="f ew">${html}</form>`;
@@ -1148,7 +1149,7 @@ function erstProjekt() {
   const wahl = (w, titel, text, an) => `<label class="wahl"><input type="radio" name="p" value="${w}"${an ? ' checked' : ''}><span><b>${titel}</b><small>${text}</small></span></label>`;
   const d = erstDialog(`<div class="schritt">${T('ewSchritt', { n: 6, von: erstVon() })}</div><h2>${T('erstProjektT')}</h2><p>${T('erstProjekt')}</p>
     ${wahl('eigen', T('erstEigen'), T('erstEigenText'), true)}${wahl('beispiel', T('erstBeispiel'), T('erstBeispielText'))}${wahl('spaeter', T('erstSpaeter'), T('erstSpaeterText'))}
-    <p class="fehl" id="eFehl"></p><div class="r"><button class="btn">${T('weiter')}</button></div>`);
+    <p style="margin-top:10px">${T('erstTourHinweis')}</p><p class="fehl" id="eFehl"></p><div class="r"><button class="btn">${T('weiter')}</button></div>`);
   d.querySelector('form').onsubmit = async (e) => {
     e.preventDefault();
     const w = d.querySelector('input[name=p]:checked').value;
@@ -1164,7 +1165,7 @@ function erstProjekt() {
 function erstKuerzel() {
   if (!window.fabApp) return erstEnde();
   const d = erstDialog(`<div class="schritt">${T('ewSchritt', { n: 7, von: 7 })}</div><h2>${T('erstKuerzelT')}</h2>
-    <p>${T('erstKuerzel', { kuerzel: kuerzelText() })}</p><p style="margin-top:8px">${T('erstHintergrund')}</p>
+    <p>${T('erstKuerzel', { kuerzel: kuerzelText() })}</p>
     <div class="r"><button class="btn">${T('erstFertig')}</button></div>`);
   d.querySelector('form').onsubmit = (e) => { e.preventDefault(); erstEnde(); };
 }
@@ -1203,7 +1204,7 @@ function tour() {
     el.scrollIntoView({ block: 'center' });
     const r = el.getBoundingClientRect(); const pad = 6;
     Object.assign(ring.style, { left: r.left - pad + 'px', top: r.top - pad + 'px', width: r.width + 2 * pad + 'px', height: r.height + 2 * pad + 'px' });
-    karte.innerHTML = `<div class="cap">${T('tourN', { n: i + 1, von: schritte.length })}</div><p>${esc(T(k, { ki: kiName(), kuerzel: kuerzelText() }))}</p>
+    karte.innerHTML = `<div class="cap">${T('tourN', { n: i + 1, von: schritte.length })}</div><p>${esc(T(k, { ki: kiName(), kuerzel: kuerzelText(), kiKuerzel: kiKuerzelText() }))}</p>
       <div class="r"><button type="button" class="lk" data-t="ende">${T('tourUeberspringen')}</button><button type="button" class="btn klein" data-t="weiter">${T(i === schritte.length - 1 ? 'tourFertig' : 'weiter')}</button></div>`;
     // Karte unter dem Element, sonst darüber, immer im Fenster
     const kh = karte.offsetHeight; const kw = karte.offsetWidth;
