@@ -1,7 +1,7 @@
 {
   "name": "fabboard",
   "productName": "fabBoard",
-  "version": "1.85.0",
+  "version": "1.86.0",
   "description": "fabBoard: Projektboard, in dem eine KI deiner Wahl für dich arbeitet",
   "main": "main.js",
   "scripts": {
@@ -37,6 +37,12 @@
       "!beispiel/beispiele_erstellen.py",
       "!**/*.log"
     ],
+    "electronLanguages": [
+      "de",
+      "en-US",
+      "en-GB"
+    ],
+    "compression": "maximum",
     "asarUnpack": [
       "icon.ico"
     ],
