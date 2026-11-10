@@ -211,6 +211,8 @@ dialog.ew{width:min(620px,calc(100% - 28px))}
 .ew .fehl{color:var(--err);font-size:13px}
 .ew .stand{margin-top:6px;font-size:13px;color:var(--text2)}
 .ew .stand:empty{display:none}
+/* Orange pulsierender Punkt = „arbeitet“, beim Installieren und beim Warten auf die Anmeldung (entschieden 2026-11-10, statt Balken) */
+.ew .stand .lp{margin:0 8px 1px 0;vertical-align:middle}
 .ew .stand .anmhw{display:block;margin-top:10px;font-size:12.5px;color:var(--muted);font-family:var(--sans)}
 .ew .stand.fehl{color:var(--err)}
 .ew ul.punkte{margin:8px 0 2px;padding-left:18px;font-size:13px;line-height:1.6;color:var(--text2)}
@@ -1095,7 +1097,7 @@ async function ewInstallieren(a, nurZeigen) {
       st.classList.add('fehl'); st.textContent = T('ewInstallFehler', { zeile: j.zeile || String(j.code) });
       d.querySelectorAll('[data-aktion]').forEach((b) => { b.disabled = false; }); d.querySelector('details.selbst').open = true; return;
     }
-    st.innerHTML = `${esc(T('ewInstalliert', { n: j.schritt, von: j.von, zeit: ewZeit(Date.now() - j.start) }))}<br><small>${esc(j.zeile || T('ewInstallHinweis'))}</small>`;
+    st.innerHTML = `<span class="lp" aria-hidden="true"></span>${esc(T('ewInstalliert', { n: j.schritt, von: j.von, zeit: ewZeit(Date.now() - j.start) }))}<br><small>${esc(j.zeile || T('ewInstallHinweis'))}</small>`;
     await new Promise((ok) => setTimeout(ok, 1500));
     try { j = await fetch(`api/anbieter/${a.id}/installieren`, { cache: 'no-store' }).then((x) => x.json()); } catch (e) {}
   }
@@ -1109,7 +1111,7 @@ async function ewAnmelden(a) {
   if (knopf.dataset.ohneFenster) return ewAnmeldenOhneFenster(a, knopf, st);
   const x = await fetch(`api/anbieter/${a.id}/anmelden`, { method: 'POST' }).then((y) => y.json()).catch((e) => ({ fehler: e.message }));
   if (x.fehler) { st.classList.add('fehl'); st.textContent = x.fehler; return; }
-  knopf.textContent = T('ewAnmeldenNochmal'); st.textContent = T('ewAnmeldenOffen');
+  knopf.textContent = T('ewAnmeldenNochmal'); st.innerHTML = `<span class="lp" aria-hidden="true"></span>${esc(T('ewAnmeldenOffen'))}`;
   const ende = Date.now() + 15 * 60 * 1000;
   while (d.open && $('#eStand-anmelden') === st && Date.now() < ende) {
     await new Promise((ok) => setTimeout(ok, 4000));
@@ -1126,7 +1128,7 @@ async function ewAnmeldenOhneFenster(a, knopf, st) {
   let j = await fetch(`api/anbieter/${a.id}/anmelden`, { method: 'POST' }).then((y) => y.json()).catch((e) => ({ fehler: e.message }));
   if (j.fehler) { st.classList.add('fehl'); st.textContent = j.fehler; knopf.disabled = false; return; }
   // Bereich mit Hinweis, Link-Knöpfen und Code-Feld; Link und Code-Feld erscheinen, sobald das Programm den Link ausgegeben hat
-  st.innerHTML = `<span id="eAnmText">${esc(T('ewAnmLaeuft'))}</span><span id="eAnmLink" hidden><span class="anmhw">${esc(T('ewAnmLink'))}</span>
+  st.innerHTML = `<span class="lp" aria-hidden="true"></span><span id="eAnmText">${esc(T('ewAnmLaeuft'))}</span><span id="eAnmLink" hidden><span class="anmhw">${esc(T('ewAnmLink'))}</span>
     <span class="cmd"><a class="btn hell klein" id="eAnmOeffnen" href="#" target="_blank" rel="noopener">${T('ewSeiteOeffnen')}</a><button type="button" class="btn hell klein" id="eAnmKopie">${T('ewLinkKopieren')}</button></span>
     ${knopf.dataset.code ? `<span class="anmhw">${esc(T('ewCodeT'))}</span><span class="cmd"><input id="eAnmCode" autocomplete="off" spellcheck="false" aria-label="${esc(T('ewCodeFeld'))}" placeholder="${esc(T('ewCodeFeld'))}"><button type="button" class="btn klein" id="eAnmCodeOk">${T('ewCodeOk')}</button></span>` : ''}</span>`;
   const linkZeigen = (u) => {
