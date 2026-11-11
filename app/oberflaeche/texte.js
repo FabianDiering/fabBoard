@@ -22,7 +22,7 @@
       kiAuswahl: 'KI-Auswahl', daten: 'Daten', geoeffnet: 'geöffnet', oeffnen: 'Öffnen', aufGithub: 'fabBoard auf GitHub',
       datenErkl: 'Hier liegt alles, was du in fabBoard anlegst: deine Projekte mit Fragen, Entscheidungen und Nachrichten, deine Screenshots und die Berichte der KI-Läufe. Das sind ganz normale Dateien in einem Ordner auf deinem Computer, nichts davon wird ins Internet hochgeladen. Wenn du deine Daten sichern willst, kopiere einfach diesen Ordner.',
       ordnerErkl: '„Datenordner ändern …“ brauchst du nur, wenn deine Daten an einem anderen Ort liegen sollen, zum Beispiel in einem Cloud-Ordner wie OneDrive, damit du sie auf mehreren Geräten hast. fabBoard startet danach neu und nutzt den neuen Ordner. Deine bisherigen Dateien bleiben am alten Ort liegen; willst du sie mitnehmen, kopiere sie vorher in den neuen Ordner.',
-      impressum: 'Impressum', impName: 'Name', impAnschrift: 'Anschrift', impEmail: 'E-Mail', impFolgt: 'folgt',
+      impressum: 'Impressum', impName: 'Name', impAnschrift: 'Anschrift', impEmail: 'E-Mail', impLand: 'Deutschland',
       impHinweis: 'Die Anschrift wird ergänzt, sobald die Rechtsform geklärt ist.',
       // Haftung und Nutzung: deutlich in der Ersteinrichtung und im Impressum (entschieden 2026-11-09)
       haftung: 'Haftung und Nutzung', haftT: 'Wichtig: Bitte vor dem ersten Lauf lesen',
@@ -209,7 +209,7 @@
       kiAuswahl: 'AI selection', daten: 'Data', geoeffnet: 'open now', oeffnen: 'Open', aufGithub: 'fabBoard on GitHub',
       datenErkl: 'This is where everything you create in fabBoard lives: your projects with questions, decisions and messages, your screenshots and the reports of the AI runs. These are ordinary files in a folder on your computer; none of it is uploaded to the internet. To back up your data, simply copy this folder.',
       ordnerErkl: 'You only need “Change data folder …” if your data should live somewhere else, for example in a cloud folder such as OneDrive so you have it on several devices. fabBoard then restarts and uses the new folder. Your existing files stay in the old place; to take them along, copy them into the new folder first.',
-      impressum: 'Legal notice', impName: 'Name', impAnschrift: 'Address', impEmail: 'Email', impFolgt: 'to follow',
+      impressum: 'Legal notice', impName: 'Name', impAnschrift: 'Address', impEmail: 'Email', impLand: 'Germany',
       impHinweis: 'The address will be added once the legal form is settled.',
       haftung: 'Liability and use', haftT: 'Important: please read before your first run',
       haftPunkte: ['fabBoard starts an AI that works on its own in your project folder: it creates files, changes them and can also delete them.', 'An AI makes mistakes. Check what it changed before you rely on it, for example texts, numbers or program code.', 'Back up your project folders regularly. Simply copying the folder is enough.', 'Only give the AI folders it may work in, and no secret data such as passwords.', 'fabBoard is free and provided without warranty (MIT licence). You use it at your own risk. No liability is accepted for damage, such as lost or wrongly changed files, to the extent permitted by law.'],
