@@ -1,7 +1,7 @@
 {
   "name": "fabboard",
   "productName": "fabBoard",
-  "version": "1.88.0",
+  "version": "1.89.0",
   "description": "fabBoard: Projektboard, in dem eine KI deiner Wahl für dich arbeitet",
   "main": "main.js",
   "scripts": {
@@ -68,7 +68,7 @@
       "shortcutName": "fabBoard",
       "runAfterFinish": true,
       "deleteAppDataOnUninstall": false,
-      "artifactName": "fabBoard-Setup-${version}.${ext}"
+      "artifactName": "fabBoard-Setup.${ext}"
     },
     "mac": {
       "target": [
