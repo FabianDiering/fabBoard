@@ -162,6 +162,7 @@ function menueBauen() {
       ...(app.isPackaged ? [] : [{ type: 'separator' }, { label: t('mEntwickler'), role: 'toggleDevTools' }]),
     ] },
     { label: t('mHilfe'), submenu: [
+      { label: t('meinungKnopf'), click: () => imBoard("document.getElementById('meinK').click()") },
       { label: t('mGithub'), click: () => shell.openExternal(REPO) },
       { label: t('mFehlerMelden'), click: () => shell.openExternal(REPO + '/issues') },
       ...(SPENDEN ? [{ label: t('spenden'), click: () => shell.openExternal(SPENDEN) }] : []),

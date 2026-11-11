@@ -163,6 +163,7 @@
       anmFenster: 'fabBoard: Anmeldung bei {name}. Folge den Schritten in diesem Fenster und im Browser.',
       anmFertig: 'Fertig. Du kannst dieses Fenster schließen und zu fabBoard zurückkehren.',
       // App-Menü, Infobereich (main.js)
+      meinungKnopf: 'Meinung senden', meinungTitel: 'Schreib mir, was dir gefällt, was stört oder was fehlt. Es öffnet sich dein E-Mail-Programm.', meinungBetreff: 'Meine Meinung zu fabBoard ({v})', meinungText: 'Hallo,\n\nDas gefällt mir:\n\n\nDas stört mich oder klappt nicht:\n\n\nDas fehlt mir:\n\n\n(fabBoard {v}, {sys})',
       newsKnopf: 'Newsletter abonnieren', newsBetreff: 'fabBoard-Newsletter', newsText: 'Ich möchte den fabBoard-Newsletter erhalten.', newsKopiert: 'Adresse kopiert: {adresse}. Öffnet sich kein E-Mail-Programm, füge sie in eine neue E-Mail ein.',
       spenden: 'Spendier mir einen Kaffee', spendenText: 'fabBoard ist kostenlos. Wenn es dir hilft, freue ich mich über einen Kaffee (Ko-fi).',
       updT: 'fabBoard {version} ist bereit', upd: 'Das Update ist heruntergeladen. Jetzt neu starten und installieren? Sonst wird es beim nächsten Beenden installiert.',
@@ -337,6 +338,7 @@
       anmFenster: 'fabBoard: signing in to {name}. Follow the steps in this window and in the browser.',
       anmFertig: 'Done. You can close this window and return to fabBoard.',
       // App menu, tray (main.js)
+      meinungKnopf: 'Send feedback', meinungTitel: 'Tell me what you like, what bothers you or what is missing. Your email program opens.', meinungBetreff: 'My feedback on fabBoard ({v})', meinungText: 'Hello,\n\nWhat I like:\n\n\nWhat bothers me or does not work:\n\n\nWhat I am missing:\n\n\n(fabBoard {v}, {sys})',
       newsKnopf: 'Subscribe to newsletter', newsBetreff: 'fabBoard newsletter', newsText: 'I would like to receive the fabBoard newsletter.', newsKopiert: 'Address copied: {adresse}. If no email program opens, paste it into a new email.',
       spenden: 'Buy me a coffee', spendenText: 'fabBoard is free. If it helps you, I’d appreciate a coffee (Ko-fi).',
       updT: 'fabBoard {version} is ready', upd: 'The update has been downloaded. Restart and install now? Otherwise it is installed the next time you quit.',
