@@ -701,7 +701,7 @@ function laufHtml(p) {
   let text = '', titel = l.laeuft ? T('start', { zeit: uhr(l.start) }) : '';
   // Fehler im letzten Lauf: kurze Ursache in Alltagssprache (Server errät sie aus dem Protokoll), Erklärung im Tooltip
   if (!l.laeuft && l.ende && l.abgebrochen) { text = `<span>${T('lAbgebrochen')}</span>`; titel = T('lAbgebrochenT', { zeit: uhr(l.ende) }); }
-  else if (!l.laeuft && l.ende && l.exit !== 0) { const g = l.grund || 'unbekannt'; text = '<span class="pt err" aria-hidden="true"></span><span class="err">' + T('grund_' + g) + '</span>'; titel = T('grund_' + g + 'T', { ki: kiName(p), zeit: uhr(l.ende), code: l.exit }); }
+  else if (!l.laeuft && l.ende && l.exit !== 0) { const g = l.grund || 'unbekannt'; text = '<span class="pt err" aria-hidden="true"></span><span class="err">' + T('grund_' + g) + '</span>'; titel = T('grund_' + g + 'T', { ki: kiName(p), zeit: uhr(l.ende), code: l.exit, detail: l.detail ? l.detail + ' ' : '' }); }
   const proto = l.ende || l.laeuft ? `<button class="lk" data-a="lauf-log">${T(l.laeuft ? 'lLive' : 'lProtokoll')}</button>` : '';
   const stopp = l.laeuft ? `<button class="lk" data-a="lauf-stopp">${T('lStopp')}</button>` : '';
   const zst = kein ? `<button class="lk ordnerlk" data-a="projekt-bearb" title="${esc(T('ordnerFehlt'))}">${T('ordnerWaehlen')}</button>`

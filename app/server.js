@@ -124,10 +124,18 @@ for (const n of fs.readdirSync(LAEUFE).filter((x) => x.endsWith('.verlauf.json')
 function fehlerGrund(text) {
   const t = String(text || '').toLowerCase();
   if (/enoent|konnte nicht starten|not recognized as an internal|command not found|cannot find the path/.test(t)) return 'programm';
+  if (/enospc|no space left|not enough (disk )?space|disk (is )?full|nicht genug (speicher|platz)/.test(t)) return 'speicher';
   if (/rate.?limit|\b429\b|quota|usage limit|limit reached|insufficient_quota|credit balance|resource_exhausted|billing|overloaded/.test(t)) return 'kontingent';
+  if (/no longer supported|not supported (for|by|in)|not eligible|ineligible|not available (in|for) your|subscription required|upgrade your plan|requires a (paid|pro|plus)|account (is )?(not allowed|disabled|suspended|banned)|permission_denied/.test(t)) return 'konto';
   if (/not logged in|log ?in required|please (run |use )?\/?log ?in|unauthori[sz]ed|\b401\b|invalid.?api.?key|api key not valid|authentication|token (has )?expired|oauth/.test(t)) return 'anmeldung';
   if (/enotfound|econnrefused|econnreset|etimedout|getaddrinfo|network error|fetch failed|unable to connect|socket hang up|eai_again/.test(t)) return 'netz';
   return 'unbekannt';
+}
+// Letzte aussagekräftige Zeile des Fehlerprotokolls (für unbekannte Fehler), ohne Steuerzeichen, höchstens 200 Zeichen
+function fehlerZeile(text) {
+  const z = String(text || '').replace(/\x1b\[[0-9;]*[A-Za-z]/g, '').split(/\r?\n/).map((x) => x.trim()).filter((x) => x.length > 3);
+  const l = z.reverse().find((x) => /error|fehler|fail|denied|invalid|unable|cannot|exception/i.test(x)) || z[0] || '';
+  return l.slice(0, 200);
 }
 // Laufenden Prozess samt Unterprozessen beenden (Windows: taskkill /T, sonst SIGTERM)
 function laufBeenden(p) {
@@ -191,9 +199,9 @@ async function claudeStarten(id) {
     try { fs.writeFileSync(log, `KI: ${b.text}\r\n\r\n` + fs.readFileSync(log, 'utf8')); } catch (e) {}
     if (b.gitSelbst) projektCommit(j.ordner, `fabBoard: Lauf mit ${b.text} ${jetztText().slice(0, 16)}`);
     const exit = code == null ? -1 : code;
-    let grund = '';
-    if (exit !== 0 && !abgebrochen) { let t = ''; try { t = fs.readFileSync(fehlerLog, 'utf8').slice(-20000) + '\n' + fs.readFileSync(log, 'utf8').slice(-20000); } catch (e) {} grund = fehlerGrund(t); }
-    LETZTE[id] = { start, ende: Date.now(), exit, ki: b.text, ...(abgebrochen ? { abgebrochen: true } : {}), ...(grund ? { grund } : {}) }; delete LAUFEND[id];
+    let grund = '', detail = '';
+    if (exit !== 0 && !abgebrochen) { let t = ''; try { t = fs.readFileSync(fehlerLog, 'utf8').slice(-20000) + '\n' + fs.readFileSync(log, 'utf8').slice(-20000); } catch (e) {} grund = fehlerGrund(t); detail = fehlerZeile(t.slice(0, 20000)); }
+    LETZTE[id] = { start, ende: Date.now(), exit, ki: b.text, ...(abgebrochen ? { abgebrochen: true } : {}), ...(grund ? { grund } : {}), ...(detail ? { detail } : {}) }; delete LAUFEND[id];
     try { fs.writeFileSync(verlaufDatei(id), JSON.stringify([LETZTE[id], ...verlaufLesen(id)].slice(0, VERLAUF_MAX), null, 1)); } catch (e) {}
     sync(true);
   };
